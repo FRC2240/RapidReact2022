@@ -70,8 +70,8 @@ void Robot::TeleopPeriodic() {
 double throttle = m_stick.GetRightTriggerAxis() - m_stick.GetLeftTriggerAxis();
 
 //Looks like Ethan wants exponents...
-  m_drive.ArcadeDrive(throttle*throttle, m_stick.GetRightX()*m_stick.GetRightX());
-  
+  m_drive.ArcadeDrive(throttle*throttle, m_stick.GetRightX()*m_stick.GetLeftX());
+
 }
 
 void Robot::DisabledInit() {}
