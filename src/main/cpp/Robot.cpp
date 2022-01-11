@@ -14,6 +14,9 @@ void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+// right side might need to be inverted depending on construction
+  m_leftDrive.SetInverted(true);
+  
 }
 
 /**
@@ -60,7 +63,16 @@ void Robot::AutonomousPeriodic() {
 
 void Robot::TeleopInit() {}
 
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+
+  //Read controller input
+
+double throttle = m_stick.GetRightTriggerAxis() - m_stick.GetLeftTriggerAxis();
+
+//Looks like Ethan wants exponents...
+  m_drive.ArcadeDrive(throttle*throttle, m_stick.GetRightX()*m_stick.GetRightX());
+  
+}
 
 void Robot::DisabledInit() {}
 
