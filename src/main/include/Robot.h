@@ -30,6 +30,7 @@
 #include <frc/smartdashboard/SendableChooser.h>
 #include "frc/smartdashboard/SmartDashboard.h"
 
+
 class Robot : public frc::TimedRobot {
  public:
   void RobotInit() override;
@@ -71,8 +72,8 @@ class Robot : public frc::TimedRobot {
   frc::DifferentialDrive m_drive{m_leftDrive, m_rightDrive};
 
   //Neo motors
-  static const int leftIntakeMotorDeviceID = 5;
-  static const int rightIntakeMotorDeviceID = 6;
+  static const int rotateIntakeMotorDeviceID = 5;
+  static const int spinIntakeMotorDeviceID = 6;
 // I don't know what either of theese do
   static const int shootingMotorAlphaDeviceID = 7;
   static const int shootingMotorBetaDeviceID = 8;
@@ -85,12 +86,15 @@ class Robot : public frc::TimedRobot {
   WPI_TalonFX m_rightClimberExtender = {13};
 
   // REV bulldarn
-rev::CANSparkMax m_leftIntakeMotor{leftIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-rev::CANSparkMax m_rightIntakeMotor{rightIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
+rev::CANSparkMax m_rotateIntakeMotor{rotateIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
+rev::CANSparkMax m_spinIntakeMotor{spinIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 rev::CANSparkMax m_shootingMotorAlpha{shootingMotorAlphaDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 rev::CANSparkMax m_shootingMotorBeta{shootingMotorBetaDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 rev::CANSparkMax m_uptakeMotor{uptakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 rev::CANSparkMax m_rightClimberRotationNeo{rightClimberRotationNeoDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_leftClimberRotationNeo{leftClimberRotationNeoDeviceID, rev::CANSparkMax::MotorType::kBrushless};
+rev::CANSparkMax m_leftClimberRotationNeo{leftClimberRotationNeoDeviceID, rev::CANSparkMax::MotorType::kBrushless};
+
+std::shared_ptr<NetworkTable> m_table = nt::NetworkTableInstance::GetDefault().GetTable("limelight-bepis"); 
+double tx_OFFSET = 0.0;
 
 };
