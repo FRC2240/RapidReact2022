@@ -84,7 +84,7 @@ m_drive.ArcadeDrive(throttleExp, turnInput);
    if (intakeBool == 1) {
      // Is running, turn it off
 
-     m_rightIntakeMotor.Set(0);
+     m_spinIntakeMotor.Set(0);
      m_uptakeMotor.Set(0);
 
      //TODO retract intake via PIDs here
@@ -96,7 +96,7 @@ m_drive.ArcadeDrive(throttleExp, turnInput);
 
      //TODO deploy intake
 
-     m_rightIntakeMotor.Set(-0.5);
+     m_spinIntakeMotor.Set(-0.5);
      m_uptakeMotor.Set(0.5);
 
      intakeBool = 1;
