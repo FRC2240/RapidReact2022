@@ -18,6 +18,9 @@ void Robot::RobotInit() {
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 // right side might need to be inverted depending on construction
   m_leftDrive.SetInverted(true);
+  //  double ballsInShooter = 0; //add when break bar functionality is added
+  bool intakeBool = 0;
+    // 0 = not running, 1 = running
 
 }
 
@@ -76,6 +79,29 @@ double throttleExp = pow(throttle, m_driveExponent);
 double turnInput = pow(m_stick.GetRightX(), m_driveExponent);
 
 m_drive.ArcadeDrive(throttleExp, turnInput);
+
+ if (m_stick.GetAButtonPressed() == 1) {
+   if (intakeBool == 1) {
+     // Is running, turn it off
+
+     m_rightIntakeMotor.Set(0);
+     m_uptakeMotor.Set(0);
+
+     //TODO retract intake via PIDs here
+
+     intakeBool = 0;
+}
+   if (intakeBool == 0) {
+     // Not running, turn it on
+
+     //TODO deploy intake
+
+     m_rightIntakeMotor.Set(-0.5);
+     m_uptakeMotor.Set(0.5);
+
+     intakeBool = 1;
+   }
+ }
 
 }
 
