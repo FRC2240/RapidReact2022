@@ -43,6 +43,10 @@ class Robot : public frc::TimedRobot {
   void DisabledPeriodic() override;
   void TestInit() override;
   void TestPeriodic() override;
+  void ShooterFire();
+  void ShooterReady();
+  void ShooterArm();
+
 // void InitializeDashboard();
 // void InitializePIDControllers();
 // void ReadDashboard();
@@ -54,7 +58,8 @@ class Robot : public frc::TimedRobot {
   std::string m_autoSelected;
 
   double m_driveExponent = 1.2;
-  bool intakeBool;
+  bool intakeBool = false;
+  bool uptakeBool;
 
 
 //So long, Joystick.h!
@@ -96,6 +101,9 @@ rev::CANSparkMax m_shootingMotorBeta{shootingMotorBetaDeviceID, rev::CANSparkMax
 rev::CANSparkMax m_uptakeMotor{uptakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 rev::CANSparkMax m_rightClimberRotationNeo{rightClimberRotationNeoDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 rev::CANSparkMax m_leftClimberRotationNeo{leftClimberRotationNeoDeviceID, rev::CANSparkMax::MotorType::kBrushless};
+
+  //penumatics
+  frc::DoubleSolenoid m_shooterShifter{frc::PneumaticsModuleType::REVPH, 1, 2};
 
 //std::shared_ptr<NetworkTable> m_table = nt::NetworkTableInstance::GetDefault().GetTable("limelight-bepis"); 
 //double tx_OFFSET = 0.0;
