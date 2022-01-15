@@ -19,8 +19,6 @@ void Robot::RobotInit() {
 // right side might need to be inverted depending on construction
   m_leftDrive.SetInverted(true);
   //  double ballsInShooter = 0; //add when break bar functionality is added
-  bool intakeBool = 0;
-    // 0 = not running, 1 = running
 
 }
 
@@ -80,29 +78,60 @@ double turnInput = pow(m_stick.GetRightX(), m_driveExponent);
 
 m_drive.ArcadeDrive(throttleExp, turnInput);
 
- if (m_stick.GetAButtonPressed() == 1) {
-   if (intakeBool == 1) {
-     // Is running, turn it off
 
+//Intake
+ if (m_stick.GetYButtonPressed() == 1) {
+   if (intakeBool == true) {
+     // Is running, turn it off
      m_spinIntakeMotor.Set(0);
-     m_uptakeMotor.Set(0);
 
      //TODO retract intake via PIDs here
 
-     intakeBool = 0;
+     intakeBool = false;
 }
-   if (intakeBool == 0) {
+   if (intakeBool == false) {
      // Not running, turn it on
 
      //TODO deploy intake
 
      m_spinIntakeMotor.Set(-0.5);
-     m_uptakeMotor.Set(0.5);
-
-     intakeBool = 1;
+     intakeBool = true;
    }
  }
 
+ //uptake
+ if (m_stick.GetAButtonPressed()) {
+   if (uptakeBool == true) {
+     //stop uptake
+     m_uptakeMotor.Set(0.0);
+     uptakeBool = false;
+   }
+   if (uptakeBool == false) {
+     //Start uptake
+     m_uptakeMotor.Set(0.5);
+     uptakeBool = true;
+   }
+ }
+
+ //Shoot the Mortar
+ if (m_stick.GetRightBumperPressed()) {
+   // Hold the winch at a certain point
+   //TODO PIDs for that
+   Robot::ShooterArm();
+ }
+
+ if (m_stick.GetLeftBumperPressed()) {
+   Robot::ShooterFire();
+ }
+
+}
+
+void Robot::ShooterReady() {}
+
+void Robot::ShooterArm() {}
+
+void Robot::ShooterFire() {
+  m_shooterShifter.Set(frc::DoubleSolenoid::Value::kReverse); //possibly kForwards
 }
 
 void Robot::DisabledInit() {}
