@@ -53,6 +53,9 @@ class Robot : public frc::TimedRobot {
   std::string m_autoSelected;
 
   double m_driveExponent = 1.2;
+  bool intakeBool;
+
+
 //So long, Joystick.h!
   frc::XboxController m_stick{0};
 // A second controler
