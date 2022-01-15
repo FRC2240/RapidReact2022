@@ -8,6 +8,8 @@
 
 #include <fmt/core.h>
 
+#include <math.h>
+
 #include <frc/smartdashboard/SmartDashboard.h>
 
 void Robot::RobotInit() {
@@ -16,7 +18,7 @@ void Robot::RobotInit() {
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 // right side might need to be inverted depending on construction
   m_leftDrive.SetInverted(true);
-  
+
 }
 
 /**
@@ -70,7 +72,10 @@ void Robot::TeleopPeriodic() {
 double throttle = m_stick.GetRightTriggerAxis() - m_stick.GetLeftTriggerAxis();
 
 //Looks like Ethan wants exponents...
-  m_drive.ArcadeDrive(throttle*throttle, m_stick.GetRightX()*m_stick.GetLeftX());
+double throttleExp = pow(throttle, m_driveExponent);
+double turnInput = pow(m_stick.GetRightX(), m_driveExponent);
+
+m_drive.ArcadeDrive(throttleExp, turnInput);
 
 }
 

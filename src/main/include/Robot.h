@@ -52,39 +52,45 @@ class Robot : public frc::TimedRobot {
   const std::string kAutoNameCustom = "My Auto";
   std::string m_autoSelected;
 
+  double m_driveExponent = 1.2;
 //So long, Joystick.h!
   frc::XboxController m_stick{0};
-// A second controler 
-  frc::XboxController m_stick_climb{1};\
+// A second controler
+  frc::XboxController m_stick_climb{1};
+
+  WPI_TalonFX m_frontRightMotor = {1};
+  WPI_TalonFX m_backRightMotor = {2};
+  WPI_TalonFX m_frontLeftMotor = {3};
+  WPI_TalonFX m_backLeftMotor = {4};
+
+  // Left side of the robot is inverted
+  // Tonk drive
+  frc::MotorControllerGroup m_leftDrive{m_frontLeftMotor, m_backLeftMotor};
+  frc::MotorControllerGroup m_rightDrive{m_frontRightMotor, m_backRightMotor};
+
+  frc::DifferentialDrive m_drive{m_leftDrive, m_rightDrive};
 
   //Neo motors
   static const int leftIntakeMotorDeviceID = 5;
   static const int rightIntakeMotorDeviceID = 6;
 // I don't know what either of theese do
-  static const int rotationControlMotorDeviceID = 7;
-  static const int spinningMotorDeviceID = 8;
-  
+  static const int shootingMotorAlphaDeviceID = 7;
+  static const int shootingMotorBetaDeviceID = 8;
+  static const int uptakeMotorDeviceID = 9;
+  static const int rightClimberRotationNeoDeviceID = 10;
+  static const int leftClimberRotationNeoDeviceID = 11;
+
+// Climber falcons
+  WPI_TalonFX m_leftClimberExtender = {12};
+  WPI_TalonFX m_rightClimberExtender = {13};
+
+  // REV bulldarn
 rev::CANSparkMax m_leftIntakeMotor{leftIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 rev::CANSparkMax m_rightIntakeMotor{rightIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-rev::CANSparkMax m_rotationControlMotor{rotationControlMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-rev::CANSparkMax m_spinningMotorDeviceID{spinningMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-
-
-
-  WPI_TalonFX m_frontRightMotor = {1};
-  WPI_TalonFX m_backRightMotor = {2};
-  WPI_TalonFX m_frontLeftMotor = {3}; 
-  WPI_TalonFX m_backLeftMotor = {4}; 
-
-// Left side of the robot might need to be inverted
-// Tonk drive
-  frc::MotorControllerGroup m_leftDrive{m_frontLeftMotor, m_backLeftMotor};
-  frc::MotorControllerGroup m_rightDrive{m_frontRightMotor, m_backRightMotor};
-
-
-  frc::DifferentialDrive m_drive{m_leftDrive, m_rightDrive};
-
-
-// A nice arrangment of motors
+rev::CANSparkMax m_shootingMotorAlpha{shootingMotorAlphaDeviceID, rev::CANSparkMax::MotorType::kBrushless};
+rev::CANSparkMax m_shootingMotorBeta{shootingMotorBetaDeviceID, rev::CANSparkMax::MotorType::kBrushless};
+rev::CANSparkMax m_uptakeMotor{uptakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
+rev::CANSparkMax m_rightClimberRotationNeo{rightClimberRotationNeoDeviceID, rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_leftClimberRotationNeo{leftClimberRotationNeoDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 
 };
