@@ -96,8 +96,8 @@ m_drive.ArcadeDrive(throttleExp, turnInput);
 
      //TODO deploy intake
 
-     m_rightIntakeMotor.Set(-1.0);
-     m_uptakeMotor.Set(1.0);
+     m_rightIntakeMotor.Set(-0.5);
+     m_uptakeMotor.Set(0.5);
 
      intakeBool = 1;
    }
