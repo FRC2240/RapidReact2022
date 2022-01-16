@@ -100,4 +100,6 @@ rev::CANSparkMax m_leftClimberRotationNeo{leftClimberRotationNeoDeviceID, rev::C
 //std::shared_ptr<NetworkTable> m_table = nt::NetworkTableInstance::GetDefault().GetTable("limelight-bepis"); 
 //double tx_OFFSET = 0.0;
 
+//auto timer
+frc::Timer autoTimer;
 };
