@@ -62,6 +62,30 @@ void Robot::AutonomousPeriodic() {
   } else {
     // Default Auto goes here
   }
+  // Iteration one
+    // Use shooting function when it's a thing
+  // autoTimer.Start();
+  // if (autoTimer.Get() <= units::time::second_t(0.25)) {
+  //   m_drive.ArcadeDrive(-.5, 0);
+  // }
+
+  // Iteration two
+  autoTimer.Start();
+  if (autoTimer.Get() <= units::time::second_t(5)) {
+    // Lower intake and turn it on
+    m_drive.ArcadeDrive(.5, 0);
+  }
+  if  (autoTimer.Get() > units::time::second_t(5) && autoTimer.Get() <= units::time::second_t(8)) {
+    // turn off intake
+    m_drive.ArcadeDrive(0, .5);
+  }
+  if  (autoTimer.Get() > units::time::second_t(8) && autoTimer.Get() <= units::time::second_t(15)) {
+    // Ready aim and fire twice
+  }
+  // Iteration three
+    // shoot starting ball
+    // pathfinder things 
+    // ready aim and fire the two extra balls
 }
 
 void Robot::TeleopInit() {}
