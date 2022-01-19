@@ -44,7 +44,7 @@ class Robot : public frc::TimedRobot {
   void TestInit() override;
   void TestPeriodic() override;
   void ShooterFire();
-  void ShooterReady();
+  void LimelightTracking();
   void ShooterArm();
 
 // void InitializeDashboard();
@@ -60,6 +60,8 @@ class Robot : public frc::TimedRobot {
   double m_driveExponent = 1.2;
   bool intakeBool = false;
   bool uptakeBool;
+  bool shootMan;
+  bool limelightTrackingBool = false;
 
 
 //So long, Joystick.h!
