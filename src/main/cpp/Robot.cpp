@@ -19,6 +19,7 @@ void Robot::RobotInit() {
 // right side might need to be inverted depending on construction
   m_leftDrive.SetInverted(true);
   //  double ballsInShooter = 0; //add when break bar functionality is added
+  shootMan = true;
 
 }
 
@@ -144,18 +145,36 @@ m_drive.ArcadeDrive(throttleExp, turnInput);
    Robot::ShooterArm();
  }
 
+ if (m_stick.GetStartButton()){
+   shootMan = false;
+ }
+
  if (m_stick.GetLeftBumperPressed()) {
+   if (shootMan == true){
    Robot::ShooterFire();
+   }
+   else {
+     m_shooterShifter.Set(frc::DoubleSolenoid::Value::kReverse); //possibly kForwards
+   }
  }
 
 }
 
-void Robot::ShooterReady() {}
+// Ready!
+void Robot::LimelightTracking() {
+  //If it's tracking, use limebool
+}
 
-void Robot::ShooterArm() {}
+//Aim!
+void Robot::ShooterArm() {
+  //needs PIDs
+}
 
+//Fire!
 void Robot::ShooterFire() {
-  m_shooterShifter.Set(frc::DoubleSolenoid::Value::kReverse); //possibly kForwards
+  if (limelightTrackingBool == true) {
+    m_shooterShifter.Set(frc::DoubleSolenoid::Value::kReverse); //possibly kForwards
+  }
 }
 
 void Robot::DisabledInit() {}
