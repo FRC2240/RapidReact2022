@@ -9,6 +9,9 @@
 #include "rev/CANSparkMax.h"
 #include "ctre/Phoenix.h"
 
+#include "networktables/NetworkTable.h"
+#include "networktables/NetworkTableEntry.h"
+#include "networktables/NetworkTableInstance.h"
 #include <networktables/NetworkTable.h>
 #include <networktables/NetworkTableInstance.h>
 
@@ -29,6 +32,8 @@
 #include <frc/TimedRobot.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include "frc/smartdashboard/SmartDashboard.h"
+
+#include <frc/controller/PIDController.h>
 
 
 class Robot : public frc::TimedRobot {
@@ -104,12 +109,31 @@ rev::CANSparkMax m_uptakeMotor{uptakeMotorDeviceID, rev::CANSparkMax::MotorType:
 rev::CANSparkMax m_rightClimberRotationNeo{rightClimberRotationNeoDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 rev::CANSparkMax m_leftClimberRotationNeo{leftClimberRotationNeoDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 
+//encoders
+rev::SparkMaxRelativeEncoder m_rotateIntakeEncoder = m_rotateIntakeMotor.GetEncoder(); 
+rev::SparkMaxRelativeEncoder m_spinIntakeEncoder = m_spinIntakeMotor.GetEncoder(); 
+rev::SparkMaxRelativeEncoder m_shootingMotorAlphaEncoder = m_shootingMotorAlpha.GetEncoder(); 
+rev::SparkMaxRelativeEncoder m_shootingMotorBetaEncoder = m_shootingMotorBeta.GetEncoder(); 
+rev::SparkMaxRelativeEncoder m_rightClimberEncoder = m_rightClimberRotationNeo.GetEncoder(); 
+rev::SparkMaxRelativeEncoder m_leftClimberEncoder = m_leftClimberRotationNeo.GetEncoder(); 
+
+
   //penumatics
   frc::DoubleSolenoid m_shooterShifter{frc::PneumaticsModuleType::REVPH, 1, 2};
 
 //std::shared_ptr<NetworkTable> m_table = nt::NetworkTableInstance::GetDefault().GetTable("limelight-bepis"); 
-//double tx_OFFSET = 0.0;
+double tx_OFFSET = 0.0;
 
 //auto timer
 frc::Timer autoTimer;
+
+//PID Initialization -- have to manually set PIDs to motors each time??
+frc2::PIDController m_rotateIntakePIDController{0.1, 0.1, 0.1}; //kP, kI, kD
+frc2::PIDController m_leftClimberPIDController{0.1, 0.1, 0.1};
+frc2::PIDController m_rightClimberPIDController{0.1, 0.1, 0.1};
+
+
+
+
+
 };
