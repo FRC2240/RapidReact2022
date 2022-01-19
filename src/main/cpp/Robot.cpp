@@ -68,18 +68,24 @@ void Robot::AutonomousPeriodic() {
     // Use shooting function when it's a thing
   // autoTimer.Start();
   // if (autoTimer.Get() <= units::time::second_t(0.25)) {
-  //   m_drive.ArcadeDrive(-.5, 0);
+  //   m_drive.ArcadeDrive(0.5, 0);
   // }
 
   // Iteration two
   autoTimer.Start();
-  if (autoTimer.Get() <= units::time::second_t(5)) {
-    // Lower intake and turn it on
-    m_drive.ArcadeDrive(.5, 0);
+  if (autoTimer.Get() <= units::time::second_t(0.5)) {
+    //m_rotateIntakeMotor.Set(0.5); //do when pids are a thing
+  }
+  if (autoTimer.Get() > units::time::second_t(0.5) && autoTimer.Get() <= units::time::second_t(5)) {
+    // m_rotateIntakeMotor.Set(0);
+    m_spinIntakeMotor.Set(-0.5);
+    m_uptakeMotor.Set(0.5);
+    m_drive.ArcadeDrive(0.5, 0);
   }
   if  (autoTimer.Get() > units::time::second_t(5) && autoTimer.Get() <= units::time::second_t(8)) {
-    // turn off intake
-    m_drive.ArcadeDrive(0, .5);
+    m_spinIntakeMotor.Set(0);
+    m_uptakeMotor.Set(0);
+    m_drive.ArcadeDrive(0, 0.5);
   }
   if  (autoTimer.Get() > units::time::second_t(8) && autoTimer.Get() <= units::time::second_t(15)) {
     // Ready aim and fire twice
