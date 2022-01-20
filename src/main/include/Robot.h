@@ -130,9 +130,9 @@ double tx_OFFSET = 0.0;
 frc::Timer autoTimer;
 
 //PID Initialization -- have to manually set PIDs to motors each time??
-frc2::PIDController m_rotateIntakePIDController; //kP, kI, kD
-frc2::PIDController m_leftClimberPIDController;
-frc2::PIDController m_rightClimberPIDController;
+frc2::PIDController m_rotateIntakePIDController{0.0, 0.0, 0.0}; //kP, kI, kD
+frc2::PIDController m_leftClimberPIDController{0.0, 0.0, 0.0};
+frc2::PIDController m_rightClimberPIDController{0.0, 0.0, 0.0};
 
 struct pidCoeff {
     double kP;
