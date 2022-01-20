@@ -54,9 +54,9 @@ class Robot : public frc::TimedRobot {
   void IntakeDeploy();
   void IntakeReturn();
 
-// void InitializeDashboard();
-// void InitializePIDControllers();
-// void ReadDashboard();
+  void InitializePIDControllers();
+  void InitializeDashboard();
+  void ReadDashboard();
 
  private:
   frc::SendableChooser<std::string> m_chooser;
@@ -130,11 +130,19 @@ double tx_OFFSET = 0.0;
 frc::Timer autoTimer;
 
 //PID Initialization -- have to manually set PIDs to motors each time??
-frc2::PIDController m_rotateIntakePIDController{0.1, 0.1, 0.1}; //kP, kI, kD
-frc2::PIDController m_leftClimberPIDController{0.1, 0.1, 0.1};
-frc2::PIDController m_rightClimberPIDController{0.1, 0.1, 0.1};
+frc2::PIDController m_rotateIntakePIDController; //kP, kI, kD
+frc2::PIDController m_leftClimberPIDController;
+frc2::PIDController m_rightClimberPIDController;
 
+struct pidCoeff {
+    double kP;
+    double kI;
+    double kD;
+};
 
+pidCoeff m_rotateIntakeCoeff{0.0, 0.0, 0.0};
+pidCoeff m_leftClimberCoeff{0.0, 0.0, 0.0};
+pidCoeff m_rightClimberCoeff{0.0, 0.0, 0.0};
 
 
 
