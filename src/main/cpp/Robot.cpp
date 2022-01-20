@@ -111,6 +111,10 @@ m_drive.ArcadeDrive(throttleExp, turnInput);
      m_spinIntakeMotor.Set(0);
 
      //TODO retract intake via PIDs here
+     // experimenting idk how to actually set these yet
+     double setpoint; 
+     m_rotateIntakeMotor.Set(m_rotateIntakePIDController.Calculate(m_rotateIntakeEncoder.GetPosition(), setpoint)); 
+     
 
      intakeBool = false;
 }
@@ -184,6 +188,75 @@ void Robot::DisabledPeriodic() {}
 void Robot::TestInit() {}
 
 void Robot::TestPeriodic() {}
+
+void Robot::InitializePIDControllers() {
+  m_rotateIntakePIDController.SetP(m_rotateIntakeCoeff.kP);
+  m_rotateIntakePIDController.SetI(m_rotateIntakeCoeff.kI);
+  m_rotateIntakePIDController.SetD(m_rotateIntakeCoeff.kD);
+
+  m_rightClimberPIDController.SetP(m_rightClimberCoeff.kP);
+  m_rightClimberPIDController.SetI(m_rightClimberCoeff.kI);
+  m_rightClimberPIDController.SetD(m_rightClimberCoeff.kD);
+
+  m_leftClimberPIDController.SetP(m_leftClimberCoeff.kP);
+  m_leftClimberPIDController.SetI(m_leftClimberCoeff.kI);
+  m_leftClimberPIDController.SetD(m_leftClimberCoeff.kD);
+}
+
+void Robot::InitializeDashboard() {
+  frc::SmartDashboard::PutNumber("Rotate Intake P Gain", m_rotateIntakeCoeff.kP);
+  frc::SmartDashboard::PutNumber("Rotate Intake I Gain", m_rotateIntakeCoeff.kI);
+  frc::SmartDashboard::PutNumber("Rotate Intake D Gain", m_rotateIntakeCoeff.kD);
+
+  frc::SmartDashboard::PutNumber("Right Climber P Gain", m_rightClimberCoeff.kP);
+  frc::SmartDashboard::PutNumber("Right Climber I Gain", m_rightClimberCoeff.kI);
+  frc::SmartDashboard::PutNumber("Right Climber D Gain", m_rightClimberCoeff.kD);
+
+  frc::SmartDashboard::PutNumber("Left Climber P Gain", m_leftClimberCoeff.kP);
+  frc::SmartDashboard::PutNumber("Left Climber I Gain", m_leftClimberCoeff.kI);
+  frc::SmartDashboard::PutNumber("Left Climber D Gain", m_leftClimberCoeff.kD);
+}
+
+void Robot::ReadDashboard() {
+  double p, i, d;
+  // read PID coefficients from SmartDashboard
+  p   = frc::SmartDashboard::GetNumber("Rotate Intake P Gain", 0);
+  std::cout << "Read Dashboard rotate intake p gain: " << p << "\n";
+  i   = frc::SmartDashboard::GetNumber("Rotate Intake I Gain", 0);
+  std::cout << "Read Dashboard rotate intake i gain: " << i << "\n";
+  d   = frc::SmartDashboard::GetNumber("Rotate Intake D Gain", 0);
+  std::cout << "Read Dashboard rotate intake d gain: " << d << "\n";
+
+  // If PID coefficients on SmartDashboard have changed, write new values to controller
+  if ((p != m_rotateIntakeCoeff.kP)) { m_rotateIntakePIDController.SetP(p); m_rotateIntakeCoeff.kP = p; }
+  if ((i != m_rotateIntakeCoeff.kI)) { m_rotateIntakePIDController.SetI(i); m_rotateIntakeCoeff.kI = i; }
+  if ((d != m_rotateIntakeCoeff.kD)) { m_rotateIntakePIDController.SetD(d); m_rotateIntakeCoeff.kD = d; }
+
+
+  p   = frc::SmartDashboard::GetNumber("Right Climber P Gain", 0);
+  std::cout << "Read Dashboard Right Climber p gain: " << p << "\n";
+  i   = frc::SmartDashboard::GetNumber("Right Climber I Gain", 0);
+  std::cout << "Read Dashboard Right Climber i gain: " << i << "\n";
+  d   = frc::SmartDashboard::GetNumber("Right Climber D Gain", 0);
+  std::cout << "Read Dashboard Right Climber d gain: " << d << "\n";
+
+  // If PID coefficients on SmartDashboard have changed, write new values to controller
+  if ((p != m_rightClimberCoeff.kP)) { m_rightClimberPIDController.SetP(p);m_rightClimberCoeff.kP = p; }
+  if ((i != m_rightClimberCoeff.kI)) { m_rightClimberPIDController.SetI(i); m_rightClimberCoeff.kI = i; }
+  if ((d != m_rightClimberCoeff.kD)) { m_rightClimberPIDController.SetD(d); m_rightClimberCoeff.kD = d; }
+
+   p   = frc::SmartDashboard::GetNumber("Left Climber P Gain", 0);
+  std::cout << "Read Dashboard left Climber p gain: " << p << "\n";
+  i   = frc::SmartDashboard::GetNumber("Left Climber I Gain", 0);
+  std::cout << "Read Dashboard left Climber i gain: " << i << "\n";
+  d   = frc::SmartDashboard::GetNumber("Left Climber D Gain", 0);
+  std::cout << "Read Dashboard left Climber d gain: " << d << "\n";
+
+  // If PID coefficients on SmartDashboard have changed, write new values to controller
+  if ((p != m_leftClimberCoeff.kP)) { m_leftClimberPIDController.SetP(p);m_leftClimberCoeff.kP = p; }
+  if ((i != m_leftClimberCoeff.kI)) { m_leftClimberPIDController.SetI(i); m_leftClimberCoeff.kI = i; }
+  if ((d != m_leftClimberCoeff.kD)) { m_leftClimberPIDController.SetD(d); m_leftClimberCoeff.kD = d; }
+}
 
 #ifndef RUNNING_FRC_TESTS
 int main() {
