@@ -133,6 +133,9 @@ frc::Timer autoTimer;
 frc2::PIDController m_rotateIntakePIDController{0.0, 0.0, 0.0}; //kP, kI, kD
 frc2::PIDController m_leftClimberPIDController{0.0, 0.0, 0.0};
 frc2::PIDController m_rightClimberPIDController{0.0, 0.0, 0.0};
+frc2::PIDController m_shootingMotorAlphaPIDController{0.0, 0.0, 0.0};
+frc2::PIDController m_shootingMotorBetaPIDController{0.0, 0.0, 0.0};
+
 
 struct pidCoeff {
     double kP;
@@ -143,7 +146,8 @@ struct pidCoeff {
 pidCoeff m_rotateIntakeCoeff{0.0, 0.0, 0.0};
 pidCoeff m_leftClimberCoeff{0.0, 0.0, 0.0};
 pidCoeff m_rightClimberCoeff{0.0, 0.0, 0.0};
-
+pidCoeff m_shooterAlphaCoeff{0.0, 0.0, 0.0};
+pidCoeff m_shooterBetaCoeff{0.0, 0.0, 0.0};
 
 
 };
