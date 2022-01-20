@@ -73,16 +73,14 @@ void Robot::AutonomousPeriodic() {
   // Iteration two
   autoTimer.Start();
   if (autoTimer.Get() <= units::time::second_t(0.5)) {
-    //m_rotateIntakeMotor.Set(0.5); //do when pids are a thing
+    IntakeDeploy();
   }
   if (autoTimer.Get() > units::time::second_t(0.5) && autoTimer.Get() <= units::time::second_t(5)) {
-    // m_rotateIntakeMotor.Set(0);
-    m_spinIntakeMotor.Set(-0.5);
     m_uptakeMotor.Set(0.5);
     m_drive.ArcadeDrive(0.5, 0);
   }
   if  (autoTimer.Get() > units::time::second_t(5) && autoTimer.Get() <= units::time::second_t(8)) {
-    m_spinIntakeMotor.Set(0);
+    IntakeReturn();
     m_uptakeMotor.Set(0);
     m_drive.ArcadeDrive(0, 0.5);
   }
@@ -114,9 +112,9 @@ m_drive.ArcadeDrive(throttleExp, turnInput);
  if (m_stick.GetYButtonPressed() == 1) {
    if (intakeBool == true) {
      // Is running, turn it off
-     m_spinIntakeMotor.Set(0);
 
      //TODO retract intake via PIDs here
+    IntakeReturn();
 
      intakeBool = false;
 }
@@ -124,8 +122,8 @@ m_drive.ArcadeDrive(throttleExp, turnInput);
      // Not running, turn it on
 
      //TODO deploy intake
+     IntakeDeploy();
 
-     m_spinIntakeMotor.Set(-0.5);
      intakeBool = true;
    }
  }
@@ -181,6 +179,17 @@ void Robot::ShooterFire() {
   if (limelightTrackingBool == true) {
     m_shooterShifter.Set(frc::DoubleSolenoid::Value::kReverse); //possibly kForwards
   }
+}
+
+void Robot::IntakeDeploy() {
+  double setpoint;
+  m_rotateIntakeMotor.Set(m_rotateIntakePIDController.Calculate(m_rotateIntakeEncoder.GetPosition(), setpoint));
+  m_spinIntakeMotor.Set(-0.5);
+}
+
+void Robot::IntakeReturn(){
+  m_spinIntakeMotor.Set(0);
+  m_rotateIntakeMotor.Set(m_rotateIntakePIDController.Calculate(m_rotateIntakeEncoder.GetPosition(), 0));
 }
 
 void Robot::DisabledInit() {}
