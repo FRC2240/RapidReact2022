@@ -19,7 +19,7 @@ void Robot::RobotInit() {
 // right side might need to be inverted depending on construction
   m_leftDrive.SetInverted(true);
   //  double ballsInShooter = 0; //add when break bar functionality is added
-  shootMan = true;
+ shootMan = true;
 
 }
 
@@ -151,8 +151,17 @@ m_drive.ArcadeDrive(throttleExp, turnInput);
  }
 
  if (m_stick.GetStartButton()){
-   shootMan = false;
+   if (shootMan){
+     shootMan = false;
+     std::cout << "[MSG]: Shooter is in manual mode";
+   }
+   if (!shootMan){
+     shootMan = true;
+     std::cout << "[MSG]: Shooter is in automatic mode";
+   }
  }
+
+ 
 
  if (m_stick.GetLeftBumperPressed()) {
    if (shootMan == true){
@@ -202,6 +211,15 @@ void Robot::TestInit() {}
 void Robot::TestPeriodic() {}
 
 void Robot::InitializePIDControllers() {
+
+  m_shootingMotorAlphaPIDController.SetP(m_shooterAlphaCoeff.kP);
+  m_shootingMotorAlphaPIDController.SetI(m_shooterAlphaCoeff.kI);
+  m_shootingMotorAlphaPIDController.SetD(m_shooterAlphaCoeff.kD);
+
+  m_shootingMotorBetaPIDController.SetP(m_shooterBetaCoeff.kP);
+  m_shootingMotorBetaPIDController.SetI(m_shooterBetaCoeff.kI);
+  m_shootingMotorBetaPIDController.SetD(m_shooterBetaCoeff.kD);
+
   m_rotateIntakePIDController.SetP(m_rotateIntakeCoeff.kP);
   m_rotateIntakePIDController.SetI(m_rotateIntakeCoeff.kI);
   m_rotateIntakePIDController.SetD(m_rotateIntakeCoeff.kD);
@@ -227,6 +245,20 @@ void Robot::InitializeDashboard() {
   frc::SmartDashboard::PutNumber("Left Climber P Gain", m_leftClimberCoeff.kP);
   frc::SmartDashboard::PutNumber("Left Climber I Gain", m_leftClimberCoeff.kI);
   frc::SmartDashboard::PutNumber("Left Climber D Gain", m_leftClimberCoeff.kD);
+
+  frc::SmartDashboard::PutNumber("Alpha Motor P Gain", m_shooterAlphaCoeff.kP);
+  frc::SmartDashboard::PutNumber("Alpha Motor I Gain", m_shooterAlphaCoeff.kI);
+  frc::SmartDashboard::PutNumber("Alpha Motor D Gain", m_shooterAlphaCoeff.kD);
+
+  frc::SmartDashboard::PutNumber("Beta Motor P Gain", m_shooterBetaCoeff.kP);
+  frc::SmartDashboard::PutNumber("Beta Motor I Gain", m_shooterBetaCoeff.kI);
+  frc::SmartDashboard::PutNumber("Beta Motor D Gain", m_shooterBetaCoeff.kD);
+
+  /*
+  if (shootMan){frc::SmartDashboard::PutNumber("Shooter Mode", "Auto");}
+  if (!shootMan){frc::SmartDashboard::PutNumber("Shooter Mode", "Manual");}
+  */
+
 }
 
 void Robot::ReadDashboard() {
@@ -268,6 +300,35 @@ void Robot::ReadDashboard() {
   if ((p != m_leftClimberCoeff.kP)) { m_leftClimberPIDController.SetP(p);m_leftClimberCoeff.kP = p; }
   if ((i != m_leftClimberCoeff.kI)) { m_leftClimberPIDController.SetI(i); m_leftClimberCoeff.kI = i; }
   if ((d != m_leftClimberCoeff.kD)) { m_leftClimberPIDController.SetD(d); m_leftClimberCoeff.kD = d; }
+
+  // Shooting motors
+
+  p   = frc::SmartDashboard::GetNumber("Alpha Motor P Gain", 0);
+  std::cout << "Read Dashboard Alpha Motor P Gain: " << p << "\n";
+  i   = frc::SmartDashboard::GetNumber("Alpha Motor I Gain", 0);
+  std::cout << "Read Dashboard Alpha Motor I Gain: " << i << "\n";
+  d   = frc::SmartDashboard::GetNumber("Alpha Motor D Gain", 0);
+  std::cout << "Read Dashboard Alpha Motor D Gain: " << d << "\n";
+
+  // If PID coefficients on SmartDashboard have changed, write new values to controller
+  if ((p != m_shooterAlphaCoeff.kP)) { m_shootingMotorAlphaPIDController.SetP(p);m_shooterAlphaCoeff.kP = p; }
+  if ((i != m_shooterAlphaCoeff.kI)) { m_shootingMotorAlphaPIDController.SetI(i); m_shooterAlphaCoeff.kI = i; }
+  if ((d != m_shooterAlphaCoeff.kD)) { m_shootingMotorAlphaPIDController.SetD(d); m_shooterAlphaCoeff.kD = d; }
+
+  //Beta Power
+
+  p   = frc::SmartDashboard::GetNumber("Beta Motor P Gain", 0);
+  std::cout << "Read Dashboard Beta Motor P Gain: " << p << "\n";
+  i   = frc::SmartDashboard::GetNumber("Beta Motor I Gain", 0);
+  std::cout << "Read Dashboard Beta Motor I Gain: " << i << "\n";
+  d   = frc::SmartDashboard::GetNumber("Beta Motor D Gain", 0);
+  std::cout << "Read Dashboard Beta Motor D Gain: " << d << "\n";
+
+  // If PID coefficients on SmartDashboard have changed, write new values to controller
+  if ((p != m_shooterBetaCoeff.kP)) { m_shootingMotorBetaPIDController.SetP(p);m_shooterBetaCoeff.kP = p; }
+  if ((i != m_shooterBetaCoeff.kI)) { m_shootingMotorBetaPIDController.SetI(i); m_shooterBetaCoeff.kI = i; }
+  if ((d != m_shooterBetaCoeff.kD)) { m_shootingMotorBetaPIDController.SetD(d); m_shooterBetaCoeff.kD = d; }
+
 }
 
 #ifndef RUNNING_FRC_TESTS
