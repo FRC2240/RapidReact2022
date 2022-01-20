@@ -51,6 +51,8 @@ class Robot : public frc::TimedRobot {
   void ShooterFire();
   void LimelightTracking();
   void ShooterArm();
+  void IntakeDeploy();
+  void IntakeReturn();
 
 // void InitializeDashboard();
 // void InitializePIDControllers();
