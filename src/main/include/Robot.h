@@ -130,20 +130,32 @@ double tx_OFFSET = 0.0;
 frc::Timer autoTimer;
 
 //PID Initialization -- have to manually set PIDs to motors each time??
-frc2::PIDController m_rotateIntakePIDController{0.0, 0.0, 0.0}; //kP, kI, kD
-frc2::PIDController m_leftClimberPIDController{0.0, 0.0, 0.0};
-frc2::PIDController m_rightClimberPIDController{0.0, 0.0, 0.0};
+frc2::PIDController m_leftClimberExtendPIDController{0.0, 0.0, 0.0}; //kP, kI, kD
+frc2::PIDController m_rightClimberExtendPIDController{0.0, 0.0, 0.0};
+rev::SparkMaxPIDController m_leftClimberRotatePIDController = m_leftClimberRotationNeo.GetPIDController(); 
+rev::SparkMaxPIDController m_rightClimberRotatePIDController = m_rightClimberRotationNeo.GetPIDController(); 
+
+rev::SparkMaxPIDController m_rotateIntakePIDController = m_rotateIntakeMotor.GetPIDController(); 
+
+rev::SparkMaxPIDController m_shooterAlphaPIDController = m_shootingMotorAlpha.GetPIDController(); 
+rev::SparkMaxPIDController m_shooterBetaPIDController = m_shootingMotorBeta.GetPIDController(); 
+
+
+
 
 struct pidCoeff {
-    double kP;
-    double kI;
-    double kD;
+    double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
 };
 
-pidCoeff m_rotateIntakeCoeff{0.0, 0.0, 0.0};
-pidCoeff m_leftClimberCoeff{0.0, 0.0, 0.0};
-pidCoeff m_rightClimberCoeff{0.0, 0.0, 0.0};
+pidCoeff m_rotateIntakeCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
+pidCoeff m_leftClimberRotateCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+pidCoeff m_rightClimberRotateCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+pidCoeff m_shooterAlphaCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+pidCoeff m_shooterBetaCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
+//falcons
+pidCoeff m_leftClimberExtendCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; 
+pidCoeff m_rightClimberExtendCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
 };
