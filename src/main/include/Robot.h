@@ -18,6 +18,11 @@
 #include <wpi/sendable/Sendable.h>
 #include <wpi/sendable/SendableHelper.h>
 
+#include <frc/Filesystem.h>
+#include <frc/trajectory/TrajectoryUtil.h>
+#include <wpi/fs.h>
+
+
 #include <frc/DriverStation.h>
 #include <frc/Timer.h>
 #include <frc/GenericHID.h>
@@ -35,6 +40,9 @@
 
 #include <frc/controller/PIDController.h>
 
+#include <frc/trajectory/TrajectoryUtil.h>
+#include <frc/controller/RamseteController.h>
+#include <frc/trajectory/TrajectoryGenerator.h>
 
 class Robot : public frc::TimedRobot {
  public:
@@ -58,10 +66,15 @@ class Robot : public frc::TimedRobot {
   void InitializeDashboard();
   void ReadDashboard();
 
+
  private:
   frc::SendableChooser<std::string> m_chooser;
   const std::string kAutoNameDefault = "Default";
   const std::string kAutoNameCustom = "My Auto";
+  const std::string kFirstBallBlue = "FirstBallBlue";
+  const std::string kSecondBallBlue = "SecondBallBlue";
+  const std::string kFirstBallRed = "FirstBallRed";
+  const std::string kSecondBallRed = "SecondBallRed";
   std::string m_autoSelected;
 
   double m_driveExponent = 1.2;
@@ -69,6 +82,9 @@ class Robot : public frc::TimedRobot {
   bool uptakeBool;
   bool shootMan;
   bool limelightTrackingBool = false;
+  fs::path deployDirectory;
+
+
 
 
 //So long, Joystick.h!
@@ -147,6 +163,9 @@ struct pidCoeff {
     double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
 };
 
+
+
+  frc::Trajectory m_trajectory;
 
 pidCoeff m_rotateIntakeCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
