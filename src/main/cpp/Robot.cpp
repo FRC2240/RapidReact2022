@@ -63,11 +63,16 @@ void Robot::AutonomousPeriodic() {
   } else {
     // Default Auto goes here
   }
+  
   // Iteration one
-    // Use shooting function when it's a thing
   // autoTimer.Start();
-  // if (autoTimer.Get() <= units::time::second_t(0.25)) {
-  //   m_drive.ArcadeDrive(0.5, 0);
+  // if (autoTimer.Get() <= units::time::second_t(4)) {
+  //   LimelightTracking();
+  //   ShooterArm();
+  //   ShooterFire();
+  // }
+  // if (autoTimer.Get() > units::time::second_t(4) && autoTimer.Get() <= units::time::second_t(5)) {
+  //     m_drive.ArcadeDrive(0.5,0);
   // }
 
   // Iteration two
@@ -84,13 +89,27 @@ void Robot::AutonomousPeriodic() {
     m_uptakeMotor.Set(0);
     m_drive.ArcadeDrive(0, 0.5);
   }
-  if  (autoTimer.Get() > units::time::second_t(8) && autoTimer.Get() <= units::time::second_t(15)) {
-    // Ready aim and fire twice
+  if  (autoTimer.Get() > units::time::second_t(8) && autoTimer.Get() <= units::time::second_t(12)) {
+    LimelightTracking();
+    ShooterArm();
+    ShooterFire();
+    m_uptakeMotor.Set(0.5);
+  }
+  if  (autoTimer.Get() > units::time::second_t(12) && autoTimer.Get() <= units::time::second_t(15)) {
+    m_uptakeMotor.Set(0);
+    LimelightTracking();
+    ShooterArm();
+    ShooterFire();
   }
   // Iteration three
-    // shoot starting ball
-    // pathfinder things 
-    // ready aim and fire the two extra balls
+  // autoTimer.Start();
+  // if (autoTimer.Get() > units::time::second_t(4)) {
+  //   LimelightTracking();
+  //   ShooterArm();
+  //   ShooterFire();
+  // }
+  // pathfinder things 
+  // ready aim and fire the two extra balls
 }
 
 void Robot::TeleopInit() {}
