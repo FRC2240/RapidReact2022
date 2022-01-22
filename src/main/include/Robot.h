@@ -147,12 +147,14 @@ struct pidCoeff {
     double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
 };
 
+
 pidCoeff m_rotateIntakeCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
 pidCoeff m_leftClimberRotateCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 pidCoeff m_rightClimberRotateCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 pidCoeff m_shooterAlphaCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 pidCoeff m_shooterBetaCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+
 
 //falcons
 pidCoeff m_leftClimberExtendCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; 

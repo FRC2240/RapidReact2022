@@ -19,7 +19,7 @@ void Robot::RobotInit() {
 // right side might need to be inverted depending on construction
   m_leftDrive.SetInverted(true);
   //  double ballsInShooter = 0; //add when break bar functionality is added
-  shootMan = true;
+ shootMan = true;
 
 }
 
@@ -63,11 +63,16 @@ void Robot::AutonomousPeriodic() {
   } else {
     // Default Auto goes here
   }
+  
   // Iteration one
-    // Use shooting function when it's a thing
   // autoTimer.Start();
-  // if (autoTimer.Get() <= units::time::second_t(0.25)) {
-  //   m_drive.ArcadeDrive(0.5, 0);
+  // if (autoTimer.Get() <= units::time::second_t(4)) {
+  //   LimelightTracking();
+  //   ShooterArm();
+  //   ShooterFire();
+  // }
+  // if (autoTimer.Get() > units::time::second_t(4) && autoTimer.Get() <= units::time::second_t(5)) {
+  //     m_drive.ArcadeDrive(0.5,0);
   // }
 
   // Iteration two
@@ -84,13 +89,27 @@ void Robot::AutonomousPeriodic() {
     m_uptakeMotor.Set(0);
     m_drive.ArcadeDrive(0, 0.5);
   }
-  if  (autoTimer.Get() > units::time::second_t(8) && autoTimer.Get() <= units::time::second_t(15)) {
-    // Ready aim and fire twice
+  if  (autoTimer.Get() > units::time::second_t(8) && autoTimer.Get() <= units::time::second_t(12)) {
+    LimelightTracking();
+    ShooterArm();
+    ShooterFire();
+    m_uptakeMotor.Set(0.5);
+  }
+  if  (autoTimer.Get() > units::time::second_t(12) && autoTimer.Get() <= units::time::second_t(15)) {
+    m_uptakeMotor.Set(0);
+    LimelightTracking();
+    ShooterArm();
+    ShooterFire();
   }
   // Iteration three
-    // shoot starting ball
-    // pathfinder things 
-    // ready aim and fire the two extra balls
+  // autoTimer.Start();
+  // if (autoTimer.Get() > units::time::second_t(4)) {
+  //   LimelightTracking();
+  //   ShooterArm();
+  //   ShooterFire();
+  // }
+  // pathfinder things 
+  // ready aim and fire the two extra balls
 }
 
 void Robot::TeleopInit() {}
@@ -151,8 +170,17 @@ m_drive.ArcadeDrive(throttleExp, turnInput);
  }
 
  if (m_stick.GetStartButton()){
-   shootMan = false;
+   if (shootMan){
+     shootMan = false;
+     std::cout << "[MSG]: Shooter is in manual mode";
+   }
+   if (!shootMan){
+     shootMan = true;
+     std::cout << "[MSG]: Shooter is in automatic mode";
+   }
  }
+
+ 
 
  if (m_stick.GetLeftBumperPressed()) {
    if (shootMan == true){
@@ -167,16 +195,52 @@ m_drive.ArcadeDrive(throttleExp, turnInput);
 
 // Ready!
 void Robot::LimelightTracking() {
+    nt::NetworkTableEntry txEntry;
+    nt::NetworkTableEntry tyEntry;
+    nt::NetworkTableEntry taEntry;
+
+    double ta, tx, ty;
+
+    auto inst = nt::NetworkTableInstance::GetDefault();
+    auto table = inst.GetTable("limelight-bepis");
+    txEntry = table->GetEntry("tx");
+    tyEntry = table->GetEntry("ty");
+    taEntry = table->GetEntry("ta");
+
+
+    txEntry.SetDouble(tx);
+    tyEntry.SetDouble(ty);
+    taEntry.SetDouble(ta);
+
+    std::cout << tx << ty << ta << "\n";
+
+     /*
+      // Dummy values
+    if (ta <= 0.05 && ta >= 0.04 && tx <= 0.1 && tx >= -0.01 && ty <= 0.5 && ty >= 0.4){
+        limelightTrackingBool = true;
+
+    }
+    else {
+        limelightTrackingBool = false;
+    }
+     */
+
   //If it's tracking, use limebool
 }
 
+
 //Aim!
 void Robot::ShooterArm() {
+    //There. You see, Lord Vader, she can be reasonable.
+    // Continue with the operation; you may fire when ready.
+    // --Grand Moff Tarkin
+
   //needs PIDs
 }
 
 //Fire!
 void Robot::ShooterFire() {
+
   if (limelightTrackingBool == true) {
     m_shooterShifter.Set(frc::DoubleSolenoid::Value::kReverse); //possibly kForwards
   }
@@ -202,7 +266,7 @@ void Robot::TestInit() {}
 void Robot::TestPeriodic() {}
 
 void Robot::InitializePIDControllers() {
-//rotate intake
+
   m_rotateIntakePIDController.SetP(m_rotateIntakeCoeff.kP);
   m_rotateIntakePIDController.SetI(m_rotateIntakeCoeff.kI);
   m_rotateIntakePIDController.SetD(m_rotateIntakeCoeff.kD);
@@ -300,6 +364,12 @@ void Robot::InitializeDashboard() {
   frc::SmartDashboard::PutNumber("Beta Motor D Gain", m_rightClimberExtendCoeff.kD);
   frc::SmartDashboard::PutNumber("Beta Motor Max Output", m_rightClimberExtendCoeff.kMaxOutput);
   frc::SmartDashboard::PutNumber("Beta Motor Min Output", m_rightClimberExtendCoeff.kMinOutput);
+
+  /*
+  if (shootMan){frc::SmartDashboard::PutNumber("Shooter Mode", "Auto");}
+  if (!shootMan){frc::SmartDashboard::PutNumber("Shooter Mode", "Manual");}
+  */
+
 }
 
 void Robot::ReadDashboard() {
@@ -419,7 +489,6 @@ void Robot::ReadDashboard() {
     m_shooterBetaPIDController.SetOutputRange(min, max); 
     m_shooterBetaCoeff.kMinOutput = min; m_shooterBetaCoeff.kMaxOutput = max; 
   }
-
 }
 
 #ifndef RUNNING_FRC_TESTS
