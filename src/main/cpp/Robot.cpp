@@ -214,16 +214,33 @@ void Robot::LimelightTracking() {
 
     std::cout << tx << ty << ta << "\n";
 
+     /*
+      // Dummy values
+    if (ta <= 0.05 && ta >= 0.04 && tx <= 0.1 && tx >= -0.01 && ty <= 0.5 && ty >= 0.4){
+        limelightTrackingBool = true;
+
+    }
+    else {
+        limelightTrackingBool = false;
+    }
+     */
+
   //If it's tracking, use limebool
 }
 
+
 //Aim!
 void Robot::ShooterArm() {
+    //There. You see, Lord Vader, she can be reasonable.
+    // Continue with the operation; you may fire when ready.
+    // --Grand Moff Tarkin
+
   //needs PIDs
 }
 
 //Fire!
 void Robot::ShooterFire() {
+
   if (limelightTrackingBool == true) {
     m_shooterShifter.Set(frc::DoubleSolenoid::Value::kReverse); //possibly kForwards
   }
