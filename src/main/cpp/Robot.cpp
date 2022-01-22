@@ -195,6 +195,25 @@ m_drive.ArcadeDrive(throttleExp, turnInput);
 
 // Ready!
 void Robot::LimelightTracking() {
+    nt::NetworkTableEntry txEntry;
+    nt::NetworkTableEntry tyEntry;
+    nt::NetworkTableEntry taEntry;
+
+    double ta, tx, ty;
+
+    auto inst = nt::NetworkTableInstance::GetDefault();
+    auto table = inst.GetTable("limelight-bepis");
+    txEntry = table->GetEntry("tx");
+    tyEntry = table->GetEntry("ty");
+    taEntry = table->GetEntry("ta");
+
+
+    txEntry.SetDouble(tx);
+    tyEntry.SetDouble(ty);
+    taEntry.SetDouble(ta);
+
+    std::cout << tx << ty << ta << "\n";
+
   //If it's tracking, use limebool
 }
 
