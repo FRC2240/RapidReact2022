@@ -15,11 +15,16 @@
 void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
+  m_chooser.AddOption(kFirstBallBlue, kFirstBallBlue);
+  m_chooser.AddOption(kSecondBallBlue,kSecondBallBlue);
+  m_chooser.AddOption(kFirstBallRed,kFirstBallRed);
+  m_chooser.AddOption(kSecondBallRed,kSecondBallRed);
+
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 // right side might need to be inverted depending on construction
   m_leftDrive.SetInverted(true);
   //  double ballsInShooter = 0; //add when break bar functionality is added
- shootMan = true;
+  shootMan = true;
 
 }
 
@@ -45,14 +50,38 @@ void Robot::RobotPeriodic() {}
  * make sure to add them to the chooser code above as well.
  */
 void Robot::AutonomousInit() {
+
   m_autoSelected = m_chooser.GetSelected();
   // m_autoSelected = SmartDashboard::GetString("Auto Selector",
   //     kAutoNameDefault);
   fmt::print("Auto selected: {}\n", m_autoSelected);
 
-  if (m_autoSelected == kAutoNameCustom) {
+  if (m_autoSelected == kFirstBallBlue) {
+      
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/FirstBallBlue.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+  else if (m_autoSelected == kSecondBallBlue) {
+    
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/SecondBallBlue.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+  else if (m_autoSelected == kFirstBallRed) {
+
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/FirstBallRed.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+  else if (m_autoSelected == kSecondBallRed) {
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/SecondBallRed.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+
     // Custom Auto goes here
-  } else {
+  else {
     // Default Auto goes here
   }
 }
@@ -103,12 +132,14 @@ void Robot::AutonomousPeriodic() {
   }
   // Iteration three
   // autoTimer.Start();
-  // if (autoTimer.Get() > units::time::second_t(4)) {
+  // if (autoTimer.Get() <= units::time::second_t(4)) {
   //   LimelightTracking();
   //   ShooterArm();
   //   ShooterFire();
   // }
-  // pathfinder things 
+  // if (autoTimer.Get() > units::time::second_t(4) && autoTimer.Get() <= units::time::second_t(8)) {
+
+  // }
   // ready aim and fire the two extra balls
 }
 
