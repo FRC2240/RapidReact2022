@@ -69,6 +69,15 @@ class Robot : public frc::TimedRobot {
   void InitializeDashboard();
   void ReadDashboard();
 
+  //I think I need to make theese public for Climber.h
+  static const int rightClimberRotationNeoDeviceID = 10;
+  static const int leftClimberRotationNeoDeviceID = 11;
+
+  // Climber falcons
+  WPI_TalonFX m_leftClimberExtender = {12};
+  WPI_TalonFX m_rightClimberExtender = {13};
+
+
 
  private:
   frc::SendableChooser<std::string> m_chooser;
@@ -117,13 +126,7 @@ class Robot : public frc::TimedRobot {
   static const int shootingMotorAlphaDeviceID = 7;
   static const int shootingMotorBetaDeviceID = 8;
   static const int uptakeMotorDeviceID = 9;
-  static const int rightClimberRotationNeoDeviceID = 10;
-  static const int leftClimberRotationNeoDeviceID = 11;
-
-// Climber falcons
-  WPI_TalonFX m_leftClimberExtender = {12};
-  WPI_TalonFX m_rightClimberExtender = {13};
-
+  
   // REV bulldarn
 rev::CANSparkMax m_rotateIntakeMotor{rotateIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 rev::CANSparkMax m_spinIntakeMotor{spinIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
