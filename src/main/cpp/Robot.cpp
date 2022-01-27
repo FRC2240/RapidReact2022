@@ -301,21 +301,7 @@ void Robot::TestPeriodic() {}
 
 void Robot::InitializePIDControllers() {
 
-  m_rotateIntakePIDController.SetP(m_rotateIntakeCoeff.kP);
-  m_rotateIntakePIDController.SetI(m_rotateIntakeCoeff.kI);
-  m_rotateIntakePIDController.SetD(m_rotateIntakeCoeff.kD);
-  m_rotateIntakePIDController.SetIZone(m_rotateIntakeCoeff.kIz);
-  m_rotateIntakePIDController.SetFF(m_rotateIntakeCoeff.kFF);
-  m_rotateIntakePIDController.SetOutputRange(m_rotateIntakeCoeff.kMinOutput, m_rotateIntakeCoeff.kMaxOutput);
-
-  m_rotateIntakePIDController.SetP(m_rotateIntakeCoeff.kP);
-  m_rotateIntakePIDController.SetI(m_rotateIntakeCoeff.kI);
-  m_rotateIntakePIDController.SetD(m_rotateIntakeCoeff.kD);
-  m_rotateIntakePIDController.SetIZone(m_rotateIntakeCoeff.kIz);
-  m_rotateIntakePIDController.SetFF(m_rotateIntakeCoeff.kFF);
-  m_rotateIntakePIDController.SetOutputRange(m_rotateIntakeCoeff.kMinOutput, m_rotateIntakeCoeff.kMaxOutput);
-
-//climber rotation
+  //climber rotation
 m_rightClimberRotatePIDController.SetP(m_rightClimberRotateCoeff.kP);
 m_rightClimberRotatePIDController.SetI(m_rightClimberRotateCoeff.kI);
 m_rightClimberRotatePIDController.SetD(m_rightClimberRotateCoeff.kD);
@@ -339,7 +325,21 @@ m_leftClimberExtendPIDController.SetP(m_leftClimberExtendCoeff.kP);
 m_leftClimberExtendPIDController.SetI(m_leftClimberExtendCoeff.kI);
 m_leftClimberExtendPIDController.SetD(m_leftClimberExtendCoeff.kD);
 
-//winch motors
+  m_rotateIntakePIDController.SetP(m_rotateIntakeCoeff.kP);
+  m_rotateIntakePIDController.SetI(m_rotateIntakeCoeff.kI);
+  m_rotateIntakePIDController.SetD(m_rotateIntakeCoeff.kD);
+  m_rotateIntakePIDController.SetIZone(m_rotateIntakeCoeff.kIz);
+  m_rotateIntakePIDController.SetFF(m_rotateIntakeCoeff.kFF);
+  m_rotateIntakePIDController.SetOutputRange(m_rotateIntakeCoeff.kMinOutput, m_rotateIntakeCoeff.kMaxOutput);
+
+  m_rotateIntakePIDController.SetP(m_rotateIntakeCoeff.kP);
+  m_rotateIntakePIDController.SetI(m_rotateIntakeCoeff.kI);
+  m_rotateIntakePIDController.SetD(m_rotateIntakeCoeff.kD);
+  m_rotateIntakePIDController.SetIZone(m_rotateIntakeCoeff.kIz);
+  m_rotateIntakePIDController.SetFF(m_rotateIntakeCoeff.kFF);
+  m_rotateIntakePIDController.SetOutputRange(m_rotateIntakeCoeff.kMinOutput, m_rotateIntakeCoeff.kMaxOutput);
+
+  //winch motors
 m_shooterAlphaPIDController.SetP(m_shooterAlphaCoeff.kP);
 m_shooterAlphaPIDController.SetI(m_shooterAlphaCoeff.kI);
 m_shooterAlphaPIDController.SetD(m_shooterAlphaCoeff.kD);

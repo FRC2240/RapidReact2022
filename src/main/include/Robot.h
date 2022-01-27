@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Climber.h"
+
 #include <string>
 
 #include "rev/CANSparkMax.h"
@@ -56,6 +58,7 @@ class Robot : public frc::TimedRobot {
   void DisabledPeriodic() override;
   void TestInit() override;
   void TestPeriodic() override;
+
   void ShooterFire();
   void LimelightTracking();
   void ShooterArm();
@@ -87,7 +90,7 @@ class Robot : public frc::TimedRobot {
   double tyHighBound = 1, tyLowBound = 0; //dummy
   fs::path deployDirectory;
 
-
+  Climber m_climber;
 
 
 //So long, Joystick.h!
