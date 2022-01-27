@@ -82,6 +82,9 @@ class Robot : public frc::TimedRobot {
   bool uptakeBool;
   bool shootMan;
   bool limelightTrackingBool = false;
+  double taHighBound = 1, taLowBound = 0; //dummy
+  double txHighBound = 1, txLowBound = 0; //dummy
+  double tyHighBound = 1, tyLowBound = 0; //dummy
   fs::path deployDirectory;
 
 
