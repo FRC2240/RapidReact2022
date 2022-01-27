@@ -211,7 +211,6 @@ m_drive.ArcadeDrive(throttleExp, turnInput);
    }
  }
 
- 
 
  if (m_stick.GetLeftBumperPressed()) {
    if (shootMan == true){
@@ -245,16 +244,20 @@ void Robot::LimelightTracking() {
 
     std::cout << tx << ty << ta << "\n";
 
-     /*
+    
       // Dummy values
-    if (ta <= 0.05 && ta >= 0.04 && tx <= 0.1 && tx >= -0.01 && ty <= 0.5 && ty >= 0.4){
+    if (ta <= taHighBound &&
+        ta >= taLowBound &&
+        tx <= txHighBound &&
+        tx >= txLowBound &&
+        ty <= tyHighBound &&
+        ty >= tyLowBound)
+      {
         limelightTrackingBool = true;
-
     }
     else {
         limelightTrackingBool = false;
     }
-     */
 
   //If it's tracking, use limebool
 }
