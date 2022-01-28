@@ -1,47 +1,12 @@
 #pragma once
 
-#include <string>
-
-
 #include "rev/CANSparkMax.h"
 #include "ctre/Phoenix.h"
 
-#include "networktables/NetworkTable.h"
-#include "networktables/NetworkTableEntry.h"
-#include "networktables/NetworkTableInstance.h"
-#include <networktables/NetworkTable.h>
-#include <networktables/NetworkTableInstance.h>
-
-
-#include <wpi/sendable/Sendable.h>
-#include <wpi/sendable/SendableHelper.h>
-
-#include <frc/Filesystem.h>
-#include <frc/trajectory/TrajectoryUtil.h>
-#include <wpi/fs.h>
-
-
-#include <frc/DriverStation.h>
-#include <frc/Timer.h>
-#include <frc/GenericHID.h>
-#include <frc/drive/RobotDriveBase.h>
-#include <frc/RobotController.h>
-#include <frc/motorcontrol/MotorController.h>
-#include <frc/DoubleSolenoid.h>
-#include <frc/motorcontrol/MotorControllerGroup.h>
-#include "frc/drive/RobotDriveBase.h"
-#include "frc/drive/DifferentialDrive.h"
-#include <frc/XboxController.h>
-#include <frc/TimedRobot.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include "frc/smartdashboard/SmartDashboard.h"
 
 #include <frc/controller/PIDController.h>
-
-#include <frc/trajectory/TrajectoryUtil.h>
-#include <frc/controller/RamseteController.h>
-#include <frc/trajectory/TrajectoryGenerator.h>
-
 
 
 class Climber {
@@ -54,8 +19,10 @@ public:
   void RaiseRight();
   void LowerLeft();
   void LowerRight();
-  void RotateLeft(char dirL); // forwards and backwards. All lowercase
+  void RotateLeft(char dirL); // f = forwards, b = backwards. All lowercase
   void RotateRight(char dirR);
+
+
 private:
   frc::SendableChooser<std::string> m_chooser;
 
@@ -98,6 +65,11 @@ private:
   //Falcons 
   pidCoeff m_leftClimberExtendCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; 
   pidCoeff m_rightClimberExtendCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+
+  //vars
+
+  double forthSetPointR, forthSetPointL;
+  double backSetPointR, backSetPointL;
 };
 
 

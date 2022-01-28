@@ -19,6 +19,25 @@ void Climber::LowerLeft(){}
 
 void Climber::LowerRight(){}
 
+
+void Climber::RotateLeft(char dirL){
+  if (dirL == 'f'){ //forwards
+    m_leftClimberRotatePIDController.SetReference(forthSetPointL, rev::ControlType::kSmartMotion);
+  }
+  if (dirL == 'b'){ //backwards
+    m_leftClimberRotatePIDController.SetReference(backSetPointL, rev::ControlType::kSmartMotion);
+  }
+}
+void Climber::RotateRight(char dirR){
+  if (dirR == 'f'){ //forwards
+    m_rightClimberRotatePIDController.SetReference(forthSetPointR, rev::ControlType::kSmartMotion);
+  }
+  if (dirR == 'b'){ //backwards
+    m_rightClimberRotatePIDController.SetReference(backSetPointR, rev::ControlType::kSmartMotion);
+  }
+}
+
+
 void Climber::ClimberDashInit(){
    //falcons
   frc::SmartDashboard::PutNumber("Left Climber Extend P Gain", m_leftClimberExtendCoeff.kP);
@@ -131,16 +150,5 @@ void Climber::ClimberPIDInit(){
   m_leftClimberExtendPIDController.SetI(m_leftClimberExtendCoeff.kI);
   m_leftClimberExtendPIDController.SetD(m_leftClimberExtendCoeff.kD);
 
-  
 
-}
-
-void Climber::RotateLeft(char dirL){
-  if (dirL == 'f'){}
-  if (dirL == 'b'){}
-}
-
-void Climber::RotateRight(char dirR){
-  if (dirR == 'f'){}
-  if (dirR == 'b'){}
 }
