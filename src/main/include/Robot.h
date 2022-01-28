@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "Climber.h"
-
 #include <string>
+
+#include "Climber.h"
 
 #include "rev/CANSparkMax.h"
 #include "ctre/Phoenix.h"
@@ -58,7 +58,6 @@ class Robot : public frc::TimedRobot {
   void DisabledPeriodic() override;
   void TestInit() override;
   void TestPeriodic() override;
-
   void ShooterFire();
   void LimelightTracking();
   void ShooterArm();
@@ -68,15 +67,6 @@ class Robot : public frc::TimedRobot {
   void InitializePIDControllers();
   void InitializeDashboard();
   void ReadDashboard();
-
-  //I think I need to make theese public for Climber.h
-  static const int rightClimberRotationNeoDeviceID = 10;
-  static const int leftClimberRotationNeoDeviceID = 11;
-
-  // Climber falcons
-  WPI_TalonFX m_leftClimberExtender = {12};
-  WPI_TalonFX m_rightClimberExtender = {13};
-
 
 
  private:
@@ -94,12 +84,15 @@ class Robot : public frc::TimedRobot {
   bool uptakeBool;
   bool shootMan;
   bool limelightTrackingBool = false;
-  double taHighBound = 1, taLowBound = 0; //dummy
-  double txHighBound = 1, txLowBound = 0; //dummy
-  double tyHighBound = 1, tyLowBound = 0; //dummy
   fs::path deployDirectory;
 
+  double taLowBound, taHighBound;
+  double txLowBound, txHighBound;
+  double tyLowBound, tyHighBound;
+
   Climber m_climber;
+
+
 
 
 //So long, Joystick.h!
@@ -126,23 +119,20 @@ class Robot : public frc::TimedRobot {
   static const int shootingMotorAlphaDeviceID = 7;
   static const int shootingMotorBetaDeviceID = 8;
   static const int uptakeMotorDeviceID = 9;
-  
+ 
   // REV bulldarn
-rev::CANSparkMax m_rotateIntakeMotor{rotateIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_rotateIntakeMotor{rotateIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 rev::CANSparkMax m_spinIntakeMotor{spinIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 rev::CANSparkMax m_shootingMotorAlpha{shootingMotorAlphaDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 rev::CANSparkMax m_shootingMotorBeta{shootingMotorBetaDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 rev::CANSparkMax m_uptakeMotor{uptakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-rev::CANSparkMax m_rightClimberRotationNeo{rightClimberRotationNeoDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-rev::CANSparkMax m_leftClimberRotationNeo{leftClimberRotationNeoDeviceID, rev::CANSparkMax::MotorType::kBrushless};
+
 
 //encoders
 rev::SparkMaxRelativeEncoder m_rotateIntakeEncoder = m_rotateIntakeMotor.GetEncoder(); 
 rev::SparkMaxRelativeEncoder m_spinIntakeEncoder = m_spinIntakeMotor.GetEncoder(); 
 rev::SparkMaxRelativeEncoder m_shootingMotorAlphaEncoder = m_shootingMotorAlpha.GetEncoder(); 
 rev::SparkMaxRelativeEncoder m_shootingMotorBetaEncoder = m_shootingMotorBeta.GetEncoder(); 
-rev::SparkMaxRelativeEncoder m_rightClimberEncoder = m_rightClimberRotationNeo.GetEncoder(); 
-rev::SparkMaxRelativeEncoder m_leftClimberEncoder = m_leftClimberRotationNeo.GetEncoder(); 
 
 
   //penumatics
@@ -155,10 +145,7 @@ double tx_OFFSET = 0.0;
 frc::Timer autoTimer;
 
 //PID Initialization -- have to manually set PIDs to motors each time??
-frc2::PIDController m_leftClimberExtendPIDController{0.0, 0.0, 0.0}; //kP, kI, kD
-frc2::PIDController m_rightClimberExtendPIDController{0.0, 0.0, 0.0};
-rev::SparkMaxPIDController m_leftClimberRotatePIDController = m_leftClimberRotationNeo.GetPIDController(); 
-rev::SparkMaxPIDController m_rightClimberRotatePIDController = m_rightClimberRotationNeo.GetPIDController(); 
+
 
 rev::SparkMaxPIDController m_rotateIntakePIDController = m_rotateIntakeMotor.GetPIDController(); 
 
@@ -176,16 +163,17 @@ struct pidCoeff {
 
   frc::Trajectory m_trajectory;
 
-pidCoeff m_rotateIntakeCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-pidCoeff m_leftClimberRotateCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-pidCoeff m_rightClimberRotateCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  //pidCoeff m_leftClimberRotateCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  //pidCoeff m_rightClimberRotateCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 pidCoeff m_shooterAlphaCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 pidCoeff m_shooterBetaCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  pidCoeff m_rotateIntakeCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+
 
 
 //falcons
-pidCoeff m_leftClimberExtendCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; 
-pidCoeff m_rightClimberExtendCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+//pidCoeff m_leftClimberExtendCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; 
+  //pidCoeff m_rightClimberExtendCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
 };
