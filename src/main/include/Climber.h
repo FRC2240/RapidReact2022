@@ -70,6 +70,9 @@ private:
 
   double forthSetPointR, forthSetPointL;
   double backSetPointR, backSetPointL;
+
+  double climbExtendPointR, climbExtendPointL;
+  double climbLowerPointR, climbLowerPointL;
 };
 
 

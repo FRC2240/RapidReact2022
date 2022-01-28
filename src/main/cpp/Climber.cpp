@@ -11,13 +11,27 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 
-void Climber::RaiseLeft(){}
+void Climber::RaiseLeft(){
+  //  m_leftClimberExtender.Set(m_leftClimberExtendPIDController.Calculate(encoder.GetDistance(), climbExtendPointL));
+  //  m_leftClimberExtendPIDController.SetSetpoint(climbExtendPointL);
+}
 
-void Climber::RaiseRight(){}
+void Climber::RaiseRight(){
+  //  m_rightClimberExtender.Set(m_rightClimberExtendPIDController.Calculate(encoder.GetDistance(), climbExtendPointR));
+  //  m_rightClimberExtendPIDController.SetSetpoint(climbExtendPointR);
+}
 
-void Climber::LowerLeft(){}
+void Climber::LowerLeft(){
+  //  m_leftClimberExtender.Set(m_leftClimberExtendPIDController.Calculate(encoder.GetDistance(), climbLowerPointL));
 
-void Climber::LowerRight(){}
+  // m_leftClimberExtendPIDController.SetSetpoint(climbLowerPointL);
+}
+
+void Climber::LowerRight(){
+  //  m_rightClimberExtender.Set(m_rightClimberExtendPIDController.Calculate(encoder.GetDistance(), climbLowerPointR));
+
+  //  m_rightClimberExtendPIDController.SetSetpoint(climbLowerPointR);
+}
 
 
 void Climber::RotateLeft(char dirL){
