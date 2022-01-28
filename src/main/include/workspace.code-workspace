@@ -2,6 +2,12 @@
     "folders": [
         {
             "path": "../../.."
+        },
+        {
+            "path": "../../../../../2021-pre/InfiniteRecharge2021/src/main/cpp"
+        },
+        {
+            "path": "../../../../../2021-pre/InfiniteRecharge2021/src/main"
         }
     ]
 }
