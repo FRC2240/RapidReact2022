@@ -37,6 +37,8 @@ private:
   // Climber falcons
   WPI_TalonFX m_leftClimberExtender = {12};
   WPI_TalonFX m_rightClimberExtender = {13};
+  TalonFXSensorCollection m_leftClimberExtenderEncoder = m_leftClimberExtender.GetSensorCollection();
+  TalonFXSensorCollection m_rightClimberExtenderEncoder = m_rightClimberExtender.GetSensorCollection();
 
   // Ding dong, you are wrong
   struct pidCoeff {
