@@ -193,6 +193,7 @@ m_drive.ArcadeDrive(throttleExp, turnInput);
    }
  }
 
+/* Old shooter code
  //Shoot the Mortar
  if (m_stick.GetRightBumperPressed()) {
    // Hold the winch at a certain point
@@ -221,7 +222,17 @@ m_drive.ArcadeDrive(throttleExp, turnInput);
    }
  }
 
+
+//Fire!
+void Robot::ShooterFire() {
+
+  if (limelightTrackingBool == true) {
+    m_shooterShifter.Set(frc::DoubleSolenoid::Value::kReverse); //possibly kForwards
+  }
 }
+*/
+}
+
 
 // Ready!
 void Robot::LimelightTracking() {
@@ -272,13 +283,8 @@ void Robot::ShooterArm() {
   //needs PIDs
 }
 
-//Fire!
-void Robot::ShooterFire() {
 
-  if (limelightTrackingBool == true) {
-    m_shooterShifter.Set(frc::DoubleSolenoid::Value::kReverse); //possibly kForwards
-  }
-}
+
 
 void Robot::IntakeDeploy() {
   double setpoint;
