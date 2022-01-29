@@ -71,10 +71,16 @@ class Robot : public frc::TimedRobot {
   frc::SendableChooser<std::string> m_chooser;
   const std::string kAutoNameDefault = "Default";
   const std::string kAutoNameCustom = "My Auto";
-  const std::string kThreeBallBlue = "ThreeBallBlue";
-  const std::string kTwoBallBlue = "TwoBallBlue";
-  const std::string kThreeBallRed = "ThreeBallRed";
-  const std::string kTwoBallRed = "TwoBallRed";
+  const std::string kThreeBallBlueFirstBall = "ThreeBallBlueFirstBall";
+  const std::string kThreeBallBlueSecondBall = "ThreeBallBlueSecondBall";
+  const std::string kThreeBallBlueThirdBall = "ThreeBallBlueThirdBall";
+  const std::string kTwoBallBlueFirstBall = "TwoBallBlueFirstBall";
+  const std::string kTwoBallBlueSecondBall = "TwoBallBlueSecondBall";
+  const std::string kThreeBallRedFirstBall = "ThreeBallRedFirstBall";
+  const std::string kThreeBallRedSecondBall = "ThreeBallRedSecondBall";
+  const std::string kThreeBallRedThirdBall = "ThreeBallRedThirdBall";
+  const std::string kTwoBallRedFirstBall = "TwoBallRedFirstBall";
+  const std::string kTwoBallRedSecondBall = "TwoBallRedSecondBall";
   std::string m_autoSelected;
 
   double m_driveExponent = 1.2;
