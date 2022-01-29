@@ -15,10 +15,16 @@
 void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
-  m_chooser.AddOption(kThreeBallBlue, kThreeBallBlue);
-  m_chooser.AddOption(kTwoBallBlue,kTwoBallBlue);
-  m_chooser.AddOption(kThreeBallRed,kThreeBallRed);
-  m_chooser.AddOption(kTwoBallRed,kTwoBallRed);
+  m_chooser.AddOption(kThreeBallBlueFirstBall, kThreeBallBlueFirstBall);
+  m_chooser.AddOption(kThreeBallBlueSecondBall, kThreeBallBlueSecondBall);
+  m_chooser.AddOption(kThreeBallBlueThirdBall, kThreeBallBlueThirdBall);
+  m_chooser.AddOption(kTwoBallBlueFirstBall,kTwoBallBlueFirstBall);
+  m_chooser.AddOption(kTwoBallBlueSecondBall,kTwoBallBlueSecondBall);
+  m_chooser.AddOption(kThreeBallRedFirstBall,kThreeBallRedFirstBall);
+  m_chooser.AddOption(kThreeBallRedSecondBall,kThreeBallRedSecondBall);
+  m_chooser.AddOption(kThreeBallRedThirdBall,kThreeBallRedThirdBall);
+  m_chooser.AddOption(kTwoBallRedFirstBall,kTwoBallRedFirstBall);
+  m_chooser.AddOption(kTwoBallRedSecondBall,kTwoBallRedSecondBall);
 
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 // right side might need to be inverted depending on construction
@@ -56,27 +62,62 @@ void Robot::AutonomousInit() {
   //     kAutoNameDefault);
   fmt::print("Auto selected: {}\n", m_autoSelected);
 
-  if (m_autoSelected == kThreeBallBlue) {
+  if (m_autoSelected == kThreeBallBlueFirstBall) {
       
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallBlue.wpilib.json";
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallBlueFirstBall.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
-  else if (m_autoSelected == kTwoBallBlue) {
+  else if (m_autoSelected == kThreeBallBlueSecondBall) {
+      
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallBlueSecondBall.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+  else if (m_autoSelected == kThreeBallBlueThirdBall) {
+      
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallBlueThirdBall.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+  else if (m_autoSelected == kTwoBallBlueFirstBall) {
     
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/TwoBallBlue.wpilib.json";
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/TwoBallBlueFirstBall.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
-  else if (m_autoSelected == kThreeBallRed) {
+  else if (m_autoSelected == kTwoBallBlueSecondBall) {
+    
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/TwoBallBlueSecondBall.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+  else if (m_autoSelected == kThreeBallRedFirstBall) {
 
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallRed.wpilib.json";
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallRedFirstBall.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
-  else if (m_autoSelected == kTwoBallRed) {
+  else if (m_autoSelected == kThreeBallRedSecondBall) {
+
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/TwoBallRed.wpilib.json";
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallRedSecondBall.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+  else if (m_autoSelected == kThreeBallRedThirdBall) {
+
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallRedThirdBall.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+  else if (m_autoSelected == kTwoBallRedFirstBall) {
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/TwoBallRedFirstBall.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+  else if (m_autoSelected == kTwoBallRedSecondBall) {
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/TwoBallRedSecondBall.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
 
