@@ -12,23 +12,23 @@
 
 
 void Climber::RaiseLeft(){
-  //  m_leftClimberExtender.Set(m_leftClimberExtendPIDController.Calculate(encoder.GetDistance(), climbExtendPointL));
+  m_leftClimberExtender.Set(m_leftClimberExtendPIDController.Calculate(m_leftClimberExtenderEncoder.GetIntegratedSensorPosition(), climbExtendPointL)); //not sure whether to do position or absolute position
   //  m_leftClimberExtendPIDController.SetSetpoint(climbExtendPointL);
 }
 
 void Climber::RaiseRight(){
-  //  m_rightClimberExtender.Set(m_rightClimberExtendPIDController.Calculate(encoder.GetDistance(), climbExtendPointR));
+   m_rightClimberExtender.Set(m_rightClimberExtendPIDController.Calculate(m_rightClimberExtenderEncoder.GetIntegratedSensorPosition(), climbExtendPointR));
   //  m_rightClimberExtendPIDController.SetSetpoint(climbExtendPointR);
 }
 
 void Climber::LowerLeft(){
-  //  m_leftClimberExtender.Set(m_leftClimberExtendPIDController.Calculate(encoder.GetDistance(), climbLowerPointL));
+   m_leftClimberExtender.Set(m_leftClimberExtendPIDController.Calculate(m_leftClimberExtenderEncoder.GetIntegratedSensorPosition(), climbLowerPointL));
 
   // m_leftClimberExtendPIDController.SetSetpoint(climbLowerPointL);
 }
 
 void Climber::LowerRight(){
-  //  m_rightClimberExtender.Set(m_rightClimberExtendPIDController.Calculate(encoder.GetDistance(), climbLowerPointR));
+   m_rightClimberExtender.Set(m_rightClimberExtendPIDController.Calculate(m_rightClimberExtenderEncoder.GetIntegratedSensorPosition(), climbLowerPointR));
 
   //  m_rightClimberExtendPIDController.SetSetpoint(climbLowerPointR);
 }

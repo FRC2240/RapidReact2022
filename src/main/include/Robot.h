@@ -119,6 +119,7 @@ class Robot : public frc::TimedRobot {
   static const int shootingMotorAlphaDeviceID = 7;
   static const int shootingMotorBetaDeviceID = 8;
   static const int uptakeMotorDeviceID = 9;
+  static const int uptakeIdleMotorDeviceID = 14;
  
   // REV bulldarn
   rev::CANSparkMax m_rotateIntakeMotor{rotateIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
@@ -126,17 +127,16 @@ rev::CANSparkMax m_spinIntakeMotor{spinIntakeMotorDeviceID, rev::CANSparkMax::Mo
 rev::CANSparkMax m_shootingMotorAlpha{shootingMotorAlphaDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 rev::CANSparkMax m_shootingMotorBeta{shootingMotorBetaDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 rev::CANSparkMax m_uptakeMotor{uptakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-
+rev::CANSparkMax m_uptakeIdleMotor {uptakeIdleMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 
 //encoders
 rev::SparkMaxRelativeEncoder m_rotateIntakeEncoder = m_rotateIntakeMotor.GetEncoder(); 
 rev::SparkMaxRelativeEncoder m_spinIntakeEncoder = m_spinIntakeMotor.GetEncoder(); 
 rev::SparkMaxRelativeEncoder m_shootingMotorAlphaEncoder = m_shootingMotorAlpha.GetEncoder(); 
 rev::SparkMaxRelativeEncoder m_shootingMotorBetaEncoder = m_shootingMotorBeta.GetEncoder(); 
+rev::SparkMaxRelativeEncoder m_uptakeMotorEncoder = m_uptakeMotor.GetEncoder();
+rev::SparkMaxRelativeEncoder m_uptakeIdleMotorEncoder = m_uptakeIdleMotor.GetEncoder();
 
-
-  //penumatics
-  frc::DoubleSolenoid m_shooterShifter{frc::PneumaticsModuleType::REVPH, 1, 2};
 
 //std::shared_ptr<NetworkTable> m_table = nt::NetworkTableInstance::GetDefault().GetTable("limelight-bepis"); 
 double tx_OFFSET = 0.0;
