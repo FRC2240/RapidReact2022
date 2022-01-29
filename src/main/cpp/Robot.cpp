@@ -15,10 +15,10 @@
 void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
-  m_chooser.AddOption(kFirstBallBlue, kFirstBallBlue);
-  m_chooser.AddOption(kSecondBallBlue,kSecondBallBlue);
-  m_chooser.AddOption(kFirstBallRed,kFirstBallRed);
-  m_chooser.AddOption(kSecondBallRed,kSecondBallRed);
+  m_chooser.AddOption(kThreeBallBlue, kThreeBallBlue);
+  m_chooser.AddOption(kTwoBallBlue,kTwoBallBlue);
+  m_chooser.AddOption(kThreeBallRed,kThreeBallRed);
+  m_chooser.AddOption(kTwoBallRed,kTwoBallRed);
 
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 // right side might need to be inverted depending on construction
@@ -56,27 +56,27 @@ void Robot::AutonomousInit() {
   //     kAutoNameDefault);
   fmt::print("Auto selected: {}\n", m_autoSelected);
 
-  if (m_autoSelected == kFirstBallBlue) {
+  if (m_autoSelected == kThreeBallBlue) {
       
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/FirstBallBlue.wpilib.json";
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallBlue.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
-  else if (m_autoSelected == kSecondBallBlue) {
+  else if (m_autoSelected == kTwoBallBlue) {
     
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/SecondBallBlue.wpilib.json";
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/TwoBallBlue.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
-  else if (m_autoSelected == kFirstBallRed) {
+  else if (m_autoSelected == kThreeBallRed) {
 
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/FirstBallRed.wpilib.json";
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallRed.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
-  else if (m_autoSelected == kSecondBallRed) {
+  else if (m_autoSelected == kTwoBallRed) {
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/SecondBallRed.wpilib.json";
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/TwoBallRed.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
 
