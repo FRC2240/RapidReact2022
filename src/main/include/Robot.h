@@ -147,10 +147,10 @@ frc::Timer autoTimer;
 //PID Initialization -- have to manually set PIDs to motors each time??
 
 
-rev::SparkMaxPIDController m_rotateIntakePIDController = m_rotateIntakeMotor.GetPIDController(); 
+rev::SparkMaxPIDController m_rotateIntakePIDController = m_rotateIntakeMotor.GetPIDController();
 
-rev::SparkMaxPIDController m_shooterAlphaPIDController = m_shootingMotorAlpha.GetPIDController(); 
-rev::SparkMaxPIDController m_shooterBetaPIDController = m_shootingMotorBeta.GetPIDController(); 
+rev::SparkMaxPIDController m_shooterAlphaPIDController = m_shootingMotorAlpha.GetPIDController();
+rev::SparkMaxPIDController m_shooterBetaPIDController = m_shootingMotorBeta.GetPIDController();
 
 
 

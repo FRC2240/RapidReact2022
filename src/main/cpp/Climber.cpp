@@ -11,13 +11,46 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 
-void Climber::RaiseLeft(){}
+void Climber::RaiseLeft(){
+  //  m_leftClimberExtender.Set(m_leftClimberExtendPIDController.Calculate(encoder.GetDistance(), climbExtendPointL));
+  //  m_leftClimberExtendPIDController.SetSetpoint(climbExtendPointL);
+}
 
-void Climber::RaiseRight(){}
+void Climber::RaiseRight(){
+  //  m_rightClimberExtender.Set(m_rightClimberExtendPIDController.Calculate(encoder.GetDistance(), climbExtendPointR));
+  //  m_rightClimberExtendPIDController.SetSetpoint(climbExtendPointR);
+}
 
-void Climber::LowerLeft(){}
+void Climber::LowerLeft(){
+  //  m_leftClimberExtender.Set(m_leftClimberExtendPIDController.Calculate(encoder.GetDistance(), climbLowerPointL));
 
-void Climber::LowerRight(){}
+  // m_leftClimberExtendPIDController.SetSetpoint(climbLowerPointL);
+}
+
+void Climber::LowerRight(){
+  //  m_rightClimberExtender.Set(m_rightClimberExtendPIDController.Calculate(encoder.GetDistance(), climbLowerPointR));
+
+  //  m_rightClimberExtendPIDController.SetSetpoint(climbLowerPointR);
+}
+
+
+void Climber::RotateLeft(char dirL){
+  if (dirL == 'f'){ //forwards
+    m_leftClimberRotatePIDController.SetReference(forthSetPointL, rev::ControlType::kSmartMotion);
+  }
+  if (dirL == 'b'){ //backwards
+    m_leftClimberRotatePIDController.SetReference(backSetPointL, rev::ControlType::kSmartMotion);
+  }
+}
+void Climber::RotateRight(char dirR){
+  if (dirR == 'f'){ //forwards
+    m_rightClimberRotatePIDController.SetReference(forthSetPointR, rev::ControlType::kSmartMotion);
+  }
+  if (dirR == 'b'){ //backwards
+    m_rightClimberRotatePIDController.SetReference(backSetPointR, rev::ControlType::kSmartMotion);
+  }
+}
+
 
 void Climber::ClimberDashInit(){
    //falcons
@@ -131,16 +164,5 @@ void Climber::ClimberPIDInit(){
   m_leftClimberExtendPIDController.SetI(m_leftClimberExtendCoeff.kI);
   m_leftClimberExtendPIDController.SetD(m_leftClimberExtendCoeff.kD);
 
-  
 
-}
-
-void Climber::RotateLeft(char dirL){
-  if (dirL == 'f'){}
-  if (dirL == 'b'){}
-}
-
-void Climber::RotateRight(char dirR){
-  if (dirR == 'f'){}
-  if (dirR == 'b'){}
 }
