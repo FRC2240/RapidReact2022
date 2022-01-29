@@ -120,15 +120,11 @@ void Robot::AutonomousPeriodic() {
   }
   if  (autoTimer.Get() > units::time::second_t(8) && autoTimer.Get() <= units::time::second_t(12)) {
     LimelightTracking();
-    ShooterArm();
-    ShooterFire();
     m_uptakeMotor.Set(0.5);
   }
   if  (autoTimer.Get() > units::time::second_t(12) && autoTimer.Get() <= units::time::second_t(15)) {
     m_uptakeMotor.Set(0);
     LimelightTracking();
-    ShooterArm();
-    ShooterFire();
   }
   // Iteration three
   // autoTimer.Start();
@@ -273,15 +269,6 @@ void Robot::LimelightTracking() {
   //If it's tracking, use limebool
 }
 
-
-//Aim!
-void Robot::ShooterArm() {
-    //There. You see, Lord Vader, she can be reasonable.
-    // Continue with the operation; you may fire when ready.
-    // --Grand Moff Tarkin
-
-  //needs PIDs
-}
 
 
 
