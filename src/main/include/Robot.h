@@ -59,11 +59,15 @@ class Robot : public frc::TimedRobot {
   void TestInit() override;
   void TestPeriodic() override;
   void LimelightTracking();
+  double ACalculateRPM(double ad);
+  double BCalculateRPM(double bd);
   //void ShooterAim();
+
   void ShooterArm();
+  void ShooterFire();
   void IntakeDeploy();
   void IntakeReturn();
-
+  void CalculateRPM();
   void InitializePIDControllers();
   void InitializeDashboard();
   void ReadDashboard();
@@ -89,7 +93,9 @@ class Robot : public frc::TimedRobot {
   double taLowBound, taHighBound;
   double txLowBound, txHighBound;
   double tyLowBound, tyHighBound;
-
+  double heightOfTarget;
+  double heightLimelight;
+  double constantLimelightAngle;
   Climber m_climber;
 
 
@@ -120,7 +126,7 @@ class Robot : public frc::TimedRobot {
   static const int shootingMotorBetaDeviceID = 8;
   static const int uptakeMotorDeviceID = 9;
   static const int uptakeIdleMotorDeviceID = 14;
- 
+
   // REV bulldarn
   rev::CANSparkMax m_rotateIntakeMotor{rotateIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 rev::CANSparkMax m_spinIntakeMotor{spinIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
@@ -138,7 +144,7 @@ rev::SparkMaxRelativeEncoder m_uptakeMotorEncoder = m_uptakeMotor.GetEncoder();
 rev::SparkMaxRelativeEncoder m_uptakeIdleMotorEncoder = m_uptakeIdleMotor.GetEncoder();
 
 
-//std::shared_ptr<NetworkTable> m_table = nt::NetworkTableInstance::GetDefault().GetTable("limelight-bepis"); 
+//std::shared_ptr<NetworkTable> m_table = nt::NetworkTableInstance::GetDefault().GetTable("limelight-bepis");
 double tx_OFFSET = 0.0;
 
 //auto timer

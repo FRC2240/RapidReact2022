@@ -132,8 +132,7 @@ void Robot::AutonomousPeriodic() {
   //   LimelightTracking();
   //   ShooterArm();
   //   ShooterFire();
-  // }
-  // if (autoTimer.Get() > units::time::second_t(4) && autoTimer.Get() <= units::time::second_t(8)) {
+  // }) && autoTimer.Get() <= units::time::second_t(8)) {
 
   // }
   // ready aim and fire the two extra balls
@@ -189,45 +188,91 @@ m_drive.ArcadeDrive(throttleExp, turnInput);
    }
  }
 
-/* Old shooter code
- //Shoot the Mortar
- if (m_stick.GetRightBumperPressed()) {
-   // Hold the winch at a certain point
-   //TODO PIDs for that
-   Robot::ShooterArm();
- }
+
 
  if (m_stick.GetStartButton()){
    if (shootMan){
      shootMan = false;
-     std::cout << "[MSG]: Shooter is in manual mode";
+     std::cout << "[MSG]: Shooter is in manual mode \n";
    }
    if (!shootMan){
      shootMan = true;
-     std::cout << "[MSG]: Shooter is in automatic mode";
+     std::cout << "[MSG]: Shooter is in automatic mode \n";
    }
  }
 
 
  if (m_stick.GetLeftBumperPressed()) {
-   if (shootMan == true){
    Robot::ShooterFire();
-   }
-   else {
-     m_shooterShifter.Set(frc::DoubleSolenoid::Value::kReverse); //possibly kForwards
-   }
- }
-
-
+}
+}
 //Fire!
 void Robot::ShooterFire() {
+  nt::NetworkTableEntry txEntry;
+  nt::NetworkTableEntry tyEntry;
+  nt::NetworkTableEntry taEntry;
 
-  if (limelightTrackingBool == true) {
-    m_shooterShifter.Set(frc::DoubleSolenoid::Value::kReverse); //possibly kForwards
+  double ta, tx, ty;
+
+  auto inst = nt::NetworkTableInstance::GetDefault();
+  auto table = inst.GetTable("limelight-bepis");
+  txEntry = table->GetEntry("tx");
+  tyEntry = table->GetEntry("ty");
+  taEntry = table->GetEntry("ta");
+
+
+  txEntry.SetDouble(tx);
+  tyEntry.SetDouble(ty);
+  taEntry.SetDouble(ta);
+
+  ty = ty * -1;
+
+  if (shootMan){
+    Robot::LimelightTracking();
+    if (limelightTrackingBool == true) {
+      double distance = ((heightOfTarget - heightLimelight) / tan((constantLimelightAngle + ty) * (3.141592653 / 180)));
+
+      double rpmA = ACalculateRPM(distance);
+      m_shooterAlphaPIDController.SetReference(rpmA, rev::ControlType::kVelocity);
+      double rpmB = BCalculateRPM(distance);
+      m_shooterBetaPIDController.SetReference(rpmB, rev::ControlType::kVelocity);
+}
+    else {
+            if (tx < 0){
+                        m_drive.ArcadeDrive(0, 0.5);
+            }
+            if (tx > 0){
+                        m_drive.ArcadeDrive(0, -0.5);
+            }
+      }
+  }
+
+  if (!shootMan){
+                 double distance = ((heightOfTarget - heightLimelight) / tan((constantLimelightAngle + ty) * (3.141592653 / 180)));
+
+                 double rpmA = ACalculateRPM(distance);
+                 m_shooterAlphaPIDController.SetReference(rpmA, rev::ControlType::kVelocity);
+                 double rpmB = BCalculateRPM(distance);
+                 m_shooterBetaPIDController.SetReference(rpmB, rev::ControlType::kVelocity);
   }
 }
-*/
+
+
+double Robot::ACalculateRPM(double ad) {
+  //double rpm = 0.0169 * d * d - 4.12 * d + 2614.5;
+  //double rpm = 0.01474 * d * d - 3.573 * d + 2588.0;
+  //double rpm = 0.0273 * d * d - 6.27 * d + 2901.3;
+  double rpm = 0.0113 * ad * ad - 0.762 * ad + 2290.1;
+  return rpm;
 }
+double Robot::BCalculateRPM(double bd) {
+  //double rpm = 0.0169 * d * d - 4.12 * d + 2614.5;
+  //double rpm = 0.01474 * d * d - 3.573 * d + 2588.0;
+  //double rpm = 0.0273 * d * d - 6.27 * d + 2901.3;
+  double rpm = 0.0113 * bd * bd - 0.762 * bd + 2290.1;
+  return rpm;
+}
+
 
 
 // Ready!
