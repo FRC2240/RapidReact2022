@@ -230,12 +230,13 @@ void Robot::ShooterFire() {
   if (shootMan){
     Robot::LimelightTracking();
     if (limelightTrackingBool == true) {
+      //Code stolen. Procedure is to map ty to theta, subtract a value I forget and then you get your angle. Solve from there.
+
       double distance = ((heightOfTarget - heightLimelight) / tan((constantLimelightAngle + ty) * (3.141592653 / 180)));
 
-      double rpmA = ACalculateRPM(distance);
-      m_shooterAlphaPIDController.SetReference(rpmA, rev::ControlType::kVelocity);
-      double rpmB = BCalculateRPM(distance);
-      m_shooterBetaPIDController.SetReference(rpmB, rev::ControlType::kVelocity);
+      double rpm = CalculateRPM(distance);
+      m_shooterAlphaPIDController.SetReference(rpm, rev::ControlType::kVelocity);
+      m_shooterBetaPIDController.SetReference(rpm, rev::ControlType::kVelocity);
 }
     else {
             if (tx < 0){
@@ -248,28 +249,24 @@ void Robot::ShooterFire() {
   }
 
   if (!shootMan){
+    //Code stolen. Procedure is to map ty to theta, subtract a value I forget and then you get your angle. Solve from there.
                  double distance = ((heightOfTarget - heightLimelight) / tan((constantLimelightAngle + ty) * (3.141592653 / 180)));
 
-                 double rpmA = ACalculateRPM(distance);
-                 m_shooterAlphaPIDController.SetReference(rpmA, rev::ControlType::kVelocity);
-                 double rpmB = BCalculateRPM(distance);
-                 m_shooterBetaPIDController.SetReference(rpmB, rev::ControlType::kVelocity);
+                 double rpm = CalculateRPM(distance);
+                 m_shooterAlphaPIDController.SetReference(rpm, rev::ControlType::kVelocity);
+                 m_shooterBetaPIDController.SetReference(rpm, rev::ControlType::kVelocity);
   }
 }
 
 
-double Robot::ACalculateRPM(double ad) {
+double Robot::CalculateRPM(double d) {
+  //Take real distance in feet and determine the needed RPMs
+  //EXPERIMENTAL
+
   //double rpm = 0.0169 * d * d - 4.12 * d + 2614.5;
   //double rpm = 0.01474 * d * d - 3.573 * d + 2588.0;
   //double rpm = 0.0273 * d * d - 6.27 * d + 2901.3;
-  double rpm = 0.0113 * ad * ad - 0.762 * ad + 2290.1;
-  return rpm;
-}
-double Robot::BCalculateRPM(double bd) {
-  //double rpm = 0.0169 * d * d - 4.12 * d + 2614.5;
-  //double rpm = 0.01474 * d * d - 3.573 * d + 2588.0;
-  //double rpm = 0.0273 * d * d - 6.27 * d + 2901.3;
-  double rpm = 0.0113 * bd * bd - 0.762 * bd + 2290.1;
+  double rpm = 0.0113 * d * d - 0.762 * d + 2290.1;
   return rpm;
 }
 

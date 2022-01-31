@@ -59,8 +59,7 @@ class Robot : public frc::TimedRobot {
   void TestInit() override;
   void TestPeriodic() override;
   void LimelightTracking();
-  double ACalculateRPM(double ad);
-  double BCalculateRPM(double bd);
+  double CalculateRPM(double d);
   //void ShooterAim();
 
   void ShooterArm();
