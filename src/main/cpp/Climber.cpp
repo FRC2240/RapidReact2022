@@ -8,7 +8,6 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
-
 void Climber::RaiseLeft(){
   m_leftClimberExtender.Set(m_leftClimberExtendPIDController.Calculate(m_leftClimberExtenderEncoder.GetIntegratedSensorPosition(), climbExtendPointL)); //not sure whether to do position or absolute position
   //  m_leftClimberExtendPIDController.SetSetpoint(climbExtendPointL);
