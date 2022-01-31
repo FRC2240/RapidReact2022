@@ -15,10 +15,16 @@
 void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
-  m_chooser.AddOption(kThreeBallBlue, kThreeBallBlue);
-  m_chooser.AddOption(kTwoBallBlue,kTwoBallBlue);
-  m_chooser.AddOption(kThreeBallRed,kThreeBallRed);
-  m_chooser.AddOption(kTwoBallRed,kTwoBallRed);
+  m_chooser.AddOption(kThreeBallBlueFirstBall, kThreeBallBlueFirstBall);
+  m_chooser.AddOption(kThreeBallBlueSecondBall, kThreeBallBlueSecondBall);
+  m_chooser.AddOption(kThreeBallBlueThirdBall, kThreeBallBlueThirdBall);
+  m_chooser.AddOption(kTwoBallBlueFirstBall,kTwoBallBlueFirstBall);
+  m_chooser.AddOption(kTwoBallBlueSecondBall,kTwoBallBlueSecondBall);
+  m_chooser.AddOption(kThreeBallRedFirstBall,kThreeBallRedFirstBall);
+  m_chooser.AddOption(kThreeBallRedSecondBall,kThreeBallRedSecondBall);
+  m_chooser.AddOption(kThreeBallRedThirdBall,kThreeBallRedThirdBall);
+  m_chooser.AddOption(kTwoBallRedFirstBall,kTwoBallRedFirstBall);
+  m_chooser.AddOption(kTwoBallRedSecondBall,kTwoBallRedSecondBall);
 
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 // right side might need to be inverted depending on construction
@@ -56,27 +62,62 @@ void Robot::AutonomousInit() {
   //     kAutoNameDefault);
   fmt::print("Auto selected: {}\n", m_autoSelected);
 
-  if (m_autoSelected == kThreeBallBlue) {
+  if (m_autoSelected == kThreeBallBlueFirstBall) {
       
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallBlue.wpilib.json";
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallBlueFirstBall.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
-  else if (m_autoSelected == kTwoBallBlue) {
+  else if (m_autoSelected == kThreeBallBlueSecondBall) {
+      
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallBlueSecondBall.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+  else if (m_autoSelected == kThreeBallBlueThirdBall) {
+      
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallBlueThirdBall.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+  else if (m_autoSelected == kTwoBallBlueFirstBall) {
     
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/TwoBallBlue.wpilib.json";
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/TwoBallBlueFirstBall.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
-  else if (m_autoSelected == kThreeBallRed) {
+  else if (m_autoSelected == kTwoBallBlueSecondBall) {
+    
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/TwoBallBlueSecondBall.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+  else if (m_autoSelected == kThreeBallRedFirstBall) {
 
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallRed.wpilib.json";
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallRedFirstBall.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
-  else if (m_autoSelected == kTwoBallRed) {
+  else if (m_autoSelected == kThreeBallRedSecondBall) {
+
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/TwoBallRed.wpilib.json";
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallRedSecondBall.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+  else if (m_autoSelected == kThreeBallRedThirdBall) {
+
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallRedThirdBall.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+  else if (m_autoSelected == kTwoBallRedFirstBall) {
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/TwoBallRedFirstBall.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+  else if (m_autoSelected == kTwoBallRedSecondBall) {
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/TwoBallRedSecondBall.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
 
@@ -94,48 +135,52 @@ void Robot::AutonomousPeriodic() {
   }
   
   // Iteration one
-  // autoTimer.Start();
-  // if (autoTimer.Get() <= units::time::second_t(4)) {
-  //   LimelightTracking();
-  //   ShooterArm();
-  //   ShooterFire();
-  // }
-  // if (autoTimer.Get() > units::time::second_t(4) && autoTimer.Get() <= units::time::second_t(5)) {
-  //     m_drive.ArcadeDrive(0.5,0);
-  // }
+  /*
+   autoTimer.Start();
+   if (autoTimer.Get() <= units::time::second_t(4)) {
+     LimelightTracking();
+     ShooterArm();
+     ShooterFire();
+   }
+   if (autoTimer.Get() > units::time::second_t(4) && autoTimer.Get() <= units::time::second_t(5)) {
+     m_drive.ArcadeDrive(0.5,0);
+   }
+*/
 
   // Iteration two
+  /*
   autoTimer.Start();
   if (autoTimer.Get() <= units::time::second_t(0.5)) {
-    IntakeDeploy();
   }
   if (autoTimer.Get() > units::time::second_t(0.5) && autoTimer.Get() <= units::time::second_t(5)) {
-    m_uptakeMotor.Set(0.5);
     m_drive.ArcadeDrive(0.5, 0);
   }
   if  (autoTimer.Get() > units::time::second_t(5) && autoTimer.Get() <= units::time::second_t(8)) {
-    IntakeReturn();
-    m_uptakeMotor.Set(0);
     m_drive.ArcadeDrive(0, 0.5);
   }
   if  (autoTimer.Get() > units::time::second_t(8) && autoTimer.Get() <= units::time::second_t(12)) {
     LimelightTracking();
-    m_uptakeMotor.Set(0.5);
   }
   if  (autoTimer.Get() > units::time::second_t(12) && autoTimer.Get() <= units::time::second_t(15)) {
-    m_uptakeMotor.Set(0);
     LimelightTracking();
   }
-  // Iteration three
-  // autoTimer.Start();
-  // if (autoTimer.Get() <= units::time::second_t(4)) {
-  //   LimelightTracking();
-  //   ShooterArm();
-  //   ShooterFire();
-  // }) && autoTimer.Get() <= units::time::second_t(8)) {
+  */
 
-  // }
-  // ready aim and fire the two extra balls
+  // Iteration three
+
+=======
+  /*
+   autoTimer.Start();
+   if (autoTimer.Get() <= units::time::second_t(4)) {
+     LimelightTracking();
+     ShooterArm();
+     ShooterFire();
+   }
+   if (autoTimer.Get() > units::time::second_t(4) && autoTimer.Get() <= units::time::second_t(8)) {
+
+  }
+   ready aim and fire the two extra balls
+   */
 }
 
 void Robot::TeleopInit() {}
@@ -154,25 +199,7 @@ m_drive.ArcadeDrive(throttleExp, turnInput);
 
 
 //Intake
- if (m_stick.GetYButtonPressed() == 1) {
-   if (intakeBool == true) {
-     // Is running, turn it off
-
-     //TODO retract intake via PIDs here
-
-    IntakeReturn();
-
-     intakeBool = false;
-}
-   if (intakeBool == false) {
-     // Not running, turn it on
-
-     //TODO deploy intake
-     IntakeDeploy();
-
-     intakeBool = true;
-   }
- }
+ 
 
  //uptake
  if (m_stick.GetAButtonPressed()) {
@@ -268,6 +295,7 @@ double Robot::CalculateRPM(double d) {
   //double rpm = 0.0273 * d * d - 6.27 * d + 2901.3;
   double rpm = 0.0113 * d * d - 0.762 * d + 2290.1;
   return rpm;
+
 }
 
 
@@ -312,20 +340,6 @@ void Robot::LimelightTracking() {
 }
 
 
-
-
-
-void Robot::IntakeDeploy() {
-  double setpoint;
-  m_rotateIntakePIDController.SetReference(setpoint, rev::ControlType::kSmartMotion);
-  m_spinIntakeMotor.Set(-0.5);
-}
-
-void Robot::IntakeReturn(){
-  m_spinIntakeMotor.Set(0.0);
-  m_rotateIntakePIDController.SetReference(0.0, rev::ControlType::kSmartMotion);;
-}
-
 void Robot::DisabledInit() {}
 
 void Robot::DisabledPeriodic() {}
@@ -337,21 +351,8 @@ void Robot::TestPeriodic() {}
 void Robot::InitializePIDControllers() {
   //Climber intializes PIDs in it's own function
   m_climber.ClimberPIDInit();
-
-  m_rotateIntakePIDController.SetP(m_rotateIntakeCoeff.kP);
-  m_rotateIntakePIDController.SetI(m_rotateIntakeCoeff.kI);
-  m_rotateIntakePIDController.SetD(m_rotateIntakeCoeff.kD);
-  m_rotateIntakePIDController.SetIZone(m_rotateIntakeCoeff.kIz);
-  m_rotateIntakePIDController.SetFF(m_rotateIntakeCoeff.kFF);
-  m_rotateIntakePIDController.SetOutputRange(m_rotateIntakeCoeff.kMinOutput, m_rotateIntakeCoeff.kMaxOutput);
-
-  m_rotateIntakePIDController.SetP(m_rotateIntakeCoeff.kP);
-  m_rotateIntakePIDController.SetI(m_rotateIntakeCoeff.kI);
-  m_rotateIntakePIDController.SetD(m_rotateIntakeCoeff.kD);
-  m_rotateIntakePIDController.SetIZone(m_rotateIntakeCoeff.kIz);
-  m_rotateIntakePIDController.SetFF(m_rotateIntakeCoeff.kFF);
-  m_rotateIntakePIDController.SetOutputRange(m_rotateIntakeCoeff.kMinOutput, m_rotateIntakeCoeff.kMaxOutput);
-
+  m_take.TakePIDInit();
+  
   //winch motors
 m_shooterAlphaPIDController.SetP(m_shooterAlphaCoeff.kP);
 m_shooterAlphaPIDController.SetI(m_shooterAlphaCoeff.kI);
@@ -372,15 +373,9 @@ m_shooterBetaPIDController.SetOutputRange(m_shooterBetaCoeff.kMinOutput, m_shoot
 void Robot::InitializeDashboard() {
   //Climbers do that in their own function
   m_climber.ClimberDashInit();
+  m_take.TakeDashInit();
 
-//Rotate intake
-  frc::SmartDashboard::PutNumber("Rotate Intake P Gain", m_rotateIntakeCoeff.kP);
-  frc::SmartDashboard::PutNumber("Rotate Intake I Gain", m_rotateIntakeCoeff.kI);
-  frc::SmartDashboard::PutNumber("Rotate Intake D Gain", m_rotateIntakeCoeff.kD);
-  frc::SmartDashboard::PutNumber("Rotate Intake Max Output", m_rotateIntakeCoeff.kMaxOutput);
-  frc::SmartDashboard::PutNumber("Rotate Intake Min Output", m_rotateIntakeCoeff.kMinOutput);
-
- // Winch Motors
+// Winch Motors
   frc::SmartDashboard::PutNumber("Alpha Motor P Gain", m_shooterAlphaCoeff.kP);
   frc::SmartDashboard::PutNumber("Alpha Motor I Gain", m_shooterAlphaCoeff.kI);
   frc::SmartDashboard::PutNumber("Alpha Motor D Gain", m_shooterAlphaCoeff.kD);
@@ -403,28 +398,7 @@ void Robot::InitializeDashboard() {
 void Robot::ReadDashboard() {
   double p, i, d, min, max;
   m_climber.ClimberDashRead();
-
-  //rotate intake
-  // read PID coefficients from SmartDashboard
-  p   = frc::SmartDashboard::GetNumber("Rotate Intake P Gain", 0);
-  std::cout << "Read Dashboard rotate intake p gain: " << p << "\n";
-  i   = frc::SmartDashboard::GetNumber("Rotate Intake I Gain", 0);
-  std::cout << "Read Dashboard rotate intake i gain: " << i << "\n";
-  d   = frc::SmartDashboard::GetNumber("Rotate Intake D Gain", 0);
-  std::cout << "Read Dashboard rotate intake d gain: " << d << "\n";
-  min = frc::SmartDashboard::GetNumber("Rotate Intake Min Output", 0);
-  max = frc::SmartDashboard::GetNumber("Rotate Intake Max Output", 0);
-
-
-  // If PID coefficients on SmartDashboard have changed, write new values to controller
-  if ((p != m_rotateIntakeCoeff.kP)) { m_rotateIntakePIDController.SetP(p); m_rotateIntakeCoeff.kP = p; }
-  if ((i != m_rotateIntakeCoeff.kI)) { m_rotateIntakePIDController.SetI(i); m_rotateIntakeCoeff.kI = i; }
-  if ((d != m_rotateIntakeCoeff.kD)) { m_rotateIntakePIDController.SetD(d); m_rotateIntakeCoeff.kD = d; }
-  if ((max != m_rotateIntakeCoeff.kMaxOutput) || (min != m_rotateIntakeCoeff.kMinOutput)) { 
-    m_rotateIntakePIDController.SetOutputRange(min, max); 
-    m_rotateIntakeCoeff.kMinOutput = min; m_rotateIntakeCoeff.kMaxOutput = max; 
-  }
-
+  m_take.TakeDashRead();
 
   // Shooting motors
 

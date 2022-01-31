@@ -7,6 +7,7 @@
 #include <string>
 
 #include "Climber.h"
+#include "Take.h"
 
 #include "rev/CANSparkMax.h"
 #include "ctre/Phoenix.h"
@@ -66,7 +67,7 @@ class Robot : public frc::TimedRobot {
   void ShooterFire();
   void IntakeDeploy();
   void IntakeReturn();
-  void CalculateRPM();
+
   void InitializePIDControllers();
   void InitializeDashboard();
   void ReadDashboard();
@@ -76,15 +77,19 @@ class Robot : public frc::TimedRobot {
   frc::SendableChooser<std::string> m_chooser;
   const std::string kAutoNameDefault = "Default";
   const std::string kAutoNameCustom = "My Auto";
-  const std::string kThreeBallBlue = "ThreeBallBlue";
-  const std::string kTwoBallBlue = "TwoBallBlue";
-  const std::string kThreeBallRed = "ThreeBallRed";
-  const std::string kTwoBallRed = "TwoBallRed";
+  const std::string kThreeBallBlueFirstBall = "ThreeBallBlueFirstBall";
+  const std::string kThreeBallBlueSecondBall = "ThreeBallBlueSecondBall";
+  const std::string kThreeBallBlueThirdBall = "ThreeBallBlueThirdBall";
+  const std::string kTwoBallBlueFirstBall = "TwoBallBlueFirstBall";
+  const std::string kTwoBallBlueSecondBall = "TwoBallBlueSecondBall";
+  const std::string kThreeBallRedFirstBall = "ThreeBallRedFirstBall";
+  const std::string kThreeBallRedSecondBall = "ThreeBallRedSecondBall";
+  const std::string kThreeBallRedThirdBall = "ThreeBallRedThirdBall";
+  const std::string kTwoBallRedFirstBall = "TwoBallRedFirstBall";
+  const std::string kTwoBallRedSecondBall = "TwoBallRedSecondBall";
   std::string m_autoSelected;
 
   double m_driveExponent = 1.2;
-  bool intakeBool = false;
-  bool uptakeBool;
   bool shootMan;
   bool limelightTrackingBool = false;
   fs::path deployDirectory;
@@ -96,9 +101,7 @@ class Robot : public frc::TimedRobot {
   double heightLimelight;
   double constantLimelightAngle;
   Climber m_climber;
-
-
-
+  Take m_take; 
 
 //So long, Joystick.h!
   frc::XboxController m_stick{0};
@@ -117,30 +120,25 @@ class Robot : public frc::TimedRobot {
 
   frc::DifferentialDrive m_drive{m_leftDrive, m_rightDrive};
 
-  //Neo motors
-  static const int rotateIntakeMotorDeviceID = 5;
-  static const int spinIntakeMotorDeviceID = 6;
+  
 // I don't know what either of theese do
   static const int shootingMotorAlphaDeviceID = 7;
   static const int shootingMotorBetaDeviceID = 8;
   static const int uptakeMotorDeviceID = 9;
   static const int uptakeIdleMotorDeviceID = 14;
 
+
   // REV bulldarn
-  rev::CANSparkMax m_rotateIntakeMotor{rotateIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-rev::CANSparkMax m_spinIntakeMotor{spinIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
+  
 rev::CANSparkMax m_shootingMotorAlpha{shootingMotorAlphaDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 rev::CANSparkMax m_shootingMotorBeta{shootingMotorBetaDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-rev::CANSparkMax m_uptakeMotor{uptakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-rev::CANSparkMax m_uptakeIdleMotor {uptakeIdleMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
+
 
 //encoders
-rev::SparkMaxRelativeEncoder m_rotateIntakeEncoder = m_rotateIntakeMotor.GetEncoder(); 
-rev::SparkMaxRelativeEncoder m_spinIntakeEncoder = m_spinIntakeMotor.GetEncoder(); 
+
 rev::SparkMaxRelativeEncoder m_shootingMotorAlphaEncoder = m_shootingMotorAlpha.GetEncoder(); 
 rev::SparkMaxRelativeEncoder m_shootingMotorBetaEncoder = m_shootingMotorBeta.GetEncoder(); 
-rev::SparkMaxRelativeEncoder m_uptakeMotorEncoder = m_uptakeMotor.GetEncoder();
-rev::SparkMaxRelativeEncoder m_uptakeIdleMotorEncoder = m_uptakeIdleMotor.GetEncoder();
+
 
 
 //std::shared_ptr<NetworkTable> m_table = nt::NetworkTableInstance::GetDefault().GetTable("limelight-bepis");
@@ -150,10 +148,6 @@ double tx_OFFSET = 0.0;
 frc::Timer autoTimer;
 
 //PID Initialization -- have to manually set PIDs to motors each time??
-
-
-rev::SparkMaxPIDController m_rotateIntakePIDController = m_rotateIntakeMotor.GetPIDController();
-
 rev::SparkMaxPIDController m_shooterAlphaPIDController = m_shootingMotorAlpha.GetPIDController();
 rev::SparkMaxPIDController m_shooterBetaPIDController = m_shootingMotorBeta.GetPIDController();
 
@@ -169,16 +163,9 @@ struct pidCoeff {
   frc::Trajectory m_trajectory;
 
 
-  //pidCoeff m_leftClimberRotateCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-  //pidCoeff m_rightClimberRotateCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+
 pidCoeff m_shooterAlphaCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 pidCoeff m_shooterBetaCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-  pidCoeff m_rotateIntakeCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-
-
-
-//falcons
-//pidCoeff m_leftClimberExtendCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; 
-  //pidCoeff m_rightClimberExtendCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  
 
 };
