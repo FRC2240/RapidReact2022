@@ -168,7 +168,6 @@ void Robot::AutonomousPeriodic() {
 
   // Iteration three
 
-=======
   /*
    autoTimer.Start();
    if (autoTimer.Get() <= units::time::second_t(4)) {
@@ -197,7 +196,7 @@ double turnInput = pow(m_stick.GetRightX(), m_driveExponent);
 
 m_drive.ArcadeDrive(throttleExp, turnInput);
 
-
+/* why does this still exist?
 //Intake
  
 
@@ -215,7 +214,7 @@ m_drive.ArcadeDrive(throttleExp, turnInput);
    }
  }
 
-
+*/
 
  if (m_stick.GetStartButton()){
    if (shootMan){
