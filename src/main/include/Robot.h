@@ -93,6 +93,7 @@ class Robot : public frc::TimedRobot {
   bool shootMan;
   bool limelightTrackingBool = false;
   fs::path deployDirectory;
+  bool uptakeBool; //help me
 
   double taLowBound, taHighBound;
   double txLowBound, txHighBound;
