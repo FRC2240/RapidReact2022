@@ -111,14 +111,16 @@ class Robot : public frc::TimedRobot {
   frc::XboxController m_stick_climb{1};
 
   WPI_TalonFX m_frontRightMotor = {1};
+  WPI_TalonFX m_midRightMotor = {15};
   WPI_TalonFX m_backRightMotor = {2};
   WPI_TalonFX m_frontLeftMotor = {3};
+  WPI_TalonFX m_midLeftMotor = {16};
   WPI_TalonFX m_backLeftMotor = {4};
 
   // Left side of the robot is inverted
   // Tonk drive
-  frc::MotorControllerGroup m_leftDrive{m_frontLeftMotor, m_backLeftMotor};
-  frc::MotorControllerGroup m_rightDrive{m_frontRightMotor, m_backRightMotor};
+  frc::MotorControllerGroup m_leftDrive{m_frontLeftMotor, m_midLeftMotor, m_backLeftMotor};
+  frc::MotorControllerGroup m_rightDrive{m_frontRightMotor, m_midRightMotor, m_backRightMotor};
 
   frc::DifferentialDrive m_drive{m_leftDrive, m_rightDrive};
 
