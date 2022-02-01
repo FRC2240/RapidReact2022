@@ -29,6 +29,7 @@ void Robot::RobotInit() {
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 // right side might need to be inverted depending on construction
   m_leftDrive.SetInverted(true);
+  
   //  double ballsInShooter = 0; //add when break bar functionality is added
   shootMan = true;
   wrongBall = false;
