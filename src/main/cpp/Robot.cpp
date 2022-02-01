@@ -253,6 +253,10 @@ if (wrongBall){
   m_stick.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 1.0);
   m_stick.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 1.0);
  }
+ if (!wrongBall){
+   m_stick.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.0);
+   m_stick.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 0.0);
+ }
 
   nt::NetworkTableEntry txEntry;
   nt::NetworkTableEntry tyEntry;
