@@ -31,6 +31,7 @@ void Robot::RobotInit() {
   m_leftDrive.SetInverted(true);
   //  double ballsInShooter = 0; //add when break bar functionality is added
   shootMan = true;
+  wrongBall = false;
 
 }
 
@@ -234,6 +235,25 @@ m_drive.ArcadeDrive(throttleExp, turnInput);
 }
 //Fire!
 void Robot::ShooterFire() {
+  if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed){
+    if (m_take.BallColor() == 'r') {wrongBall = false;}
+    if (m_take.BallColor() == 'b') {wrongBall = true;}
+    if (m_take.BallColor() == 'E') {std::cout << "[WARN]: Color Sensor issue \n";}
+  }
+
+  if (frc::DriverStation::GetAlliance()  == frc::DriverStation::Alliance::kBlue){
+    if (m_take.BallColor() == 'r') {wrongBall = true;}
+    if (m_take.BallColor() == 'b') {wrongBall = false;}
+    if (m_take.BallColor() == 'E') {std::cout << "[WARN]: Color Sensor issue \n";}
+}
+
+if (wrongBall){
+  //  sosTimer.Start()
+  // Make an SOS
+  m_stick.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 1.0);
+  m_stick.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 1.0);
+ }
+
   nt::NetworkTableEntry txEntry;
   nt::NetworkTableEntry tyEntry;
   nt::NetworkTableEntry taEntry;

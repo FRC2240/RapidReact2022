@@ -92,6 +92,7 @@ class Robot : public frc::TimedRobot {
   double m_driveExponent = 1.2;
   bool shootMan;
   bool limelightTrackingBool = false;
+  bool wrongBall;
   fs::path deployDirectory;
 
   double taLowBound, taHighBound;
@@ -100,8 +101,9 @@ class Robot : public frc::TimedRobot {
   double heightOfTarget;
   double heightLimelight;
   double constantLimelightAngle;
+
   Climber m_climber;
-  Take m_take; 
+  Take m_take;
 
 //So long, Joystick.h!
   frc::XboxController m_stick{0};
