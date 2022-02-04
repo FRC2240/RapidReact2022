@@ -235,6 +235,38 @@ m_drive.ArcadeDrive(throttleExp, turnInput);
 }
 }
 //Fire!
+
+double Robot::LimelightDistance(){
+
+  //Yet another limelight initalization block
+  nt::NetworkTableEntry txEntry;
+  nt::NetworkTableEntry tyEntry;
+  nt::NetworkTableEntry taEntry;
+
+  double ta, tx, ty;
+
+  auto inst = nt::NetworkTableInstance::GetDefault();
+  auto table = inst.GetTable("limelight-bepis");
+  txEntry = table->GetEntry("tx");
+  tyEntry = table->GetEntry("ty");
+  taEntry = table->GetEntry("ta");
+
+
+  txEntry.SetDouble(tx);
+  tyEntry.SetDouble(ty);
+  taEntry.SetDouble(ta);
+
+  //Map tyEntry (0-1) to Limelight FOV (0 - 49.7 deg)
+
+  //How the [redacted by Eric] do I spell theta?
+  double theta = (49.7*ty)+36.711;
+
+  // Then we trig
+  double limelightDistance = (76.545/tan(theta));
+
+  return limelightDistance;
+}
+
 void Robot::ShooterFire() {
   if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed){
     if (m_take.BallColor() == 'r') {wrongBall = false;}
@@ -283,7 +315,7 @@ if (wrongBall){
     if (limelightTrackingBool == true) {
       //Code stolen. Procedure is to map ty to theta, subtract a value I forget and then you get your angle. Solve from there.
 
-      double distance = ((heightOfTarget - heightLimelight) / tan((constantLimelightAngle + ty) * (3.141592653 / 180)));
+      double distance = Robot::LimelightDistance();
 
       double rpm = CalculateRPM(distance);
       m_shooterAlphaPIDController.SetReference(rpm, rev::ControlType::kVelocity);
