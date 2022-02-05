@@ -28,6 +28,11 @@ void Robot::RobotInit() {
   shootMan = true;
   wrongBall = false;
 
+  m_midRightMotor.Follow(m_frontRightMotor);
+  m_midLeftMotor.Follow(m_frontLeftMotor);
+  m_backRightMotor.Follow(m_frontRightMotor);
+  m_backLeftMotor.Follow(m_frontLeftMotor);
+
 }
 
 /**
@@ -94,7 +99,7 @@ void Robot::AutonomousPeriodic() {
     // Default Auto goes here
   }
 
-  // autoFollowPath();
+  autoFollowPath();
   // Iteration one
   /*
    autoTimer.Start();
@@ -421,24 +426,32 @@ void Robot::ReadDashboard() {
   }
 }
 
-// void Robot::setSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds) {
-//   const auto leftFeedforward = m_feedforward.Calculate(speeds.left);
-//   const auto rightFeedforward = m_feedforward.Calculate(speeds.right);
+void Robot::setSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds) {
+  const auto leftFeedforward = m_feedforward.Calculate(speeds.left);
+  const auto rightFeedforward = m_feedforward.Calculate(speeds.right);
 
+  const double leftOutput = m_frontRightMotorPIDController.Calculate(m_frontRightMotor.GetActiveTrajectoryVelocity(), speeds.left.to<double>());
+  const double rightOutput = m_frontLeftMotorPIDController.Calculate(m_frontLeftMotor.GetActiveTrajectoryVelocity(), speeds.right.to<double>());
 
-// }
+  m_leftGroup->SetVoltage(units::volt_t{leftOutput} + leftFeedforward);
+  m_rightGroup->SetVoltage(units::volt_t{rightOutput} + rightFeedforward);
 
-// void Robot::autoDrive(units::meters_per_second_t xSpeed, units::radians_per_second_t rot){
-//   setSpeeds(m_kinematics.ToWheelSpeeds({xSpeed, 0_mps, rot}));
-// }
+}
 
-// void Robot::autoFollowPath(){
-//   if (autoTimer.Get() < m_trajectory.TotalTime()) {
-//     auto desiredPose = m_trajectory.Sample(autoTimer.Get());
-//     auto refChassisSpeeds = controller1.Calculate(m_odometry.GetPose(), desiredPose);
-    
-//   }
-// }
+void Robot::autoDrive(units::meters_per_second_t xSpeed, units::radians_per_second_t rot){
+  setSpeeds(m_kinematics.ToWheelSpeeds({xSpeed, 0_mps, rot}));
+}
+
+void Robot::autoFollowPath(){
+  if (autoTimer.Get() < m_trajectory.TotalTime()) {
+    auto desiredPose = m_trajectory.Sample(autoTimer.Get());
+    auto refChassisSpeeds = controller1.Calculate(m_odometry.GetPose(), desiredPose);
+
+    autoDrive(refChassisSpeeds.vx, refChassisSpeeds.omega);
+  } else {
+    autoDrive(0_mps, 0_rad_per_s);
+  }
+}
 
 #ifndef RUNNING_FRC_TESTS
 int main() {

@@ -87,19 +87,22 @@ class Robot : public frc::TimedRobot {
 
   frc::RamseteController controller1;
 
-  // void autoFollowPath();
-  // void autoDrive(units::meters_per_second_t xSpeed, units::radians_per_second_t rot);
-  // void setSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds);
+  void autoFollowPath();
+  void autoDrive(units::meters_per_second_t xSpeed, units::radians_per_second_t rot);
+  void setSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds);
 
-  // units::meter_t kTrackWidth = 0.478028_m;  
+  units::meter_t kTrackWidth = 0.478028_m;  
 
-  // static constexpr auto   kS = 0.27_V;                         
-  // static constexpr auto   kV = 1.53 * 1_V * 1_s / 1_m;         
-  // static constexpr auto   kA = 0.254 * 1_V * 1_s * 1_s / 1_m; 
+  static constexpr auto   kS = 0.27_V;                         
+  static constexpr auto   kV = 1.53 * 1_V * 1_s / 1_m;         
+  static constexpr auto   kA = 0.254 * 1_V * 1_s * 1_s / 1_m; 
 
-  // frc::DifferentialDriveOdometry m_odometry;
-  // frc::DifferentialDriveKinematics m_kinematics{kTrackWidth};
-  // frc::SimpleMotorFeedforward<units::meters> m_feedforward{kS, kV, kA};
+  frc::DifferentialDriveOdometry m_odometry;
+  frc::DifferentialDriveKinematics m_kinematics{kTrackWidth};
+  frc::SimpleMotorFeedforward<units::meters> m_feedforward{kS, kV, kA};
+
+  frc::MotorControllerGroup* m_leftGroup;
+  frc::MotorControllerGroup* m_rightGroup;
 
   double m_driveExponent = 1.2;
   bool shootMan;
@@ -168,6 +171,9 @@ rev::SparkMaxPIDController m_shooterAlphaPIDController = m_shootingMotorAlpha.Ge
 rev::SparkMaxPIDController m_shooterBetaPIDController = m_shootingMotorBeta.GetPIDController();
 
 
+frc2::PIDController m_frontRightMotorPIDController{0.0, 0.0, 0.0}; //kP, kI, kD
+frc2::PIDController m_frontLeftMotorPIDController{0.0, 0.0, 0.0};
+
 
 
 struct pidCoeff {
@@ -182,6 +188,9 @@ frc::Trajectory m_trajectory;
 
 pidCoeff m_shooterAlphaCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 pidCoeff m_shooterBetaCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+
+pidCoeff m_frontRightMotorCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; 
+pidCoeff m_frontLeftMotorCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
   
 
 };
