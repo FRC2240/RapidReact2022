@@ -153,6 +153,21 @@ void Take::TakeDashRead() {
   if ((max != m_waitingRoomCoeff.kMaxOutput) || (min != m_waitingRoomCoeff.kMinOutput)) { 
     m_waitingRoomPIDController.SetOutputRange(min, max); 
     m_waitingRoomCoeff.kMinOutput = min; m_uptakeCoeff.kMaxOutput = max; 
-  }
+  
+  
+  frc::Color dashDetectedColor = m_colorSensor.GetColor();
+  double dashIR = m_colorSensor.GetIR();
 
+  frc::SmartDashboard::PutNumber("Red", dashDetectedColor.red);
+  frc::SmartDashboard::PutNumber("Green", dashDetectedColor.green);
+  frc::SmartDashboard::PutNumber("Blue", dashDetectedColor.blue);
+  frc::SmartDashboard::PutNumber("IR", dashIR);
 }
+
+char Take::BallColor(){
+  frc::Color detectedColor = m_colorSensor.GetColor();
+  if (detectedColor.red < detectedColor.blue) {return 'b';}
+  if (detectedColor.red > detectedColor.blue) {return 'r';}
+  else {return 'E';} //E for error
+}
+

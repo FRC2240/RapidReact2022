@@ -16,15 +16,17 @@ void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   m_chooser.AddOption(kThreeBallBlue, kThreeBallBlue);
-  m_chooser.AddOption(kTwoBallBlue,kTwoBallBlue);
-  m_chooser.AddOption(kThreeBallRed,kThreeBallRed);
-  m_chooser.AddOption(kTwoBallRed,kTwoBallRed);
+  m_chooser.AddOption(kTwoBallBlue, kTwoBallBlue);
+  m_chooser.AddOption(kThreeBallRed, kThreeBallRed);
+  m_chooser.AddOption(kTwoBallRed, kTwoBallRed);
 
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 // right side might need to be inverted depending on construction
   m_leftDrive.SetInverted(true);
+  
   //  double ballsInShooter = 0; //add when break bar functionality is added
   shootMan = true;
+  wrongBall = false;
 
 }
 
@@ -57,33 +59,32 @@ void Robot::AutonomousInit() {
   fmt::print("Auto selected: {}\n", m_autoSelected);
 
   if (m_autoSelected == kThreeBallBlue) {
-      
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallBlue.wpilib.json";
-    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-  }
-  else if (m_autoSelected == kTwoBallBlue) {
-    
-    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/TwoBallBlue.wpilib.json";
-    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-  }
-  else if (m_autoSelected == kThreeBallRed) {
-
-    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallRed.wpilib.json";
-    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-  }
-  else if (m_autoSelected == kTwoBallRed) {
-    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/TwoBallRed.wpilib.json";
+    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/ThreeBallBlue.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
 
-    // Custom Auto goes here
+  if (m_autoSelected == kTwoBallBlue) {
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/TwoBallBlue.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+
+  if (m_autoSelected == kThreeBallRed) { 
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/ThreeBallRed.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+
+  if (m_autoSelected == kTwoBallRed) {
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/TwoBallRed.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+      // Custom Auto goes here
   else {
-    // Default Auto goes here
-  }
+      // Default Auto goes here
+    }
 }
 
 void Robot::AutonomousPeriodic() {
@@ -92,7 +93,8 @@ void Robot::AutonomousPeriodic() {
   } else {
     // Default Auto goes here
   }
-  
+
+  // autoFollowPath();
   // Iteration one
   /*
    autoTimer.Start();
@@ -126,18 +128,19 @@ void Robot::AutonomousPeriodic() {
   */
 
   // Iteration three
+
   /*
-   autoTimer.Start();
-   if (autoTimer.Get() <= units::time::second_t(4)) {
-     LimelightTracking();
-     ShooterArm();
-     ShooterFire();
-   }
-   if (autoTimer.Get() > units::time::second_t(4) && autoTimer.Get() <= units::time::second_t(8)) {
+  autoTimer.Start();
+  if (autoTimer.Get() <= units::time::second_t(4)) {
+    LimelightTracking();
+    ShooterArm();
+    ShooterFire();
+  }
+  if (autoTimer.Get() > units::time::second_t(4) && autoTimer.Get() <= units::time::second_t(8)) {
 
   }
-   ready aim and fire the two extra balls
-   */
+  ready aim and fire the two extra balls
+  */
 }
 
 void Robot::TeleopInit() {}
@@ -146,19 +149,137 @@ void Robot::TeleopPeriodic() {
 
   //Read controller input
 
-double throttle = m_stick.GetRightTriggerAxis() - m_stick.GetLeftTriggerAxis();
+  double throttle = m_stick.GetRightTriggerAxis() - m_stick.GetLeftTriggerAxis();
 
-//Looks like Ethan wants exponents...
-double throttleExp = pow(throttle, m_driveExponent);
-double turnInput = pow(m_stick.GetRightX(), m_driveExponent);
+  //Looks like Ethan wants exponents...
+  double throttleExp = pow(throttle, m_driveExponent);
+  double turnInput = pow(m_stick.GetRightX(), m_driveExponent);
 
-m_drive.ArcadeDrive(throttleExp, turnInput);
+  m_drive.ArcadeDrive(throttleExp, turnInput);
 
 
+/* why does this still exist?
 //Intake
  
 
  //uptake
+ if (m_stick.GetAButtonPressed()) {
+   if (uptakeBool == true) {
+     //stop uptake
+     m_uptakeMotor.Set(0.0);
+     uptakeBool = false;
+   }
+   if (uptakeBool == false) {
+     //Start uptake
+     m_uptakeMotor.Set(0.5);
+     uptakeBool = true;
+   }
+ }
+
+*/
+
+ if (m_stick.GetStartButton()){
+   if (shootMan){
+     shootMan = false;
+     std::cout << "[MSG]: Shooter is in manual mode \n";
+   }
+   if (!shootMan){
+     shootMan = true;
+     std::cout << "[MSG]: Shooter is in automatic mode \n";
+   }
+ }
+
+
+ if (m_stick.GetLeftBumperPressed()) {
+   Robot::ShooterFire();
+}
+}
+//Fire!
+void Robot::ShooterFire() {
+  if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed){
+    if (m_take.BallColor() == 'r') {wrongBall = false;}
+    if (m_take.BallColor() == 'b') {wrongBall = true;}
+    if (m_take.BallColor() == 'E') {std::cout << "[WARN]: Color Sensor issue \n";}
+  }
+
+  if (frc::DriverStation::GetAlliance()  == frc::DriverStation::Alliance::kBlue){
+    if (m_take.BallColor() == 'r') {wrongBall = true;}
+    if (m_take.BallColor() == 'b') {wrongBall = false;}
+    if (m_take.BallColor() == 'E') {std::cout << "[WARN]: Color Sensor issue \n";}
+}
+
+if (wrongBall){
+  //  sosTimer.Start()
+  // Make an SOS
+  m_stick.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 1.0);
+  m_stick.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 1.0);
+ }
+ if (!wrongBall){
+   m_stick.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.0);
+   m_stick.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 0.0);
+ }
+
+  nt::NetworkTableEntry txEntry;
+  nt::NetworkTableEntry tyEntry;
+  nt::NetworkTableEntry taEntry;
+
+  double ta, tx, ty;
+
+  auto inst = nt::NetworkTableInstance::GetDefault();
+  auto table = inst.GetTable("limelight-bepis");
+  txEntry = table->GetEntry("tx");
+  tyEntry = table->GetEntry("ty");
+  taEntry = table->GetEntry("ta");
+
+
+  txEntry.SetDouble(tx);
+  tyEntry.SetDouble(ty);
+  taEntry.SetDouble(ta);
+
+  ty = ty * -1;
+
+  if (shootMan){
+    Robot::LimelightTracking();
+    if (limelightTrackingBool == true) {
+      //Code stolen. Procedure is to map ty to theta, subtract a value I forget and then you get your angle. Solve from there.
+
+      double distance = ((heightOfTarget - heightLimelight) / tan((constantLimelightAngle + ty) * (3.141592653 / 180)));
+
+      double rpm = CalculateRPM(distance);
+      m_shooterAlphaPIDController.SetReference(rpm, rev::ControlType::kVelocity);
+      m_shooterBetaPIDController.SetReference(rpm, rev::ControlType::kVelocity);
+}
+    else {
+            if (tx < 0){
+                        m_drive.ArcadeDrive(0, 0.5);
+            }
+            if (tx > 0){
+                        m_drive.ArcadeDrive(0, -0.5);
+            }
+      }
+  }
+
+  if (!shootMan){
+    //Code stolen. Procedure is to map ty to theta, subtract a value I forget and then you get your angle. Solve from there.
+                 double distance = ((heightOfTarget - heightLimelight) / tan((constantLimelightAngle + ty) * (3.141592653 / 180)));
+
+                 double rpm = CalculateRPM(distance);
+                 m_shooterAlphaPIDController.SetReference(rpm, rev::ControlType::kVelocity);
+                 m_shooterBetaPIDController.SetReference(rpm, rev::ControlType::kVelocity);
+  }
+}
+
+
+double Robot::CalculateRPM(double d) {
+  //Take real distance in feet and determine the needed RPMs
+  //EXPERIMENTAL
+
+  //double rpm = 0.0169 * d * d - 4.12 * d + 2614.5;
+  //double rpm = 0.01474 * d * d - 3.573 * d + 2588.0;
+  //double rpm = 0.0273 * d * d - 6.27 * d + 2901.3;
+  double rpm = 0.0113 * d * d - 0.762 * d + 2290.1;
+  return rpm;
+
 }
 
 
@@ -299,6 +420,25 @@ void Robot::ReadDashboard() {
     m_shooterBetaCoeff.kMinOutput = min; m_shooterBetaCoeff.kMaxOutput = max; 
   }
 }
+
+// void Robot::setSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds) {
+//   const auto leftFeedforward = m_feedforward.Calculate(speeds.left);
+//   const auto rightFeedforward = m_feedforward.Calculate(speeds.right);
+
+
+// }
+
+// void Robot::autoDrive(units::meters_per_second_t xSpeed, units::radians_per_second_t rot){
+//   setSpeeds(m_kinematics.ToWheelSpeeds({xSpeed, 0_mps, rot}));
+// }
+
+// void Robot::autoFollowPath(){
+//   if (autoTimer.Get() < m_trajectory.TotalTime()) {
+//     auto desiredPose = m_trajectory.Sample(autoTimer.Get());
+//     auto refChassisSpeeds = controller1.Calculate(m_odometry.GetPose(), desiredPose);
+    
+//   }
+// }
 
 #ifndef RUNNING_FRC_TESTS
 int main() {

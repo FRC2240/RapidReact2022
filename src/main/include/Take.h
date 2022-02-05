@@ -5,6 +5,11 @@
 #include <frc/smartdashboard/SendableChooser.h>
 #include "frc/smartdashboard/SmartDashboard.h"
 
+
+
+#include "frc/DigitalInput.h" 
+//#include <frc/util/color.h>
+
 #include "rev/ColorSensorV3.h"
 #include "rev/ColorMatch.h"
 
@@ -23,6 +28,8 @@ class Take {
     void UptakeBall();
 
 
+  char BallColor();
+
     private:
     frc::SendableChooser<std::string> m_chooser;
 
@@ -30,8 +37,13 @@ class Take {
   static const int rotateIntakeMotorDeviceID = 5;
   static const int spinIntakeMotorDeviceID = 6;
   static const int uptakeMotorDeviceID = 9;
+
   static const int waitingRoomMotorDeviceID = 14;
   
+
+
+  static constexpr auto i2cPort = frc::I2C::Port::kOnboard;
+
   //Motors
   rev::CANSparkMax m_rotateIntakeMotor{rotateIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_spinIntakeMotor{spinIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
@@ -59,6 +71,7 @@ pidCoeff m_waitingRoomCoeff {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
   //Sensors
   
+
   rev::ColorSensorV3 m_uptakeSensor {frc::I2C::Port::kOnboard};
   rev::ColorSensorV3 m_waitingRoomSensor {frc::I2C::Port::kOnboard};
 
