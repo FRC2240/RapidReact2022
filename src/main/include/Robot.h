@@ -46,6 +46,8 @@
 #include <frc/trajectory/TrajectoryUtil.h>
 #include <frc/controller/RamseteController.h>
 #include <frc/trajectory/TrajectoryGenerator.h>
+#include <frc/kinematics/DifferentialDriveOdometry.h>
+#include <frc/controller/SimpleMotorFeedforward.h>
 
 class Robot : public frc::TimedRobot {
  public:
@@ -77,17 +79,27 @@ class Robot : public frc::TimedRobot {
   frc::SendableChooser<std::string> m_chooser;
   const std::string kAutoNameDefault = "Default";
   const std::string kAutoNameCustom = "My Auto";
-  const std::string kThreeBallBlueFirstBall = "ThreeBallBlueFirstBall";
-  const std::string kThreeBallBlueSecondBall = "ThreeBallBlueSecondBall";
-  const std::string kThreeBallBlueThirdBall = "ThreeBallBlueThirdBall";
-  const std::string kTwoBallBlueFirstBall = "TwoBallBlueFirstBall";
-  const std::string kTwoBallBlueSecondBall = "TwoBallBlueSecondBall";
-  const std::string kThreeBallRedFirstBall = "ThreeBallRedFirstBall";
-  const std::string kThreeBallRedSecondBall = "ThreeBallRedSecondBall";
-  const std::string kThreeBallRedThirdBall = "ThreeBallRedThirdBall";
-  const std::string kTwoBallRedFirstBall = "TwoBallRedFirstBall";
-  const std::string kTwoBallRedSecondBall = "TwoBallRedSecondBall";
+  const std::string kThreeBallBlue = "ThreeBallBlue";
+  const std::string kTwoBallBlue = "TwoBallBlue";
+  const std::string kThreeBallRed = "ThreeBallRed";
+  const std::string kTwoBallRed = "TwoBallRed";
   std::string m_autoSelected;
+
+  frc::RamseteController controller1;
+
+  // void autoFollowPath();
+  // void autoDrive(units::meters_per_second_t xSpeed, units::radians_per_second_t rot);
+  // void setSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds);
+
+  // units::meter_t kTrackWidth = 0.478028_m;  
+
+  // static constexpr auto   kS = 0.27_V;                         
+  // static constexpr auto   kV = 1.53 * 1_V * 1_s / 1_m;         
+  // static constexpr auto   kA = 0.254 * 1_V * 1_s * 1_s / 1_m; 
+
+  // frc::DifferentialDriveOdometry m_odometry;
+  // frc::DifferentialDriveKinematics m_kinematics{kTrackWidth};
+  // frc::SimpleMotorFeedforward<units::meters> m_feedforward{kS, kV, kA};
 
   double m_driveExponent = 1.2;
   bool shootMan;
@@ -164,7 +176,7 @@ struct pidCoeff {
 
 
 
-  frc::Trajectory m_trajectory;
+frc::Trajectory m_trajectory;
 
 
 

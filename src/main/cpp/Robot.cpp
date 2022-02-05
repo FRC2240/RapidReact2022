@@ -15,16 +15,10 @@
 void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
-  m_chooser.AddOption(kThreeBallBlueFirstBall, kThreeBallBlueFirstBall);
-  m_chooser.AddOption(kThreeBallBlueSecondBall, kThreeBallBlueSecondBall);
-  m_chooser.AddOption(kThreeBallBlueThirdBall, kThreeBallBlueThirdBall);
-  m_chooser.AddOption(kTwoBallBlueFirstBall,kTwoBallBlueFirstBall);
-  m_chooser.AddOption(kTwoBallBlueSecondBall,kTwoBallBlueSecondBall);
-  m_chooser.AddOption(kThreeBallRedFirstBall,kThreeBallRedFirstBall);
-  m_chooser.AddOption(kThreeBallRedSecondBall,kThreeBallRedSecondBall);
-  m_chooser.AddOption(kThreeBallRedThirdBall,kThreeBallRedThirdBall);
-  m_chooser.AddOption(kTwoBallRedFirstBall,kTwoBallRedFirstBall);
-  m_chooser.AddOption(kTwoBallRedSecondBall,kTwoBallRedSecondBall);
+  m_chooser.AddOption(kThreeBallBlue, kThreeBallBlue);
+  m_chooser.AddOption(kTwoBallBlue, kTwoBallBlue);
+  m_chooser.AddOption(kThreeBallRed, kThreeBallRed);
+  m_chooser.AddOption(kTwoBallRed, kTwoBallRed);
 
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 // right side might need to be inverted depending on construction
@@ -64,69 +58,33 @@ void Robot::AutonomousInit() {
   //     kAutoNameDefault);
   fmt::print("Auto selected: {}\n", m_autoSelected);
 
-  if (m_autoSelected == kThreeBallBlueFirstBall) {
-      
+  if (m_autoSelected == kThreeBallBlue) {
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallBlueFirstBall.wpilib.json";
-    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-  }
-  else if (m_autoSelected == kThreeBallBlueSecondBall) {
-      
-    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallBlueSecondBall.wpilib.json";
-    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-  }
-  else if (m_autoSelected == kThreeBallBlueThirdBall) {
-      
-    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallBlueThirdBall.wpilib.json";
-    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-  }
-  else if (m_autoSelected == kTwoBallBlueFirstBall) {
-    
-    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/TwoBallBlueFirstBall.wpilib.json";
-    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-  }
-  else if (m_autoSelected == kTwoBallBlueSecondBall) {
-    
-    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/TwoBallBlueSecondBall.wpilib.json";
-    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-  }
-  else if (m_autoSelected == kThreeBallRedFirstBall) {
-
-    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallRedFirstBall.wpilib.json";
-    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-  }
-  else if (m_autoSelected == kThreeBallRedSecondBall) {
-
-    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallRedSecondBall.wpilib.json";
-    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-  }
-  else if (m_autoSelected == kThreeBallRedThirdBall) {
-
-    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/ThreeBallRedThirdBall.wpilib.json";
-    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-  }
-  else if (m_autoSelected == kTwoBallRedFirstBall) {
-    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/TwoBallRedFirstBall.wpilib.json";
-    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-  }
-  else if (m_autoSelected == kTwoBallRedSecondBall) {
-    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "paths" / "Patheaver/Paths/TwoBallRedSecondBall.wpilib.json";
+    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/ThreeBallBlue.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
 
-    // Custom Auto goes here
+  if (m_autoSelected == kTwoBallBlue) {
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/TwoBallBlue.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+
+  if (m_autoSelected == kThreeBallRed) { 
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/ThreeBallRed.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+
+  if (m_autoSelected == kTwoBallRed) {
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/TwoBallRed.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+      // Custom Auto goes here
   else {
-    // Default Auto goes here
-  }
+      // Default Auto goes here
+    }
 }
 
 void Robot::AutonomousPeriodic() {
@@ -135,7 +93,8 @@ void Robot::AutonomousPeriodic() {
   } else {
     // Default Auto goes here
   }
-  
+
+  // autoFollowPath();
   // Iteration one
   /*
    autoTimer.Start();
@@ -171,17 +130,17 @@ void Robot::AutonomousPeriodic() {
   // Iteration three
 
   /*
-   autoTimer.Start();
-   if (autoTimer.Get() <= units::time::second_t(4)) {
-     LimelightTracking();
-     ShooterArm();
-     ShooterFire();
-   }
-   if (autoTimer.Get() > units::time::second_t(4) && autoTimer.Get() <= units::time::second_t(8)) {
+  autoTimer.Start();
+  if (autoTimer.Get() <= units::time::second_t(4)) {
+    LimelightTracking();
+    ShooterArm();
+    ShooterFire();
+  }
+  if (autoTimer.Get() > units::time::second_t(4) && autoTimer.Get() <= units::time::second_t(8)) {
 
   }
-   ready aim and fire the two extra balls
-   */
+  ready aim and fire the two extra balls
+  */
 }
 
 void Robot::TeleopInit() {}
@@ -190,13 +149,14 @@ void Robot::TeleopPeriodic() {
 
   //Read controller input
 
-double throttle = m_stick.GetRightTriggerAxis() - m_stick.GetLeftTriggerAxis();
+  double throttle = m_stick.GetRightTriggerAxis() - m_stick.GetLeftTriggerAxis();
 
-//Looks like Ethan wants exponents...
-double throttleExp = pow(throttle, m_driveExponent);
-double turnInput = pow(m_stick.GetRightX(), m_driveExponent);
+  //Looks like Ethan wants exponents...
+  double throttleExp = pow(throttle, m_driveExponent);
+  double turnInput = pow(m_stick.GetRightX(), m_driveExponent);
 
-m_drive.ArcadeDrive(throttleExp, turnInput);
+  m_drive.ArcadeDrive(throttleExp, turnInput);
+
 
 /* why does this still exist?
 //Intake
@@ -460,6 +420,25 @@ void Robot::ReadDashboard() {
     m_shooterBetaCoeff.kMinOutput = min; m_shooterBetaCoeff.kMaxOutput = max; 
   }
 }
+
+// void Robot::setSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds) {
+//   const auto leftFeedforward = m_feedforward.Calculate(speeds.left);
+//   const auto rightFeedforward = m_feedforward.Calculate(speeds.right);
+
+
+// }
+
+// void Robot::autoDrive(units::meters_per_second_t xSpeed, units::radians_per_second_t rot){
+//   setSpeeds(m_kinematics.ToWheelSpeeds({xSpeed, 0_mps, rot}));
+// }
+
+// void Robot::autoFollowPath(){
+//   if (autoTimer.Get() < m_trajectory.TotalTime()) {
+//     auto desiredPose = m_trajectory.Sample(autoTimer.Get());
+//     auto refChassisSpeeds = controller1.Calculate(m_odometry.GetPose(), desiredPose);
+    
+//   }
+// }
 
 #ifndef RUNNING_FRC_TESTS
 int main() {
