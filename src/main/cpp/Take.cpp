@@ -59,4 +59,19 @@ void Take::TakeDashRead() {
     m_rotateIntakePIDController.SetOutputRange(min, max); 
     m_rotateIntakeCoeff.kMinOutput = min; m_rotateIntakeCoeff.kMaxOutput = max; 
   }
+
+  frc::Color dashDetectedColor = m_colorSensor.GetColor();
+  double dashIR = m_colorSensor.GetIR();
+
+  frc::SmartDashboard::PutNumber("Red", dashDetectedColor.red);
+  frc::SmartDashboard::PutNumber("Green", dashDetectedColor.green);
+  frc::SmartDashboard::PutNumber("Blue", dashDetectedColor.blue);
+  frc::SmartDashboard::PutNumber("IR", dashIR);
+}
+
+char Take::BallColor(){
+  frc::Color detectedColor = m_colorSensor.GetColor();
+  if (detectedColor.red < detectedColor.blue) {return 'b';}
+  if (detectedColor.red > detectedColor.blue) {return 'r';}
+  else {return 'E';} //E for error
 }

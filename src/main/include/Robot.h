@@ -62,7 +62,13 @@ class Robot : public frc::TimedRobot {
   void TestInit() override;
   void TestPeriodic() override;
   void LimelightTracking();
+  double CalculateRPM(double d);
+  //void ShooterAim();
 
+  void ShooterArm();
+  void ShooterFire();
+  void IntakeDeploy();
+  void IntakeReturn();
 
   void InitializePIDControllers();
   void InitializeDashboard();
@@ -98,14 +104,18 @@ class Robot : public frc::TimedRobot {
   double m_driveExponent = 1.2;
   bool shootMan;
   bool limelightTrackingBool = false;
+  bool wrongBall;
   fs::path deployDirectory;
 
   double taLowBound, taHighBound;
   double txLowBound, txHighBound;
   double tyLowBound, tyHighBound;
+  double heightOfTarget;
+  double heightLimelight;
+  double constantLimelightAngle;
 
   Climber m_climber;
-  Take m_take; 
+  Take m_take;
 
 //So long, Joystick.h!
   frc::XboxController m_stick{0};
@@ -113,14 +123,16 @@ class Robot : public frc::TimedRobot {
   frc::XboxController m_stick_climb{1};
 
   WPI_TalonFX m_frontRightMotor = {1};
+  WPI_TalonFX m_midRightMotor = {15};
   WPI_TalonFX m_backRightMotor = {2};
   WPI_TalonFX m_frontLeftMotor = {3};
+  WPI_TalonFX m_midLeftMotor = {16};
   WPI_TalonFX m_backLeftMotor = {4};
 
   // Left side of the robot is inverted
   // Tonk drive
-  frc::MotorControllerGroup m_leftDrive{m_frontLeftMotor, m_backLeftMotor};
-  frc::MotorControllerGroup m_rightDrive{m_frontRightMotor, m_backRightMotor};
+  frc::MotorControllerGroup m_leftDrive{m_frontLeftMotor, m_midLeftMotor, m_backLeftMotor};
+  frc::MotorControllerGroup m_rightDrive{m_frontRightMotor, m_midRightMotor, m_backRightMotor};
 
   frc::DifferentialDrive m_drive{m_leftDrive, m_rightDrive};
 
@@ -128,8 +140,10 @@ class Robot : public frc::TimedRobot {
 // I don't know what either of theese do
   static const int shootingMotorAlphaDeviceID = 7;
   static const int shootingMotorBetaDeviceID = 8;
-  
- 
+  static const int uptakeMotorDeviceID = 9;
+  static const int uptakeIdleMotorDeviceID = 14;
+
+
   // REV bulldarn
   
 rev::CANSparkMax m_shootingMotorAlpha{shootingMotorAlphaDeviceID, rev::CANSparkMax::MotorType::kBrushless};
@@ -143,7 +157,7 @@ rev::SparkMaxRelativeEncoder m_shootingMotorBetaEncoder = m_shootingMotorBeta.Ge
 
 
 
-//std::shared_ptr<NetworkTable> m_table = nt::NetworkTableInstance::GetDefault().GetTable("limelight-bepis"); 
+//std::shared_ptr<NetworkTable> m_table = nt::NetworkTableInstance::GetDefault().GetTable("limelight-bepis");
 double tx_OFFSET = 0.0;
 
 //auto timer

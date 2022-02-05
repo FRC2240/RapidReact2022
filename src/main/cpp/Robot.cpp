@@ -23,8 +23,10 @@ void Robot::RobotInit() {
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 // right side might need to be inverted depending on construction
   m_leftDrive.SetInverted(true);
+  
   //  double ballsInShooter = 0; //add when break bar functionality is added
   shootMan = true;
+  wrongBall = false;
 
 }
 
@@ -126,6 +128,7 @@ void Robot::AutonomousPeriodic() {
   */
 
   // Iteration three
+
   /*
   autoTimer.Start();
   if (autoTimer.Get() <= units::time::second_t(4)) {
@@ -155,10 +158,128 @@ void Robot::TeleopPeriodic() {
   m_drive.ArcadeDrive(throttleExp, turnInput);
 
 
-  //Intake
-  
+/* why does this still exist?
+//Intake
+ 
 
-  //uptake
+ //uptake
+ if (m_stick.GetAButtonPressed()) {
+   if (uptakeBool == true) {
+     //stop uptake
+     m_uptakeMotor.Set(0.0);
+     uptakeBool = false;
+   }
+   if (uptakeBool == false) {
+     //Start uptake
+     m_uptakeMotor.Set(0.5);
+     uptakeBool = true;
+   }
+ }
+
+*/
+
+ if (m_stick.GetStartButton()){
+   if (shootMan){
+     shootMan = false;
+     std::cout << "[MSG]: Shooter is in manual mode \n";
+   }
+   if (!shootMan){
+     shootMan = true;
+     std::cout << "[MSG]: Shooter is in automatic mode \n";
+   }
+ }
+
+
+ if (m_stick.GetLeftBumperPressed()) {
+   Robot::ShooterFire();
+}
+}
+//Fire!
+void Robot::ShooterFire() {
+  if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed){
+    if (m_take.BallColor() == 'r') {wrongBall = false;}
+    if (m_take.BallColor() == 'b') {wrongBall = true;}
+    if (m_take.BallColor() == 'E') {std::cout << "[WARN]: Color Sensor issue \n";}
+  }
+
+  if (frc::DriverStation::GetAlliance()  == frc::DriverStation::Alliance::kBlue){
+    if (m_take.BallColor() == 'r') {wrongBall = true;}
+    if (m_take.BallColor() == 'b') {wrongBall = false;}
+    if (m_take.BallColor() == 'E') {std::cout << "[WARN]: Color Sensor issue \n";}
+}
+
+if (wrongBall){
+  //  sosTimer.Start()
+  // Make an SOS
+  m_stick.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 1.0);
+  m_stick.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 1.0);
+ }
+ if (!wrongBall){
+   m_stick.SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.0);
+   m_stick.SetRumble(frc::GenericHID::RumbleType::kRightRumble, 0.0);
+ }
+
+  nt::NetworkTableEntry txEntry;
+  nt::NetworkTableEntry tyEntry;
+  nt::NetworkTableEntry taEntry;
+
+  double ta, tx, ty;
+
+  auto inst = nt::NetworkTableInstance::GetDefault();
+  auto table = inst.GetTable("limelight-bepis");
+  txEntry = table->GetEntry("tx");
+  tyEntry = table->GetEntry("ty");
+  taEntry = table->GetEntry("ta");
+
+
+  txEntry.SetDouble(tx);
+  tyEntry.SetDouble(ty);
+  taEntry.SetDouble(ta);
+
+  ty = ty * -1;
+
+  if (shootMan){
+    Robot::LimelightTracking();
+    if (limelightTrackingBool == true) {
+      //Code stolen. Procedure is to map ty to theta, subtract a value I forget and then you get your angle. Solve from there.
+
+      double distance = ((heightOfTarget - heightLimelight) / tan((constantLimelightAngle + ty) * (3.141592653 / 180)));
+
+      double rpm = CalculateRPM(distance);
+      m_shooterAlphaPIDController.SetReference(rpm, rev::ControlType::kVelocity);
+      m_shooterBetaPIDController.SetReference(rpm, rev::ControlType::kVelocity);
+}
+    else {
+            if (tx < 0){
+                        m_drive.ArcadeDrive(0, 0.5);
+            }
+            if (tx > 0){
+                        m_drive.ArcadeDrive(0, -0.5);
+            }
+      }
+  }
+
+  if (!shootMan){
+    //Code stolen. Procedure is to map ty to theta, subtract a value I forget and then you get your angle. Solve from there.
+                 double distance = ((heightOfTarget - heightLimelight) / tan((constantLimelightAngle + ty) * (3.141592653 / 180)));
+
+                 double rpm = CalculateRPM(distance);
+                 m_shooterAlphaPIDController.SetReference(rpm, rev::ControlType::kVelocity);
+                 m_shooterBetaPIDController.SetReference(rpm, rev::ControlType::kVelocity);
+  }
+}
+
+
+double Robot::CalculateRPM(double d) {
+  //Take real distance in feet and determine the needed RPMs
+  //EXPERIMENTAL
+
+  //double rpm = 0.0169 * d * d - 4.12 * d + 2614.5;
+  //double rpm = 0.01474 * d * d - 3.573 * d + 2588.0;
+  //double rpm = 0.0273 * d * d - 6.27 * d + 2901.3;
+  double rpm = 0.0113 * d * d - 0.762 * d + 2290.1;
+  return rpm;
+
 }
 
 
