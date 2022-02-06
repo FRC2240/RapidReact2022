@@ -194,6 +194,7 @@ void Robot::TeleopPeriodic() {
    Robot::ShooterFire();
 }
 }
+/* Shooter code that must be moved
 //Fire!
 void Robot::ShooterFire() {
   if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed){
@@ -322,6 +323,7 @@ void Robot::LimelightTracking() {
 
   //If it's tracking, use limebool
 }
+*/
 
 
 void Robot::DisabledInit() {}
