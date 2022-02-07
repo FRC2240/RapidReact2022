@@ -143,7 +143,9 @@ void Robot::AutonomousPeriodic() {
   */
 }
 
-void Robot::TeleopInit() {}
+void Robot::TeleopInit() {
+  m_shooter.InitializePIDControllers();
+}
 
 void Robot::TeleopPeriodic() {
 
@@ -191,8 +193,8 @@ void Robot::TeleopPeriodic() {
 
 
  if (m_stick.GetLeftBumperPressed()) {
-   Robot::ShooterFire();
-}
+   m_shooter.ShooterFire();
+ }
 }
 /* Shooter code that must be moved
 //Fire!
@@ -338,21 +340,6 @@ void Robot::InitializePIDControllers() {
   //Climber intializes PIDs in it's own function
   m_climber.ClimberPIDInit();
   m_take.TakePIDInit();
-  
-  //winch motors
-m_shooterAlphaPIDController.SetP(m_shooterAlphaCoeff.kP);
-m_shooterAlphaPIDController.SetI(m_shooterAlphaCoeff.kI);
-m_shooterAlphaPIDController.SetD(m_shooterAlphaCoeff.kD);
-m_shooterAlphaPIDController.SetIZone(m_shooterAlphaCoeff.kIz);
-m_shooterAlphaPIDController.SetFF(m_shooterAlphaCoeff.kFF);
-m_shooterAlphaPIDController.SetOutputRange(m_shooterAlphaCoeff.kMinOutput, m_shooterAlphaCoeff.kMaxOutput);
-
-m_shooterBetaPIDController.SetP(m_shooterBetaCoeff.kP);
-m_shooterBetaPIDController.SetI(m_shooterBetaCoeff.kI);
-m_shooterBetaPIDController.SetD(m_shooterBetaCoeff.kD);
-m_shooterBetaPIDController.SetIZone(m_shooterBetaCoeff.kIz);
-m_shooterBetaPIDController.SetFF(m_shooterBetaCoeff.kFF);
-m_shooterBetaPIDController.SetOutputRange(m_shooterBetaCoeff.kMinOutput, m_shooterBetaCoeff.kMaxOutput);
 
 }
 
@@ -362,17 +349,6 @@ void Robot::InitializeDashboard() {
   m_take.TakeDashInit();
 
 // Winch Motors
-  frc::SmartDashboard::PutNumber("Alpha Motor P Gain", m_shooterAlphaCoeff.kP);
-  frc::SmartDashboard::PutNumber("Alpha Motor I Gain", m_shooterAlphaCoeff.kI);
-  frc::SmartDashboard::PutNumber("Alpha Motor D Gain", m_shooterAlphaCoeff.kD);
-  frc::SmartDashboard::PutNumber("Alpha Motor Max Output", m_shooterAlphaCoeff.kMaxOutput);
-  frc::SmartDashboard::PutNumber("Alpha Motor Min Output", m_shooterAlphaCoeff.kMinOutput);
-
-  frc::SmartDashboard::PutNumber("Beta Motor P Gain", m_shooterBetaCoeff.kP);
-  frc::SmartDashboard::PutNumber("Beta Motor I Gain", m_shooterBetaCoeff.kI);
-  frc::SmartDashboard::PutNumber("Beta Motor D Gain", m_shooterBetaCoeff.kD);
-  frc::SmartDashboard::PutNumber("Beta Motor Max Output", m_shooterBetaCoeff.kMaxOutput);
-  frc::SmartDashboard::PutNumber("Beta Motor Min Output", m_shooterBetaCoeff.kMinOutput);
 
   /*
   if (shootMan){frc::SmartDashboard::PutNumber("Shooter Mode", "Auto");}
@@ -382,45 +358,10 @@ void Robot::InitializeDashboard() {
 }
 
 void Robot::ReadDashboard() {
-  double p, i, d, min, max;
   m_climber.ClimberDashRead();
   m_take.TakeDashRead();
 
-  // Shooting motors
-
-  p   = frc::SmartDashboard::GetNumber("Alpha Motor P Gain", 0);
-  std::cout << "Read Dashboard Alpha Motor P Gain: " << p << "\n";
-  i   = frc::SmartDashboard::GetNumber("Alpha Motor I Gain", 0);
-  std::cout << "Read Dashboard Alpha Motor I Gain: " << i << "\n";
-  d   = frc::SmartDashboard::GetNumber("Alpha Motor D Gain", 0);
-  std::cout << "Read Dashboard Alpha Motor D Gain: " << d << "\n";
-  min = frc::SmartDashboard::GetNumber("Alpha Motor Min Output", 0);
-  max = frc::SmartDashboard::GetNumber("Alpha Motor Max Output", 0);
-
-  if ((p != m_shooterAlphaCoeff.kP)) { m_shooterAlphaPIDController.SetP(p);m_shooterAlphaCoeff.kP = p; }
-  if ((i != m_shooterAlphaCoeff.kI)) { m_shooterAlphaPIDController.SetI(i); m_shooterAlphaCoeff.kI = i; }
-  if ((d != m_shooterAlphaCoeff.kD)) { m_shooterAlphaPIDController.SetD(d); m_shooterAlphaCoeff.kD = d; }
-  if ((max != m_shooterAlphaCoeff.kMaxOutput) || (min != m_shooterAlphaCoeff.kMinOutput)) { 
-    m_shooterAlphaPIDController.SetOutputRange(min, max); 
-    m_shooterAlphaCoeff.kMinOutput = min; m_shooterAlphaCoeff.kMaxOutput = max; 
-  }
-
-   p   = frc::SmartDashboard::GetNumber("Beta Motor P Gain", 0);
-  std::cout << "Read Dashboard Beta Motor P Gain: " << p << "\n";
-  i   = frc::SmartDashboard::GetNumber("Beta Motor I Gain", 0);
-  std::cout << "Read Dashboard Beta Motor I Gain: " << i << "\n";
-  d   = frc::SmartDashboard::GetNumber("Beta Motor D Gain", 0);
-  std::cout << "Read Dashboard Beta Motor D Gain: " << d << "\n";
-  min = frc::SmartDashboard::GetNumber("Beta Motor Min Output", 0);
-  max = frc::SmartDashboard::GetNumber("Beta Motor Max Output", 0);
-
-  if ((p != m_shooterBetaCoeff.kP)) { m_shooterBetaPIDController.SetP(p);m_shooterBetaCoeff.kP = p; }
-  if ((i != m_shooterBetaCoeff.kI)) { m_shooterBetaPIDController.SetI(i); m_shooterBetaCoeff.kI = i; }
-  if ((d != m_shooterBetaCoeff.kD)) { m_shooterBetaPIDController.SetD(d); m_shooterBetaCoeff.kD = d; }
-  if ((max != m_shooterBetaCoeff.kMaxOutput) || (min != m_shooterBetaCoeff.kMinOutput)) { 
-    m_shooterBetaPIDController.SetOutputRange(min, max); 
-    m_shooterBetaCoeff.kMinOutput = min; m_shooterBetaCoeff.kMaxOutput = max; 
-  }
+  
 }
 
 // void Robot::setSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds) {

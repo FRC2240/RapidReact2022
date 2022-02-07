@@ -20,12 +20,12 @@ void Take::UptakeBall() {
   if (uptakeMatchedColor == desiredColor ) {
     if (waitingRoomMatchedColor == desiredColor) {
       //waiting room occupied, uptake should spin for a little bit before stopping
-      m_uptakePIDController.SetReference(m_stopOne, rev::ControlType::kPosition);
+      m_uptakePIDController.SetReference(m_stopOne, rev::CANSparkMax::ControlType::kPosition);
     }
 
     else if (waitingRoomMatchedColor == nothingDetected) {
       //waiting room unoccupied, spin ball all the way into it
-      m_uptakePIDController.SetReference(m_stopTwo, rev::ControlType::kPosition);
+      m_uptakePIDController.SetReference(m_stopTwo, rev::CANSparkMax::ControlType::kPosition);
     }
   }
   else {

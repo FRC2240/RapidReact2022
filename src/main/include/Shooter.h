@@ -16,6 +16,9 @@
 #include <frc/smartdashboard/SendableChooser.h>
 #include "frc/smartdashboard/SmartDashboard.h"
 
+#include "frc/drive/DifferentialDrive.h"
+
+
 #include <frc/DriverStation.h>
 #include <frc/XboxController.h>
 
@@ -23,18 +26,21 @@
 
 class Shooter {
  public:
-  bool LimelightTracking();
-  double CalculateRPM(double d);
+  Shooter(frc::DifferentialDrive* d, frc::XboxController* s, Take* t);
   void ShooterArm();
   void ShooterFire();
-
   void InitializePIDControllers();
-  void InitializeDashboard();
-  void ReadDashboard();
+
  private:
 
-  Take m_take;
-  frc::XboxController m_stick{0};
+  double CalculateRPM(double d);
+  bool LimelightTracking();
+  void InitializeDashboard();
+  void ReadDashboard();
+
+  frc::DifferentialDrive* m_drive;
+  frc::XboxController*    m_stick;
+  Take*                   m_take;
 
   bool  shootMan;
   bool  wrongBall;
