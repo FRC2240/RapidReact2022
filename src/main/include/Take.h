@@ -22,6 +22,10 @@ class Take {
   void ColorsInit();
   void SetColor();
 
+  //For testing, not operation
+  void UptakeStart(double speed);
+  void UptakeStop();
+
   void DeployIntake();
   void ReturnIntake();
   void EjectBall();

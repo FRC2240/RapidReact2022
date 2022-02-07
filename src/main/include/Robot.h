@@ -106,6 +106,7 @@ class Robot : public frc::TimedRobot {
   bool shootMan;
   bool limelightTrackingBool = false;
   bool wrongBall;
+  bool uptakeBool;
   fs::path deployDirectory;
 
   double taLowBound, taHighBound;

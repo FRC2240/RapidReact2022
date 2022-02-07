@@ -8,6 +8,15 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
+void Take::UptakeStart(double speed) {
+m_spinIntakeMotor.Set(speed);
+m_uptakeMotor.Set(speed);
+}
+void Take::UptakeStop() {
+  m_spinIntakeMotor.Set(0);
+  m_uptakeMotor.Set(0);
+}
+
 void Take::DeployIntake() {
 
 }

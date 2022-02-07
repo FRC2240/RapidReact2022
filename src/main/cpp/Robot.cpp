@@ -160,25 +160,21 @@ void Robot::TeleopPeriodic() {
   m_drive.ArcadeDrive(throttleExp, turnInput);
 
 
-/* why does this still exist?
-//Intake
- 
 
  //uptake
  if (m_stick.GetAButtonPressed()) {
    if (uptakeBool == true) {
      //stop uptake
-     m_uptakeMotor.Set(0.0);
+     m_take.UptakeStop();
      uptakeBool = false;
    }
    if (uptakeBool == false) {
      //Start uptake
-     m_uptakeMotor.Set(0.5);
+     m_take.UptakeStart(0.25);
      uptakeBool = true;
    }
  }
 
-*/
 
  if (m_stick.GetStartButton()){
    if (shootMan){
