@@ -27,8 +27,8 @@
 class Shooter {
  public:
   Shooter(frc::DifferentialDrive* d, frc::XboxController* s, Take* t);
-  void ShooterArm();
-  void ShooterFire();
+  void Arm();
+  void Fire();
   void InitializePIDControllers();
 
  private:

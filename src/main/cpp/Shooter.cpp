@@ -58,9 +58,9 @@ double Shooter::CalculateRPM(double d)
   return 0.0; // TODO: Add equation
 }
 
-void Shooter::ShooterArm() {}
+void Shooter::Arm() {}
 
-void Shooter::ShooterFire()
+void Shooter::Fire()
 {
   if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed)
   {

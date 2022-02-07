@@ -33,18 +33,18 @@ void Climber::LowerRight(){
 
 void Climber::RotateLeft(char dirL){
   if (dirL == 'f'){ //forwards
-    m_leftClimberRotatePIDController.SetReference(forthSetPointL, rev::ControlType::kSmartMotion);
+    m_leftClimberRotatePIDController.SetReference(forthSetPointL, rev::CANSparkMax::ControlType::kSmartMotion);
   }
   if (dirL == 'b'){ //backwards
-    m_leftClimberRotatePIDController.SetReference(backSetPointL, rev::ControlType::kSmartMotion);
+    m_leftClimberRotatePIDController.SetReference(backSetPointL, rev::CANSparkMax::ControlType::kSmartMotion);
   }
 }
 void Climber::RotateRight(char dirR){
   if (dirR == 'f'){ //forwards
-    m_rightClimberRotatePIDController.SetReference(forthSetPointR, rev::ControlType::kSmartMotion);
+    m_rightClimberRotatePIDController.SetReference(forthSetPointR, rev::CANSparkMax::ControlType::kSmartMotion);
   }
   if (dirR == 'b'){ //backwards
-    m_rightClimberRotatePIDController.SetReference(backSetPointR, rev::ControlType::kSmartMotion);
+    m_rightClimberRotatePIDController.SetReference(backSetPointR, rev::CANSparkMax::ControlType::kSmartMotion);
   }
 }
 

@@ -193,7 +193,7 @@ void Robot::TeleopPeriodic() {
 
 
  if (m_stick.GetLeftBumperPressed()) {
-   m_shooter.ShooterFire();
+   m_shooter.Fire();
  }
 }
 /* Shooter code that must be moved
