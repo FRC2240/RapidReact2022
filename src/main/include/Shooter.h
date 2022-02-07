@@ -27,7 +27,7 @@
 class Shooter {
  public:
   Shooter(frc::DifferentialDrive* d, frc::XboxController* s, Take* t);
-  void Arm();
+  
   void Fire();
   void InitializePIDControllers();
 
@@ -35,6 +35,7 @@ class Shooter {
 
   double CalculateRPM(double d);
   bool LimelightTracking();
+  double LimelightDistance();
   void InitializeDashboard();
   void ReadDashboard();
 
@@ -52,6 +53,7 @@ class Shooter {
   double heightLimelight;
   double constantLimelightAngle;
 
+  //Limelight init should go here
   static const int shootingMotorAlphaDeviceID = 7;
   static const int shootingMotorBetaDeviceID = 8;
 

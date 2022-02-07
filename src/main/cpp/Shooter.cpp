@@ -58,7 +58,7 @@ double Shooter::CalculateRPM(double d)
   return 0.0; // TODO: Add equation
 }
 
-void Shooter::Arm() {}
+//Shooter::Arm was removed as it was a relic of an old shooter
 
 void Shooter::Fire()
 {
@@ -96,8 +96,6 @@ void Shooter::Fire()
 
   if (wrongBall)
   {
-    //  sosTimer.Start()
-    // Make an SOS
     m_stick->SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 1.0);
     m_stick->SetRumble(frc::GenericHID::RumbleType::kRightRumble, 1.0);
   }
@@ -153,12 +151,47 @@ void Shooter::Fire()
   if (!shootMan)
   {
     // Code stolen. Procedure is to map ty to theta, subtract a value I forget and then you get your angle. Solve from there.
-    double distance = ((heightOfTarget - heightLimelight) / tan((constantLimelightAngle + ty) * (3.141592653 / 180)));
+    double distance = Shooter::LimelightDistance();
 
     double rpm = CalculateRPM(distance);
     m_shooterAlphaPIDController.SetReference(rpm, rev::CANSparkMax::ControlType::kVelocity);
     m_shooterBetaPIDController.SetReference(rpm, rev::CANSparkMax::ControlType::kVelocity);
   }
+}
+
+double Shooter::LimelightDistance(){
+
+  //Yet another limelight initalization block
+  nt::NetworkTableEntry txEntry;
+  nt::NetworkTableEntry tyEntry;
+  nt::NetworkTableEntry taEntry;
+
+  double ta, tx, ty;
+
+  auto inst = nt::NetworkTableInstance::GetDefault();
+  auto table = inst.GetTable("limelight-bepis");
+  txEntry = table->GetEntry("tx");
+  tyEntry = table->GetEntry("ty");
+  taEntry = table->GetEntry("ta");
+
+
+  txEntry.SetDouble(tx);
+  tyEntry.SetDouble(ty);
+  taEntry.SetDouble(ta);
+
+  //Map tyEntry (0-1) to Limelight FOV (0 - 49.7 deg)
+
+  //How I got constants:
+  //49.7 is somthing I forget
+  // 36.711 is the angle of the limelight
+  double theta = (49.7*ty)+36.711;
+
+  // Then we trig
+
+  //TODO: Better comments 
+  double limelightDistance = (76.545/tan(theta));
+
+  return limelightDistance;
 }
 
 void Shooter::InitializePIDControllers()
