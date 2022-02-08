@@ -16,19 +16,23 @@
 
 class Take {
     public:
-    void TakePIDInit();
-    void TakeDashRead();
-    void TakeDashInit();
-    void ColorsInit();
-    void SetColor();
+  void TakePIDInit();
+  void TakeDashRead();
+  void TakeDashInit();
+  void ColorsInit();
+  void SetColor();
 
-    void DeployIntake();
-    void ReturnIntake();
-    void EjectBall();
-    void UptakeBall();
+  //For testing, not operation
+  void UptakeStart(double speed);
+  void UptakeStop();
 
+  void DeployIntake();
+  void ReturnIntake();
+  void EjectBall();
+  void UptakeBall();
+  char BallColorUptake();
+  char BallColorRoom();
 
-  char BallColor();
 
     private:
     frc::SendableChooser<std::string> m_chooser;

@@ -7,6 +7,7 @@
 #include <string>
 
 #include "Climber.h"
+#include "Shooter.h"
 #include "Take.h"
 
 #include "rev/CANSparkMax.h"
@@ -105,6 +106,7 @@ class Robot : public frc::TimedRobot {
   bool shootMan;
   bool limelightTrackingBool = false;
   bool wrongBall;
+  bool uptakeBool;
   fs::path deployDirectory;
 
   double taLowBound, taHighBound;
@@ -138,50 +140,15 @@ class Robot : public frc::TimedRobot {
 
   
 // I don't know what either of theese do
-  static const int shootingMotorAlphaDeviceID = 7;
-  static const int shootingMotorBetaDeviceID = 8;
   static const int uptakeMotorDeviceID = 9;
   static const int uptakeIdleMotorDeviceID = 14;
-
-
-  // REV bulldarn
   
-rev::CANSparkMax m_shootingMotorAlpha{shootingMotorAlphaDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-rev::CANSparkMax m_shootingMotorBeta{shootingMotorBetaDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-
-
-//encoders
-
-rev::SparkMaxRelativeEncoder m_shootingMotorAlphaEncoder = m_shootingMotorAlpha.GetEncoder(); 
-rev::SparkMaxRelativeEncoder m_shootingMotorBetaEncoder = m_shootingMotorBeta.GetEncoder(); 
-
-
-
-//std::shared_ptr<NetworkTable> m_table = nt::NetworkTableInstance::GetDefault().GetTable("limelight-bepis");
-double tx_OFFSET = 0.0;
 
 //auto timer
 frc::Timer autoTimer;
 
-//PID Initialization -- have to manually set PIDs to motors each time??
-rev::SparkMaxPIDController m_shooterAlphaPIDController = m_shootingMotorAlpha.GetPIDController();
-rev::SparkMaxPIDController m_shooterBetaPIDController = m_shootingMotorBeta.GetPIDController();
-
-
-
-
-struct pidCoeff {
-    double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
-};
-
-
-
 frc::Trajectory m_trajectory;
 
-
-
-pidCoeff m_shooterAlphaCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-pidCoeff m_shooterBetaCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-  
+Shooter m_shooter{&m_drive, &m_stick, &m_take};
 
 };

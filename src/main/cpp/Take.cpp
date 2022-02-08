@@ -8,6 +8,15 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
+void Take::UptakeStart(double speed) {
+m_spinIntakeMotor.Set(speed);
+m_uptakeMotor.Set(speed);
+}
+void Take::UptakeStop() {
+  m_spinIntakeMotor.Set(0);
+  m_uptakeMotor.Set(0);
+}
+
 void Take::DeployIntake() {
 
 }
@@ -20,12 +29,12 @@ void Take::UptakeBall() {
   if (uptakeMatchedColor == desiredColor ) {
     if (waitingRoomMatchedColor == desiredColor) {
       //waiting room occupied, uptake should spin for a little bit before stopping
-      m_uptakePIDController.SetReference(m_stopOne, rev::ControlType::kPosition);
+      m_uptakePIDController.SetReference(m_stopOne, rev::CANSparkMax::ControlType::kPosition);
     }
 
     else if (waitingRoomMatchedColor == nothingDetected) {
       //waiting room unoccupied, spin ball all the way into it
-      m_uptakePIDController.SetReference(m_stopTwo, rev::ControlType::kPosition);
+      m_uptakePIDController.SetReference(m_stopTwo, rev::CANSparkMax::ControlType::kPosition);
     }
   }
   else {
@@ -153,21 +162,37 @@ void Take::TakeDashRead() {
   if ((max != m_waitingRoomCoeff.kMaxOutput) || (min != m_waitingRoomCoeff.kMinOutput)) { 
     m_waitingRoomPIDController.SetOutputRange(min, max); 
     m_waitingRoomCoeff.kMinOutput = min; m_uptakeCoeff.kMaxOutput = max; 
+  }
   
-  
-  frc::Color dashDetectedColor = m_colorSensor.GetColor();
-  double dashIR = m_colorSensor.GetIR();
+    frc::Color dashDetectedColorUptake = m_uptakeSensor.GetColor();
+    double dashUptakeIR = m_uptakeSensor.GetIR();
 
-  frc::SmartDashboard::PutNumber("Red", dashDetectedColor.red);
-  frc::SmartDashboard::PutNumber("Green", dashDetectedColor.green);
-  frc::SmartDashboard::PutNumber("Blue", dashDetectedColor.blue);
-  frc::SmartDashboard::PutNumber("IR", dashIR);
+  frc::SmartDashboard::PutNumber("Red", dashDetectedColorUptake.red);
+  frc::SmartDashboard::PutNumber("Green", dashDetectedColorUptake.green);
+  frc::SmartDashboard::PutNumber("Blue", dashDetectedColorUptake.blue);
+  frc::SmartDashboard::PutNumber("IR", dashUptakeIR);
+
+  frc::Color dashDetectedColorRoom = m_waitingRoomSensor.GetColor();
+  double dashRoomIR = m_waitingRoomSensor.GetIR();
+
+  frc::SmartDashboard::PutNumber("Red", dashDetectedColorRoom.red);
+  frc::SmartDashboard::PutNumber("Green", dashDetectedColorRoom.green);
+  frc::SmartDashboard::PutNumber("Blue", dashDetectedColorRoom.blue);
+  frc::SmartDashboard::PutNumber("IR", dashRoomIR);
+
 }
 
-char Take::BallColor(){
-  frc::Color detectedColor = m_colorSensor.GetColor();
+char Take::BallColorUptake(){
+  frc::Color detectedColor = m_uptakeSensor.GetColor();
   if (detectedColor.red < detectedColor.blue) {return 'b';}
   if (detectedColor.red > detectedColor.blue) {return 'r';}
   else {return 'E';} //E for error
+}
+char Take::BallColorRoom(){
+  frc::Color detectedColor = m_waitingRoomSensor.GetColor();
+  if (detectedColor.red < detectedColor.blue) {return 'b';}
+  if (detectedColor.red > detectedColor.blue) {return 'r';}
+  else {return 'E';} //E for error
+
 }
 
