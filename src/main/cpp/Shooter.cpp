@@ -182,7 +182,7 @@ double Shooter::LimelightDistance(){
   //Map tyEntry (0-1) to Limelight FOV (0 - 49.7 deg)
 
   //How I got constants:
-  //49.7 is somthing I forget
+  //49.7 is the limelight fov
   // 36.711 is the angle of the limelight
   double theta = (49.7*ty)+36.711;
 
