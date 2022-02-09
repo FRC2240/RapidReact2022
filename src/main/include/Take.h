@@ -28,13 +28,24 @@ class Take {
 
   void DeployIntake();
   void ReturnIntake();
+
+  void HoldBall();
   void EjectBall();
   void UptakeBall();
+
   char BallColorUptake();
   char BallColorRoom();
 
 
+
+
     private:
+  char TeamColor();
+
+  //Might be better public
+  char RoomLiveStatus();
+  char BallLiveStatus();
+
     frc::SendableChooser<std::string> m_chooser;
 
     //Device IDs
@@ -86,10 +97,15 @@ static constexpr frc::Color kBlack = frc::Color(0.0, 0.0, 0.0);
 
 frc::Color desiredColor;
 frc::Color undesiredColor;
-frc::Color nothingDetected = kBlack; 
+frc::Color nothingDetected = kBlack;
 
  frc::Color uptakeDetectedColor = m_uptakeSensor.GetColor();
- frc::Color waitingRoomDetectedColor = m_waitingRoomSensor.GetColor(); 
+ frc::Color waitingRoomDetectedColor = m_waitingRoomSensor.GetColor();
+
+  //Theese are values form 0 to 225 determing the r or b value
+  //Needed for being a certain color
+  double m_blueFloor;
+  double m_redFloor;
 
  rev::ColorMatch m_colorMatcher;
 

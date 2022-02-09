@@ -25,6 +25,69 @@ void Take::ReturnIntake() {
 
 }
 
+char TeamColor() {
+  if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {return 'r';}
+  if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) {return 'b';}
+}
+
+void Take::HoldBall() {
+  //Here is a logn block comment on the flow of the system
+  //
+  //If it's the right color and the waiting room is empty, it holds in waiting room (scenario 1)
+  //If it's the right color and the waiting room is full, it holds in the (int|up)take (secnario 2)
+  // ---
+  //If it's the wrong color and the waiting room is empty it sh(oo|i)ts the ball
+  //If it's the wrong color and the waitng room is full, it reverses the (int|up)take
+
+  frc::Color uptakeColor = m_uptakeSensor.GetColor();
+  frc::Color roomColor = m_waitingRoomSensor.GetColor();
+
+  bool rightColorBall() {
+    if (Take::BallColorUptake() == 'b' && Take::TeamColor() == 'b') {return true;}
+    if (Take::BallColorUptake() == 'r' && Take::TeamColor() == 'r') {return true;}
+    else {return false;}
+}
+  if (rightColorBall() && RoomLiveStatus() == 'e') {
+    //scenario 1
+
+  }
+
+  if (rightColorBall() && RoomLiveStatus() != 'e') {
+    //secnario 2
+  }
+
+}
+
+void Take::EjectBall(){
+  //Here is a logn block comment on the flow of the system
+  //
+  //If it's the right color and the waiting room is empty, it holds in waiting room
+  //If it's the right color and the waiting room is full, it holds in the (int|up)take
+  // ---
+  //If it's the wrong color and the waiting room is empty it sh(oo|i)ts the ball //secnario 3
+  //If it's the wrong color and the waitng room is full, it reverses the (int|up)take //secnario 4
+
+  frc::Color uptakeColor = m_uptakeSensor.GetColor();
+  frc::Color roomColor = m_waitingRoomSensor.GetColor();
+
+  bool rightColorBall() {
+    if (Take::BallColorUptake() == 'b' && Take::TeamColor() == 'b') {return true;}
+    if (Take::BallColorUptake() == 'r' && Take::TeamColor() == 'r') {return true;}
+    else {return false;}
+  }
+
+  if (!rightColorBall() && RoomLiveStatus() == 'e'){
+    //secnario 3
+  }
+
+  if (!rightColorBall() && RoomLiveStatus() != 'e'){
+    //secnario 4
+  }
+
+}
+// Eric's code, probably better but I don't know how it works so...
+/*
+
 void Take::UptakeBall() {
   if (uptakeMatchedColor == desiredColor ) {
     if (waitingRoomMatchedColor == desiredColor) {
@@ -61,7 +124,74 @@ void Take::ColorsInit() {
 void Take::SetColor() {
   //figure out how to switch desired color/undesired color from red to green and vice versa
 }
+*/
 
+//TODO: make it so it doesn't update vars if a ball isn't there
+//Theese should be for the last ball to pass through the area
+char Take::BallColorUptake(){
+  frc::Color detectedColor = m_uptakeSensor.GetColor();
+  if (detectedColor.blue > detectedColor.red) {
+    if (detectedColor.blue > m_blueFloor) {
+      return 'b';
+    }
+    else {
+      if (detectedColor.red > m_redFloor){
+        //How did we get here?
+        return 'r';
+      }
+    }
+  }
+
+  if (detectedColor.red > detectedColor.blue) {
+    if (detectedColor.red > m_redFloor) {
+      return 'r';
+    }
+    else {
+      if (detectedColor.blue > m_blueFloor){
+        //How did we get here
+        return 'b';
+      }
+    }
+  }
+
+  else {return 'E';} //E for error
+}
+
+char Take::BallColorRoom(){
+  frc::Color detectedColor = m_waitingRoomSensor.GetColor();
+  if (detectedColor.blue > detectedColor.red) {
+    if (detectedColor.blue > m_blueFloor) {
+      return 'b';
+    }
+    else {
+      if (detectedColor.red > m_redFloor){
+        //How did we get here?
+        return 'r';
+      }
+    }
+  }
+
+  if (detectedColor.red > detectedColor.blue) {
+    if (detectedColor.red > m_redFloor) {
+      return 'r';
+    }
+    else {
+      if (detectedColor.blue > m_blueFloor){
+        //How did we get here
+        return 'b';
+      }
+    }
+  }
+
+  else {return 'E';} //E for error
+}
+
+//Theese are for the current status of the sensors
+
+//r for red, b for blue, e for empty and E for error
+char Take::RoomLiveStatus(){}
+
+char Take::UptakeLiveStatus(){} 
 
 void Take::TakePIDInit() {
   m_rotateIntakePIDController.SetP(m_rotateIntakeCoeff.kP);
@@ -163,7 +293,6 @@ void Take::TakeDashRead() {
     m_waitingRoomPIDController.SetOutputRange(min, max); 
     m_waitingRoomCoeff.kMinOutput = min; m_uptakeCoeff.kMaxOutput = max; 
   }
-  
     frc::Color dashDetectedColorUptake = m_uptakeSensor.GetColor();
     double dashUptakeIR = m_uptakeSensor.GetIR();
 
@@ -181,18 +310,3 @@ void Take::TakeDashRead() {
   frc::SmartDashboard::PutNumber("IR", dashRoomIR);
 
 }
-
-char Take::BallColorUptake(){
-  frc::Color detectedColor = m_uptakeSensor.GetColor();
-  if (detectedColor.red < detectedColor.blue) {return 'b';}
-  if (detectedColor.red > detectedColor.blue) {return 'r';}
-  else {return 'E';} //E for error
-}
-char Take::BallColorRoom(){
-  frc::Color detectedColor = m_waitingRoomSensor.GetColor();
-  if (detectedColor.red < detectedColor.blue) {return 'b';}
-  if (detectedColor.red > detectedColor.blue) {return 'r';}
-  else {return 'E';} //E for error
-
-}
-
