@@ -4,6 +4,7 @@
 
 #include <frc/smartdashboard/SendableChooser.h>
 #include "frc/smartdashboard/SmartDashboard.h"
+#include <frc/DriverStation.h>
 
 
 
@@ -36,15 +37,18 @@ class Take {
   char BallColorUptake();
   char BallColorRoom();
 
-
-
-
-    private:
+  //Probably should be private
   char TeamColor();
+
+  bool rightColorBall();
 
   //Might be better public
   char RoomLiveStatus();
-  char BallLiveStatus();
+  char UptakeLiveStatus();
+
+
+    private:
+
 
     frc::SendableChooser<std::string> m_chooser;
 

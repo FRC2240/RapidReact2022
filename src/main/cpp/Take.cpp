@@ -25,7 +25,13 @@ void Take::ReturnIntake() {
 
 }
 
-char TeamColor() {
+bool Take::rightColorBall() {
+  if (Take::BallColorUptake() == 'b' && Take::TeamColor() == 'b') {return true;}
+  if (Take::BallColorUptake() == 'r' && Take::TeamColor() == 'r') {return true;}
+  else {return false;}
+}
+
+char Take::TeamColor() {
   if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {return 'r';}
   if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) {return 'b';}
 }
@@ -42,21 +48,18 @@ void Take::HoldBall() {
   frc::Color uptakeColor = m_uptakeSensor.GetColor();
   frc::Color roomColor = m_waitingRoomSensor.GetColor();
 
-  bool rightColorBall() {
-    if (Take::BallColorUptake() == 'b' && Take::TeamColor() == 'b') {return true;}
-    if (Take::BallColorUptake() == 'r' && Take::TeamColor() == 'r') {return true;}
-    else {return false;}
-}
-  if (rightColorBall() && RoomLiveStatus() == 'e') {
+
+  if (Take::rightColorBall() && Take::RoomLiveStatus() == 'e') {
     //scenario 1
 
   }
 
-  if (rightColorBall() && RoomLiveStatus() != 'e') {
+  if (Take::rightColorBall() && Take::RoomLiveStatus() != 'e') {
     //secnario 2
   }
 
 }
+
 
 void Take::EjectBall(){
   //Here is a logn block comment on the flow of the system
@@ -70,17 +73,12 @@ void Take::EjectBall(){
   frc::Color uptakeColor = m_uptakeSensor.GetColor();
   frc::Color roomColor = m_waitingRoomSensor.GetColor();
 
-  bool rightColorBall() {
-    if (Take::BallColorUptake() == 'b' && Take::TeamColor() == 'b') {return true;}
-    if (Take::BallColorUptake() == 'r' && Take::TeamColor() == 'r') {return true;}
-    else {return false;}
-  }
 
-  if (!rightColorBall() && RoomLiveStatus() == 'e'){
+  if (!Take::rightColorBall() && Take::RoomLiveStatus() == 'e'){
     //secnario 3
   }
 
-  if (!rightColorBall() && RoomLiveStatus() != 'e'){
+  if (!Take::rightColorBall() && Take::RoomLiveStatus() != 'e'){
     //secnario 4
   }
 
@@ -191,7 +189,7 @@ char Take::BallColorRoom(){
 //r for red, b for blue, e for empty and E for error
 char Take::RoomLiveStatus(){}
 
-char Take::UptakeLiveStatus(){} 
+char Take::UptakeLiveStatus(){}
 
 void Take::TakePIDInit() {
   m_rotateIntakePIDController.SetP(m_rotateIntakeCoeff.kP);
