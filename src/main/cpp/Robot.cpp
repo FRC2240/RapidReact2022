@@ -162,6 +162,8 @@ void Robot::TeleopPeriodic() {
   //TODO: climber controls
 
 
+  //Better Uptake
+  m_take.TakePeriodic();
 
  //uptake
  if (m_stick.GetAButtonPressed()) {

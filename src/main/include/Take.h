@@ -17,6 +17,8 @@
 
 class Take {
     public:
+  void TakePeriodic();
+
   void TakePIDInit();
   void TakeDashRead();
   void TakeDashInit();
@@ -40,7 +42,7 @@ class Take {
   //Probably should be private
   char TeamColor();
 
-  bool rightColorBall();
+  bool RightColorBall();
 
   //Might be better public
   char RoomLiveStatus();

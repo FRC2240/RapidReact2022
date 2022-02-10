@@ -8,24 +8,40 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
+void Take::TakePeriodic(){
+  Take::UptakeLiveStatus();
+  Take::RoomLiveStatus();
+  Take::RightColorBall();
+  Take::TeamColor();
+  Take::BallColorRoom();
+  Take::BallColorUptake();
+  //  Take::UptakeBall();
+  Take::EjectBall();
+  Take::HoldBall();
+
+}
+
 void Take::UptakeStart(double speed) {
 m_spinIntakeMotor.Set(speed);
 m_uptakeMotor.Set(speed);
 }
+
 void Take::UptakeStop() {
   m_spinIntakeMotor.Set(0);
   m_uptakeMotor.Set(0);
 }
 
 void Take::DeployIntake() {
+  //TODO PIDs
 
 }
 
 void Take::ReturnIntake() {
+  //TODO PIDs
 
 }
 
-bool Take::rightColorBall() {
+bool Take::RightColorBall() {
   if (Take::BallColorUptake() == 'b' && Take::TeamColor() == 'b') {return true;}
   if (Take::BallColorUptake() == 'r' && Take::TeamColor() == 'r') {return true;}
   else {return false;}
@@ -50,13 +66,15 @@ void Take::HoldBall(){
   frc::Color roomColor = m_waitingRoomSensor.GetColor();
 
 
-  if (Take::rightColorBall() && Take::RoomLiveStatus() == 'e') {
+  if (Take::RightColorBall() && Take::RoomLiveStatus() == 'e') {
     //scenario 1
-
+    m_spinIntakeMotor.Set(0.1);
+    m_uptakeMotor.Set(0.1);
   }
 
-  if (Take::rightColorBall() && Take::RoomLiveStatus() != 'e') {
+  if (Take::RightColorBall() && Take::RoomLiveStatus() != 'e') {
     //secnario 2
+    m_spinIntakeMotor.Set(0.1);
   }
 
 }
@@ -75,12 +93,19 @@ void Take::EjectBall(){
   frc::Color roomColor = m_waitingRoomSensor.GetColor();
 
 
-  if (!Take::rightColorBall() && Take::RoomLiveStatus() == 'e'){
+  if (!Take::RightColorBall() && Take::RoomLiveStatus() == 'e'){
     //secnario 3
+    m_spinIntakeMotor.Set(0.1);
+    m_uptakeMotor.Set(0.1);
+    m_waitingRoomMotor.Set(0.1);
+
+
   }
 
-  if (!Take::rightColorBall() && Take::RoomLiveStatus() != 'e'){
+  if (!Take::RightColorBall() && Take::RoomLiveStatus() != 'e'){
     //secnario 4
+    m_spinIntakeMotor.Set(-0.1);
+    m_uptakeMotor.Set(-0.1);
   }
 
 }
