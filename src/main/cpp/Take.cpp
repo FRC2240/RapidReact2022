@@ -36,7 +36,8 @@ char Take::TeamColor() {
   if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) {return 'b';}
 }
 
-void Take::HoldBall() {
+void Take::HoldBall(){
+
   //Here is a logn block comment on the flow of the system
   //
   //If it's the right color and the waiting room is empty, it holds in waiting room (scenario 1)
@@ -127,6 +128,8 @@ void Take::SetColor() {
 //TODO: make it so it doesn't update vars if a ball isn't there
 //Theese should be for the last ball to pass through the area
 char Take::BallColorUptake(){
+  if (Take::UptakeLiveStatus() != 'e'){
+
   frc::Color detectedColor = m_uptakeSensor.GetColor();
   if (detectedColor.blue > detectedColor.red) {
     if (detectedColor.blue > m_blueFloor) {
@@ -151,11 +154,12 @@ char Take::BallColorUptake(){
       }
     }
   }
-
-  else {return 'E';} //E for error
+ }
 }
 
+
 char Take::BallColorRoom(){
+  if (Take::RoomLiveStatus() != 'e'){
   frc::Color detectedColor = m_waitingRoomSensor.GetColor();
   if (detectedColor.blue > detectedColor.red) {
     if (detectedColor.blue > m_blueFloor) {
@@ -180,16 +184,66 @@ char Take::BallColorRoom(){
       }
     }
   }
-
-  else {return 'E';} //E for error
+ }
 }
 
 //Theese are for the current status of the sensors
 
 //r for red, b for blue, e for empty and E for error
-char Take::RoomLiveStatus(){}
+char Take::RoomLiveStatus(){
+  frc::Color detectedColor = m_waitingRoomSensor.GetColor();
+  if (detectedColor.blue > detectedColor.red) {
+    if (detectedColor.blue > m_blueFloor) {
+      return 'b';
+    }
+    else {
+      if (detectedColor.red > m_redFloor){
+        //How did we get here?
+        return 'r';
+      }
+    }
+  }
 
-char Take::UptakeLiveStatus(){}
+  if (detectedColor.red > detectedColor.blue) {
+    if (detectedColor.red > m_redFloor) {
+      return 'r';
+    }
+    else {
+      if (detectedColor.blue > m_blueFloor){
+        //How did we get here
+        return 'b';
+      }
+    }
+  }
+}
+
+char Take::UptakeLiveStatus(){
+  frc::Color detectedColor = m_uptakeSensor.GetColor();
+  if (detectedColor.blue > detectedColor.red) {
+    if (detectedColor.blue > m_blueFloor) {
+      return 'b';
+    }
+    else {
+      if (detectedColor.red > m_redFloor){
+        //How did we get here?
+        return 'r';
+      }
+    }
+  }
+
+  if (detectedColor.red > detectedColor.blue) {
+    if (detectedColor.red > m_redFloor) {
+      return 'r';
+    }
+    else {
+      if (detectedColor.blue > m_blueFloor){
+        //How did we get here
+        return 'b';
+      }
+    }
+  }
+}
+
 
 void Take::TakePIDInit() {
   m_rotateIntakePIDController.SetP(m_rotateIntakeCoeff.kP);
