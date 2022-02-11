@@ -8,22 +8,112 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
+// RIP void Take::TakePeriodic()
+// Once you were garbage, now you are missed garbage
+
 void Take::UptakeStart(double speed) {
 m_spinIntakeMotor.Set(speed);
 m_uptakeMotor.Set(speed);
 }
+
 void Take::UptakeStop() {
   m_spinIntakeMotor.Set(0);
   m_uptakeMotor.Set(0);
 }
 
 void Take::DeployIntake() {
+  //TODO PIDs
 
 }
 
 void Take::ReturnIntake() {
+  //TODO PIDs
 
 }
+
+bool Take::RightColorBall() {
+  if (Take::BallColorUptake() == 'b' && Take::TeamColor() == 'b') {return true;}
+  if (Take::BallColorUptake() == 'r' && Take::TeamColor() == 'r') {return true;}
+  else {return false;}
+}
+
+char Take::TeamColor() {
+  if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {return 'r';}
+  if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) {return 'b';}
+}
+
+// WHY EJECT/HOLD BALL IS AN INT:
+// For better comunication with other classes, (namley shooter) a double allows
+// Eject ball to comunicate with Teleop which will then call shooter
+// The value of Eject/Hold Ball is the secnario name
+// See below for scenario IDs
+int Take::HoldBall(){
+
+  //Here is a logn block comment on the flow of the system
+  //
+  //If it's the right color and the waiting room is empty, it holds in waiting room (scenario 1)
+  //If it's the right color and the waiting room is full, it holds in the (int|up)take (secnario 2)
+  // ---
+  //If it's the wrong color and the waiting room is empty it sh(oo|i)ts the ball
+  //If it's the wrong color and the waitng room is full, it reverses the (int|up)take
+
+  frc::Color uptakeColor = m_uptakeSensor.GetColor();
+  frc::Color roomColor = m_waitingRoomSensor.GetColor();
+
+
+  if (Take::RightColorBall() && Take::RoomLiveStatus() == 'e') {
+    //scenario 1
+    m_spinIntakeMotor.Set(0.1);
+    m_uptakeMotor.Set(0.1);
+    return 1;
+  }
+
+  if (Take::RightColorBall() && Take::RoomLiveStatus() != 'e') {
+    //secnario 2
+    m_spinIntakeMotor.Set(0.1);
+    return 2;
+  }
+
+}
+
+
+// WHY EJECT/HOLD BALL IS AN INT:
+// For better comunication with other classes, (namley shooter) a double allows
+// Eject ball to comunicate with Teleop which will then call shooter
+// The value of Eject/Hold Ball is the secnario name
+// See below for scenario IDs
+int Take::EjectBall(){
+  //Here is a logn block comment on the flow of the system
+  //
+  //If it's the right color and the waiting room is empty, it holds in waiting room
+  //If it's the right color and the waiting room is full, it holds in the (int|up)take
+  // ---
+  //If it's the wrong color and the waiting room is empty it sh(oo|i)ts the ball //secnario 3
+  //If it's the wrong color and the waitng room is full, it reverses the (int|up)take //secnario 4
+
+  frc::Color uptakeColor = m_uptakeSensor.GetColor();
+  frc::Color roomColor = m_waitingRoomSensor.GetColor();
+
+
+  if (!Take::RightColorBall() && Take::RoomLiveStatus() == 'e'){
+    //secnario 3
+    m_spinIntakeMotor.Set(0.1);
+    m_uptakeMotor.Set(0.1);
+    m_waitingRoomMotor.Set(0.1);
+    return 3;
+
+  }
+
+  if (!Take::RightColorBall() && Take::RoomLiveStatus() != 'e'){
+    //secnario 4
+    m_spinIntakeMotor.Set(-0.1);
+    m_uptakeMotor.Set(-0.1);
+    return 4;
+  }
+
+}
+// Eric's code, probably better but I don't know how it works so...
+/*
 
 void Take::UptakeBall() {
   if (uptakeMatchedColor == desiredColor ) {
@@ -60,6 +150,126 @@ void Take::ColorsInit() {
 
 void Take::SetColor() {
   //figure out how to switch desired color/undesired color from red to green and vice versa
+}
+*/
+
+//TODO: make it so it doesn't update vars if a ball isn't there
+//Theese should be for the last ball to pass through the area
+char Take::BallColorUptake(){
+  if (Take::UptakeLiveStatus() != 'e'){
+
+  frc::Color detectedColor = m_uptakeSensor.GetColor();
+  if (detectedColor.blue > detectedColor.red) {
+    if (detectedColor.blue > m_blueFloor) {
+      return 'b';
+    }
+    else {
+      if (detectedColor.red > m_redFloor){
+        //How did we get here?
+        return 'r';
+      }
+    }
+  }
+
+  if (detectedColor.red > detectedColor.blue) {
+    if (detectedColor.red > m_redFloor) {
+      return 'r';
+    }
+    else {
+      if (detectedColor.blue > m_blueFloor){
+        //How did we get here
+        return 'b';
+      }
+    }
+  }
+ }
+}
+
+
+char Take::BallColorRoom(){
+  if (Take::RoomLiveStatus() != 'e'){
+  frc::Color detectedColor = m_waitingRoomSensor.GetColor();
+  if (detectedColor.blue > detectedColor.red) {
+    if (detectedColor.blue > m_blueFloor) {
+      return 'b';
+    }
+    else {
+      if (detectedColor.red > m_redFloor){
+        //How did we get here?
+        return 'r';
+      }
+    }
+  }
+
+  if (detectedColor.red > detectedColor.blue) {
+    if (detectedColor.red > m_redFloor) {
+      return 'r';
+    }
+    else {
+      if (detectedColor.blue > m_blueFloor){
+        //How did we get here
+        return 'b';
+      }
+    }
+  }
+ }
+}
+
+//Theese are for the current status of the sensors
+
+//r for red, b for blue, e for empty and E for error
+char Take::RoomLiveStatus(){
+  frc::Color detectedColor = m_waitingRoomSensor.GetColor();
+  if (detectedColor.blue > detectedColor.red) {
+    if (detectedColor.blue > m_blueFloor) {
+      return 'b';
+    }
+    else {
+      if (detectedColor.red > m_redFloor){
+        //How did we get here?
+        return 'r';
+      }
+    }
+  }
+
+  if (detectedColor.red > detectedColor.blue) {
+    if (detectedColor.red > m_redFloor) {
+      return 'r';
+    }
+    else {
+      if (detectedColor.blue > m_blueFloor){
+        //How did we get here
+        return 'b';
+      }
+    }
+  }
+}
+
+char Take::UptakeLiveStatus(){
+  frc::Color detectedColor = m_uptakeSensor.GetColor();
+  if (detectedColor.blue > detectedColor.red) {
+    if (detectedColor.blue > m_blueFloor) {
+      return 'b';
+    }
+    else {
+      if (detectedColor.red > m_redFloor){
+        //How did we get here?
+        return 'r';
+      }
+    }
+  }
+
+  if (detectedColor.red > detectedColor.blue) {
+    if (detectedColor.red > m_redFloor) {
+      return 'r';
+    }
+    else {
+      if (detectedColor.blue > m_blueFloor){
+        //How did we get here
+        return 'b';
+      }
+    }
+  }
 }
 
 
@@ -163,7 +373,6 @@ void Take::TakeDashRead() {
     m_waitingRoomPIDController.SetOutputRange(min, max); 
     m_waitingRoomCoeff.kMinOutput = min; m_uptakeCoeff.kMaxOutput = max; 
   }
-  
     frc::Color dashDetectedColorUptake = m_uptakeSensor.GetColor();
     double dashUptakeIR = m_uptakeSensor.GetIR();
 
@@ -181,18 +390,3 @@ void Take::TakeDashRead() {
   frc::SmartDashboard::PutNumber("IR", dashRoomIR);
 
 }
-
-char Take::BallColorUptake(){
-  frc::Color detectedColor = m_uptakeSensor.GetColor();
-  if (detectedColor.red < detectedColor.blue) {return 'b';}
-  if (detectedColor.red > detectedColor.blue) {return 'r';}
-  else {return 'E';} //E for error
-}
-char Take::BallColorRoom(){
-  frc::Color detectedColor = m_waitingRoomSensor.GetColor();
-  if (detectedColor.red < detectedColor.blue) {return 'b';}
-  if (detectedColor.red > detectedColor.blue) {return 'r';}
-  else {return 'E';} //E for error
-
-}
-

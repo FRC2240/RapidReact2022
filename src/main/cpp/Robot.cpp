@@ -162,17 +162,27 @@ void Robot::TeleopPeriodic() {
   //TODO: climber controls
 
 
+//Better Uptake
+  if (m_take.HoldBall() == 1) {} // Hold in waiting room, no shooter action needed
+  if (m_take.HoldBall() == 2) {} // Hold in uptake, no shooter action needed
+  // The above lines are precationary
+
+  if (m_take.EjectBall() == 3) { // Spit out the ball
+    m_shooter.Spit(0.1);
+  }
+  if (m_take.EjectBall() == 4) {} // Reverse uptake
+
 
  //uptake
  if (m_stick.GetAButtonPressed()) {
    if (uptakeBool == true) {
      //stop uptake
-     m_take.UptakeStop();
+     m_take.ReturnIntake();
      uptakeBool = false;
    }
    if (uptakeBool == false) {
      //Start uptake
-     m_take.UptakeStart(0.25);
+     m_take.DeployIntake();
      uptakeBool = true;
    }
  }

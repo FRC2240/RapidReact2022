@@ -17,6 +17,13 @@ Shooter::Shooter(frc::DifferentialDrive* d, frc::XboxController* s, Take* t)
   InitializePIDControllers();
 }
 
+// Weak l'il spit
+//Default value not working, investigate later
+void Shooter::Spit(double vel = 0.1) {
+  m_shootingMotorAlpha.Set(vel);
+  m_shootingMotorBeta.Set(vel);
+}
+
 bool Shooter::LimelightTracking()
 {
   nt::NetworkTableEntry txEntry;
