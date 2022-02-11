@@ -31,6 +31,8 @@ class Shooter {
   void Fire();
   void InitializePIDControllers();
 
+  void Spit(double vel);
+
  private:
 
   double CalculateRPM(double d);

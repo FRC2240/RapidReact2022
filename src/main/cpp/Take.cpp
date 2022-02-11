@@ -8,18 +8,8 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
-void Take::TakePeriodic(){
-  Take::UptakeLiveStatus();
-  Take::RoomLiveStatus();
-  Take::RightColorBall();
-  Take::TeamColor();
-  Take::BallColorRoom();
-  Take::BallColorUptake();
-  //  Take::UptakeBall();
-  Take::EjectBall();
-  Take::HoldBall();
-
-}
+// RIP void Take::TakePeriodic()
+// Once you were garbage, now you are missed garbage
 
 void Take::UptakeStart(double speed) {
 m_spinIntakeMotor.Set(speed);
@@ -52,7 +42,12 @@ char Take::TeamColor() {
   if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) {return 'b';}
 }
 
-void Take::HoldBall(){
+// WHY EJECT/HOLD BALL IS AN INT:
+// For better comunication with other classes, (namley shooter) a double allows
+// Eject ball to comunicate with Teleop which will then call shooter
+// The value of Eject/Hold Ball is the secnario name
+// See below for scenario IDs
+int Take::HoldBall(){
 
   //Here is a logn block comment on the flow of the system
   //
@@ -70,17 +65,24 @@ void Take::HoldBall(){
     //scenario 1
     m_spinIntakeMotor.Set(0.1);
     m_uptakeMotor.Set(0.1);
+    return 1;
   }
 
   if (Take::RightColorBall() && Take::RoomLiveStatus() != 'e') {
     //secnario 2
     m_spinIntakeMotor.Set(0.1);
+    return 2;
   }
 
 }
 
 
-void Take::EjectBall(){
+// WHY EJECT/HOLD BALL IS AN INT:
+// For better comunication with other classes, (namley shooter) a double allows
+// Eject ball to comunicate with Teleop which will then call shooter
+// The value of Eject/Hold Ball is the secnario name
+// See below for scenario IDs
+int Take::EjectBall(){
   //Here is a logn block comment on the flow of the system
   //
   //If it's the right color and the waiting room is empty, it holds in waiting room
@@ -98,7 +100,7 @@ void Take::EjectBall(){
     m_spinIntakeMotor.Set(0.1);
     m_uptakeMotor.Set(0.1);
     m_waitingRoomMotor.Set(0.1);
-
+    return 3;
 
   }
 
@@ -106,6 +108,7 @@ void Take::EjectBall(){
     //secnario 4
     m_spinIntakeMotor.Set(-0.1);
     m_uptakeMotor.Set(-0.1);
+    return 4;
   }
 
 }

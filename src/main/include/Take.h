@@ -32,8 +32,8 @@ class Take {
   void DeployIntake();
   void ReturnIntake();
 
-  void HoldBall();
-  void EjectBall();
+  int HoldBall();
+  int EjectBall();
   void UptakeBall();
 
   char BallColorUptake();
