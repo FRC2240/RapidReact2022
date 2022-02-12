@@ -44,10 +44,7 @@ private:
   struct pidCoeff {
     double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
   };
-
-  //PID pain
-  frc2::PIDController m_leftClimberExtendPIDController{0.0, 0.0, 0.0}; //kP, kI, kD
-  frc2::PIDController m_rightClimberExtendPIDController{0.0, 0.0, 0.0};
+  
   rev::SparkMaxPIDController m_leftClimberRotatePIDController = m_leftClimberRotationNeo.GetPIDController();
   rev::SparkMaxPIDController m_rightClimberRotatePIDController = m_rightClimberRotationNeo.GetPIDController();
 
@@ -59,22 +56,21 @@ private:
   //Neos
   pidCoeff m_leftClimberRotateCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
   pidCoeff m_rightClimberRotateCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-  
 
 
   //splish splash, your opinion is trash
 
   //Falcons 
-  pidCoeff m_leftClimberExtendCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; 
-  pidCoeff m_rightClimberExtendCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  pidCoeff m_leftClimberExtendCoeff{0.1, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0}; 
+  pidCoeff m_rightClimberExtendCoeff{0.1, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
   //vars
 
-  double forthSetPointR, forthSetPointL;
-  double backSetPointR, backSetPointL;
+  double m_forthSetPointR, m_forthSetPointL = 0.0;
+  double m_backSetPointR, m_backSetPointL = 0.0;
 
-  double climbExtendPointR, climbExtendPointL;
-  double climbLowerPointR, climbLowerPointL;
+  double m_climbExtendPointR, m_climbExtendPointL = 0.0;
+  double m_climbLowerPointR, m_climbLowerPointL = 0.0;
 };
 
 

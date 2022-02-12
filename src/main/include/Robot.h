@@ -107,6 +107,7 @@ class Robot : public frc::TimedRobot {
 
 
   double m_driveExponent = 1.2;
+  double m_turnFactor = 0.6;
   bool shootMan;
   bool limelightTrackingBool = false;
   bool wrongBall;
