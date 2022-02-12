@@ -73,5 +73,5 @@ class Shooter {
   pidCoeff m_shooterAlphaCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
   pidCoeff m_shooterBetaCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-  std::shared_ptr<nt::NetworkTableInstance> m_table = nt::NetworkTableInstance::GetDefault().GetTable("limelight-bepis");
+  //std::shared_ptr<nt::NetworkTableInstance> m_table = nt::NetworkTableInstance::GetDefault().GetTable("limelight-bepis");
 };

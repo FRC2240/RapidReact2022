@@ -165,13 +165,14 @@ void Robot::TeleopPeriodic() {
   //Read controller input
   double throttle = m_stick.GetLeftTriggerAxis() - m_stick.GetRightTriggerAxis();
  
-  double throttleExp = a * pow(throttle, 4) + b * pow(throttle, 2);
+  double throttleExp = a * pow(throttle, 4) + b * pow(throttle, 1.48);
  
+ /*
   if (throttleExp > 1) {
     throttleExp = 1;
   } else if (throttleExp < -1) {
     throttleExp = -1;
-  }
+  }*/
   //Looks like Ethan wants exponents...
    
   double turnInput = m_stick.GetLeftX()*m_turnFactor - m_stick.GetLeftY()*m_turnFactor;
@@ -180,7 +181,7 @@ void Robot::TeleopPeriodic() {
 
   //TODO: climber controls
 
-
+/*
 //Better Uptake
   if (m_take.HoldBall() == 1) {} // Hold in waiting room, no shooter action needed
   if (m_take.HoldBall() == 2) {} // Hold in uptake, no shooter action needed
@@ -204,7 +205,7 @@ void Robot::TeleopPeriodic() {
      m_take.DeployIntake();
      uptakeBool = true;
    }
- }
+ }*/
 
 //Possibly uneeded
  /*
