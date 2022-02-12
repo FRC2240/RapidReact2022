@@ -167,6 +167,20 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
+  //climber
+
+  //move to next phase if button pressed (button subject to change)
+  if (m_stick_climb.GetAButtonReleased()) { 
+    m_climber.Progress();
+  }
+
+  //kill button (button subject to change)
+  if (m_stick_climb.GetBButtonPressed()) {
+    m_climber.Kill();
+  }
+
+  m_climber.Run(); //constantly running, initially set to zero but changes whenever progress is called
+
 
   double a = .375/.4495;
   double b = .0745/.4495;
