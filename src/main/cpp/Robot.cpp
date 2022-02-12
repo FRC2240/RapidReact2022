@@ -33,6 +33,7 @@ void Robot::RobotInit() {
   //  double ballsInShooter = 0; //add when break bar functionality is added
   shootMan = true;
   wrongBall = false;
+  InitializeDashboard();
 
 }
 
@@ -155,19 +156,27 @@ void Robot::TeleopInit() {
 
   m_climber.ClimberDashRead();
   m_climber.ClimberPIDInit();
-
+  ReadDashboard();
 }
 
 void Robot::TeleopPeriodic() {
 
+  double a = .375/.4495;
+  double b = .0745/.4495;
   //Read controller input
-
-  double throttle = m_stick.GetRightTriggerAxis() - m_stick.GetLeftTriggerAxis();
-
+  double throttle = m_stick.GetLeftTriggerAxis() - m_stick.GetRightTriggerAxis();
+ 
+  double throttleExp = a * pow(throttle, 4) + b * pow(throttle, 2);
+ 
+  if (throttleExp > 1) {
+    throttleExp = 1;
+  } else if (throttleExp < -1) {
+    throttleExp = -1;
+  }
   //Looks like Ethan wants exponents...
-  double throttleExp = pow(throttle, m_driveExponent);
-  double turnInput = pow(m_stick.GetRightX(), m_driveExponent);
-
+   
+  double turnInput = m_stick.GetLeftX()*m_turnFactor - m_stick.GetLeftY()*m_turnFactor;
+ 
   m_drive.ArcadeDrive(throttleExp, turnInput);
 
   //TODO: climber controls
@@ -224,9 +233,70 @@ void Robot::DisabledInit() {}
 
 void Robot::DisabledPeriodic() {}
 
-void Robot::TestInit() {}
+void Robot::TestInit() {
+  ReadDashboard();
+}
 
-void Robot::TestPeriodic() {}
+void Robot::TestPeriodic() {
+  double a = .375/.4495;
+  double b = .0745/.4495;
+  //Read controller input
+  double throttle = m_stick.GetLeftTriggerAxis() - m_stick.GetRightTriggerAxis();
+ 
+  double throttleExp = a * pow(throttle, 4) + b * pow(throttle, 2);
+ 
+  if (throttleExp > 1) {
+    throttleExp = 1;
+  } else if (throttleExp < -1) {
+    throttleExp = -1;
+  }
+  //Looks like Ethan wants exponents...
+   
+  double turnInput = m_stick.GetLeftX()*m_turnFactor - m_stick.GetLeftY()*m_turnFactor;
+ 
+  m_drive.ArcadeDrive(throttleExp, turnInput);
+ 
+  if (m_stick.GetYButton()) {
+    m_take.m_waitingRoomMotor.Set(1.0);
+  } else if (m_stick.GetRightBumper()) {
+    m_take.m_waitingRoomMotor.Set(-1.0);
+  } else {
+    m_take.m_waitingRoomMotor.Set(0.0);
+  }
+ 
+  if (m_stick.GetAButtonPressed()) {
+    if (bool uptakeBool = false) {
+      m_take.m_uptakeMotor.Set(-1.0);
+      m_take.m_spinIntakeMotor.Set(-1.0);
+      uptakeBool = true;
+    } else if (bool uptakeBool = true) {
+      m_take.m_uptakeMotor.Set(0.0);
+      m_take.m_spinIntakeMotor.Set(0.0);
+      uptakeBool = false;
+    }
+  } else if (m_stick.GetXButtonPressed()) {
+      if (bool uptakeBool = false) {
+        m_take.m_uptakeMotor.Set(m_uptakePower);
+        m_take.m_spinIntakeMotor.Set(1.0);
+        uptakeBool = true;
+      } else if (bool uptakeBool = true) {
+      m_take.m_uptakeMotor.Set(m_uptakePower);
+      m_take.m_spinIntakeMotor.Set(0.0);
+      uptakeBool = false;
+    }
+  }
+ 
+  if (m_stick.GetLeftBumperPressed()) {
+    m_shooter.m_shootingMotorAlpha.Set(-m_shooterPower);
+    m_shooter.m_shootingMotorBeta.Set(m_shooterPower);
+    m_take.m_waitingRoomMotor.Set(1.0);
+  } else {
+    m_shooter.m_shootingMotorAlpha.Set(0.0);
+    m_shooter.m_shootingMotorBeta.Set(0.0);
+    m_take.m_waitingRoomMotor.Set(0.0);
+  }
+
+}
 
 void Robot::InitializePIDControllers() {
   //Climber intializes PIDs in it's own function
@@ -239,19 +309,26 @@ void Robot::InitializeDashboard() {
   //Climbers do that in their own function
   m_climber.ClimberDashInit();
   m_take.TakeDashInit();
-
+  frc::SmartDashboard::PutNumber("Turn Factor", m_turnFactor);
+  frc::SmartDashboard::PutNumber("Shooter Power", m_shooterPower);
+  frc::SmartDashboard::PutNumber("Uptake Power", m_uptakePower);
+ 
 // Winch Motors
-
+ 
   /*
   if (shootMan){frc::SmartDashboard::PutNumber("Shooter Mode", "Auto");}
   if (!shootMan){frc::SmartDashboard::PutNumber("Shooter Mode", "Manual");}
   */
-
+ 
 }
+
 
 void Robot::ReadDashboard() {
   m_climber.ClimberDashRead();
   m_take.TakeDashRead();
+  m_turnFactor  = frc::SmartDashboard::GetNumber("Turn Factor", 0);
+  m_shooterPower = frc::SmartDashboard::GetNumber("Shooter Power", 0);
+  m_uptakePower = frc::SmartDashboard::GetNumber("Uptake Power", 0);
 }
 
 // void Robot::setSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds) {

@@ -47,6 +47,23 @@ class Take {
   //Might be better public
   char RoomLiveStatus();
   char UptakeLiveStatus();
+  
+  //Motors
+  rev::CANSparkMax m_rotateIntakeMotor{rotateIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_spinIntakeMotor{spinIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_uptakeMotor{uptakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_waitingRoomMotor {waitingRoomMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
+
+  //Encoders
+  rev::SparkMaxRelativeEncoder m_rotateIntakeEncoder = m_rotateIntakeMotor.GetEncoder(); 
+  rev::SparkMaxRelativeEncoder m_spinIntakeEncoder = m_spinIntakeMotor.GetEncoder(); 
+  rev::SparkMaxRelativeEncoder m_uptakeMotorEncoder = m_uptakeMotor.GetEncoder();
+  rev::SparkMaxRelativeEncoder m_waitingRoomMotorEncoder = m_waitingRoomMotor.GetEncoder();
+
+  //PID
+  rev::SparkMaxPIDController m_rotateIntakePIDController = m_rotateIntakeMotor.GetPIDController();
+  rev::SparkMaxPIDController m_uptakePIDController = m_uptakeMotor.GetPIDController();
+  rev::SparkMaxPIDController m_waitingRoomPIDController = m_waitingRoomMotor.GetPIDController(); 
 
 
     private:
@@ -65,22 +82,6 @@ class Take {
 
   static constexpr auto i2cPort = frc::I2C::Port::kOnboard;
 
-  //Motors
-  rev::CANSparkMax m_rotateIntakeMotor{rotateIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_spinIntakeMotor{spinIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_uptakeMotor{uptakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_waitingRoomMotor {waitingRoomMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-
-  //Encoders
-  rev::SparkMaxRelativeEncoder m_rotateIntakeEncoder = m_rotateIntakeMotor.GetEncoder(); 
-  rev::SparkMaxRelativeEncoder m_spinIntakeEncoder = m_spinIntakeMotor.GetEncoder(); 
-  rev::SparkMaxRelativeEncoder m_uptakeMotorEncoder = m_uptakeMotor.GetEncoder();
-  rev::SparkMaxRelativeEncoder m_waitingRoomMotorEncoder = m_waitingRoomMotor.GetEncoder();
-
-  //PID
-  rev::SparkMaxPIDController m_rotateIntakePIDController = m_rotateIntakeMotor.GetPIDController();
-  rev::SparkMaxPIDController m_uptakePIDController = m_uptakeMotor.GetPIDController();
-  rev::SparkMaxPIDController m_waitingRoomPIDController = m_waitingRoomMotor.GetPIDController(); 
 
   struct pidCoeff {
     double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;

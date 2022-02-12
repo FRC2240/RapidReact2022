@@ -37,6 +37,12 @@ class Shooter {
 
   void Spit(double vel);
 
+  WPI_TalonFX m_shootingMotorAlpha {21};
+  WPI_TalonFX m_shootingMotorBeta {20};
+
+  TalonFXSensorCollection m_shootingMotorAlphaEncoder = m_shootingMotorAlpha.GetSensorCollection();
+  TalonFXSensorCollection m_shootingMotorBetaEncoder = m_shootingMotorBeta.GetSensorCollection();
+
  private:
 
   double CalculateRPM(double d);
@@ -60,11 +66,6 @@ class Shooter {
 
   //Limelight init should go here
 
-  WPI_TalonFX m_shootingMotorAlpha {21};
-  WPI_TalonFX m_shootingMotorBeta {20};
-
-  TalonFXSensorCollection m_shootingMotorAlphaEncoder = m_shootingMotorAlpha.GetSensorCollection();
-  TalonFXSensorCollection m_shootingMotorBetaEncoder = m_shootingMotorBeta.GetSensorCollection();
 
   struct pidCoeff {
     double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;

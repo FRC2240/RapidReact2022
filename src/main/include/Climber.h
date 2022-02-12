@@ -22,6 +22,22 @@ public:
   void RotateLeft(char dirL); // f = forwards, b = backwards. All lowercase
   void RotateRight(char dirR);
 
+  rev::CANSparkMax m_rightClimberRotationNeo{rightClimberRotationNeoDeviceID, rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_leftClimberRotationNeo{leftClimberRotationNeoDeviceID, rev::CANSparkMax::MotorType::kBrushless};
+
+  // Climber falcons
+  WPI_TalonFX m_leftClimberExtender = {12};
+  WPI_TalonFX m_rightClimberExtender = {13};
+  TalonFXSensorCollection m_leftClimberExtenderEncoder = m_leftClimberExtender.GetSensorCollection();
+  TalonFXSensorCollection m_rightClimberExtenderEncoder = m_rightClimberExtender.GetSensorCollection();
+  rev::SparkMaxPIDController m_leftClimberRotatePIDController = m_leftClimberRotationNeo.GetPIDController();
+  rev::SparkMaxPIDController m_rightClimberRotatePIDController = m_rightClimberRotationNeo.GetPIDController();
+
+  //thing
+  
+  rev::SparkMaxRelativeEncoder m_rightClimberEncoder = m_rightClimberRotationNeo.GetEncoder(); 
+  rev::SparkMaxRelativeEncoder m_leftClimberEncoder = m_leftClimberRotationNeo.GetEncoder(); 
+
 
 private:
   frc::SendableChooser<std::string> m_chooser;
@@ -31,27 +47,14 @@ private:
   static const int rightClimberRotationNeoDeviceID = 10;
   static const int leftClimberRotationNeoDeviceID = 11;
 
-  rev::CANSparkMax m_rightClimberRotationNeo{rightClimberRotationNeoDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_leftClimberRotationNeo{leftClimberRotationNeoDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-
-  // Climber falcons
-  WPI_TalonFX m_leftClimberExtender = {12};
-  WPI_TalonFX m_rightClimberExtender = {13};
-  TalonFXSensorCollection m_leftClimberExtenderEncoder = m_leftClimberExtender.GetSensorCollection();
-  TalonFXSensorCollection m_rightClimberExtenderEncoder = m_rightClimberExtender.GetSensorCollection();
+  
 
   // Ding dong, you are wrong
   struct pidCoeff {
     double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
   };
   
-  rev::SparkMaxPIDController m_leftClimberRotatePIDController = m_leftClimberRotationNeo.GetPIDController();
-  rev::SparkMaxPIDController m_rightClimberRotatePIDController = m_rightClimberRotationNeo.GetPIDController();
-
-  //thing
   
-  rev::SparkMaxRelativeEncoder m_rightClimberEncoder = m_rightClimberRotationNeo.GetEncoder(); 
-  rev::SparkMaxRelativeEncoder m_leftClimberEncoder = m_leftClimberRotationNeo.GetEncoder(); 
 
   //Neos
   pidCoeff m_leftClimberRotateCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
