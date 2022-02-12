@@ -139,8 +139,12 @@ void Shooter::Fire()
       double distance = ((heightOfTarget - heightLimelight) / tan((constantLimelightAngle + ty) * (3.141592653 / 180)));
 
       double rpm = CalculateRPM(distance);
+      /*
       m_shooterAlphaPIDController.SetReference(rpm, rev::CANSparkMax::ControlType::kVelocity);
       m_shooterBetaPIDController.SetReference(rpm, rev::CANSparkMax::ControlType::kVelocity);
+      */
+     m_shootingMotorAlpha.Set(ControlMode::Velocity, rpm*(2048.0/600.0));
+     m_shootingMotorBeta.Set(ControlMode::Velocity, rpm*(2048.0/600.0));
     }
     else
     {
@@ -161,8 +165,13 @@ void Shooter::Fire()
     double distance = Shooter::LimelightDistance();
 
     double rpm = CalculateRPM(distance);
+    /*
     m_shooterAlphaPIDController.SetReference(rpm, rev::CANSparkMax::ControlType::kVelocity);
     m_shooterBetaPIDController.SetReference(rpm, rev::CANSparkMax::ControlType::kVelocity);
+    */
+   m_shootingMotorAlpha.Set(ControlMode::Velocity, rpm*(2048.0/600.0));
+   m_shootingMotorBeta.Set(ControlMode::Velocity, rpm*(2048.0/600.0));
+
   }
 }
 
@@ -204,92 +213,92 @@ double Shooter::LimelightDistance(){
 void Shooter::InitializePIDControllers()
 {
   ReadDashboard();
+  /* Factory default hardware to prevent unexpected behavior */
+    m_shootingMotorAlpha.ConfigFactoryDefault();
+    m_shootingMotorBeta.ConfigFactoryDefault();
 
-  m_shooterAlphaPIDController.SetP(m_shooterAlphaCoeff.kP);
-  m_shooterAlphaPIDController.SetI(m_shooterAlphaCoeff.kI);
-  m_shooterAlphaPIDController.SetD(m_shooterAlphaCoeff.kD);
-  m_shooterAlphaPIDController.SetIZone(m_shooterAlphaCoeff.kIz);
-  m_shooterAlphaPIDController.SetFF(m_shooterAlphaCoeff.kFF);
-  m_shooterAlphaPIDController.SetOutputRange(m_shooterAlphaCoeff.kMinOutput, m_shooterAlphaCoeff.kMaxOutput);
+    /* Configure Sensor Source for Pirmary PID */
+    m_shootingMotorAlpha.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 10);
+    m_shootingMotorBeta.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 10);
 
-  m_shooterBetaPIDController.SetP(m_shooterBetaCoeff.kP);
-  m_shooterBetaPIDController.SetI(m_shooterBetaCoeff.kI);
-  m_shooterBetaPIDController.SetD(m_shooterBetaCoeff.kD);
-  m_shooterBetaPIDController.SetIZone(m_shooterBetaCoeff.kIz);
-  m_shooterBetaPIDController.SetFF(m_shooterBetaCoeff.kFF);
-  m_shooterBetaPIDController.SetOutputRange(m_shooterBetaCoeff.kMinOutput, m_shooterBetaCoeff.kMaxOutput);
+    //_talon.SetSensorPhase(false);
+    m_shootingMotorAlpha.SetInverted(TalonFXInvertType::CounterClockwise);
+    m_shootingMotorBeta.SetInverted(TalonFXInvertType::CounterClockwise);
+
+    /* Set relevant frame periods to be at least as fast as periodic rate */
+    m_shootingMotorAlpha.SetStatusFramePeriod(StatusFrameEnhanced::Status_13_Base_PIDF0, 10, 10);
+    m_shootingMotorAlpha.SetStatusFramePeriod(StatusFrameEnhanced::Status_10_MotionMagic, 10, 10);
+
+    m_shootingMotorBeta.SetStatusFramePeriod(StatusFrameEnhanced::Status_13_Base_PIDF0, 10, 10);
+    m_shootingMotorBeta.SetStatusFramePeriod(StatusFrameEnhanced::Status_10_MotionMagic, 10, 10);
+
+    /* Set the peak and nominal outputs */
+    m_shootingMotorAlpha.ConfigNominalOutputForward(0, 10);
+    m_shootingMotorAlpha.ConfigNominalOutputReverse(0, 10);
+    m_shootingMotorAlpha.ConfigPeakOutputForward(m_shooterAlphaCoeff.kMaxOutput, 10);
+    m_shootingMotorAlpha.ConfigPeakOutputReverse(m_shooterAlphaCoeff.kMinOutput, 10);
+
+    m_shootingMotorBeta.ConfigNominalOutputForward(0, 10);
+    m_shootingMotorBeta.ConfigNominalOutputReverse(0, 10);
+    m_shootingMotorBeta.ConfigPeakOutputForward(m_shooterBetaCoeff.kMaxOutput, 10);
+    m_shootingMotorBeta.ConfigPeakOutputReverse(m_shooterBetaCoeff.kMinOutput, 10);
+
+    /* Set Motion Magic gains in slot0 - see documentation */
+    m_shootingMotorAlpha.SelectProfileSlot(0, 0);
+    m_shootingMotorAlpha.Config_kF(0, m_shooterAlphaCoeff.kFF, 10);
+    m_shootingMotorAlpha.Config_kP(0, m_shooterAlphaCoeff.kP, 10);
+    m_shootingMotorAlpha.Config_kI(0, m_shooterAlphaCoeff.kI, 10);
+    m_shootingMotorAlpha.Config_kD(0, m_shooterAlphaCoeff.kD, 10);
+
+    m_shootingMotorBeta.SelectProfileSlot(0, 0);
+    m_shootingMotorBeta.Config_kF(0, m_shooterBetaCoeff.kFF, 10);
+    m_shootingMotorBeta.Config_kP(0, m_shooterBetaCoeff.kP, 10);
+    m_shootingMotorBeta.Config_kI(0, m_shooterBetaCoeff.kI, 10);
+    m_shootingMotorBeta.Config_kD(0, m_shooterBetaCoeff.kD, 10);
+
+    /* Set acceleration and vcruise velocity - see documentation */
+    m_shootingMotorAlpha.ConfigMotionCruiseVelocity(1500, 10);
+    m_shootingMotorAlpha.ConfigMotionAcceleration(1500, 10);
+
+    m_shootingMotorBeta.ConfigMotionCruiseVelocity(1500, 10);
+    m_shootingMotorBeta.ConfigMotionAcceleration(1500, 10);
+
+    /* Zero the sensor */
+    m_shootingMotorBeta.SetSelectedSensorPosition(0, 0, 10);
+    m_shootingMotorBeta.SetSelectedSensorPosition(0, 0, 10);
 }
 
 void Shooter::InitializeDashboard()
 {
-  frc::SmartDashboard::PutNumber("Alpha Motor P Gain", m_shooterAlphaCoeff.kP);
-  frc::SmartDashboard::PutNumber("Alpha Motor I Gain", m_shooterAlphaCoeff.kI);
-  frc::SmartDashboard::PutNumber("Alpha Motor D Gain", m_shooterAlphaCoeff.kD);
-  frc::SmartDashboard::PutNumber("Alpha Motor Max Output", m_shooterAlphaCoeff.kMaxOutput);
-  frc::SmartDashboard::PutNumber("Alpha Motor Min Output", m_shooterAlphaCoeff.kMinOutput);
+  frc::SmartDashboard::PutNumber("Alpha P Gain", m_shooterAlphaCoeff.kP);
+  frc::SmartDashboard::PutNumber("Alpha I Gain", m_shooterAlphaCoeff.kI);
+  frc::SmartDashboard::PutNumber("Alpha D Gain", m_shooterAlphaCoeff.kD);
+  frc::SmartDashboard::PutNumber("Alpha FF Gain", m_shooterAlphaCoeff.kFF);
+  frc::SmartDashboard::PutNumber("Alpha Max Output", m_shooterAlphaCoeff.kMaxOutput);
+  frc::SmartDashboard::PutNumber("Alpha Min Output", m_shooterAlphaCoeff.kMinOutput);
 
-  frc::SmartDashboard::PutNumber("Beta Motor P Gain", m_shooterBetaCoeff.kP);
-  frc::SmartDashboard::PutNumber("Beta Motor I Gain", m_shooterBetaCoeff.kI);
-  frc::SmartDashboard::PutNumber("Beta Motor D Gain", m_shooterBetaCoeff.kD);
-  frc::SmartDashboard::PutNumber("Beta Motor Max Output", m_shooterBetaCoeff.kMaxOutput);
-  frc::SmartDashboard::PutNumber("Beta Motor Min Output", m_shooterBetaCoeff.kMinOutput);
+  frc::SmartDashboard::PutNumber("Beta P Gain", m_shooterBetaCoeff.kP);
+  frc::SmartDashboard::PutNumber("Beta I Gain", m_shooterBetaCoeff.kI);
+  frc::SmartDashboard::PutNumber("Beta D Gain", m_shooterBetaCoeff.kD);
+  frc::SmartDashboard::PutNumber("Beta FF Gain", m_shooterBetaCoeff.kFF);
+  frc::SmartDashboard::PutNumber("Beta Max Output", m_shooterBetaCoeff.kMaxOutput);
+  frc::SmartDashboard::PutNumber("Beta Min Output", m_shooterBetaCoeff.kMinOutput);
 }
 
 void Shooter::ReadDashboard()
 {
-  double p, i, d, min, max;
+  m_shooterAlphaCoeff.kP   = frc::SmartDashboard::GetNumber("Alpha P Gain", 0.0);
+  m_shooterAlphaCoeff.kI   = frc::SmartDashboard::GetNumber("Alpha I Gain", 0.0);
+  m_shooterAlphaCoeff.kD   = frc::SmartDashboard::GetNumber("Alpha D Gain", 0.0);
+  m_shooterAlphaCoeff.kFF  = frc::SmartDashboard::GetNumber("Alpha FF Gain", 0.0);
+  m_shooterAlphaCoeff.kMinOutput = frc::SmartDashboard::GetNumber("Alpha Min Output", 0.0);
+  m_shooterAlphaCoeff.kMaxOutput = frc::SmartDashboard::GetNumber("Alpha Max Output", 0.0);
 
-  p = frc::SmartDashboard::GetNumber("Alpha Motor P Gain", 0);
-  std::cout << "Read Dashboard Alpha Motor P Gain: " << p << "\n";
-  i = frc::SmartDashboard::GetNumber("Alpha Motor I Gain", 0);
-  std::cout << "Read Dashboard Alpha Motor I Gain: " << i << "\n";
-  d = frc::SmartDashboard::GetNumber("Alpha Motor D Gain", 0);
-  std::cout << "Read Dashboard Alpha Motor D Gain: " << d << "\n";
-  min = frc::SmartDashboard::GetNumber("Alpha Motor Min Output", 0);
-  max = frc::SmartDashboard::GetNumber("Alpha Motor Max Output", 0);
+  m_shooterBetaCoeff.kP   = frc::SmartDashboard::GetNumber("Beta P Gain", 0.0);
+  m_shooterBetaCoeff.kI   = frc::SmartDashboard::GetNumber("Beta I Gain", 0.0);
+  m_shooterBetaCoeff.kD   = frc::SmartDashboard::GetNumber("Beta D Gain", 0.0);
+  m_shooterBetaCoeff.kFF  = frc::SmartDashboard::GetNumber("Beta FF Gain", 0.0);
+  m_shooterBetaCoeff.kMinOutput = frc::SmartDashboard::GetNumber("Beta Min Output", 0.0);
+  m_shooterBetaCoeff.kMaxOutput = frc::SmartDashboard::GetNumber("Beta Max Output", 0.0);
 
-  if ((p != m_shooterAlphaCoeff.kP))
-  {
-    m_shooterAlphaCoeff.kP = p;
-  }
-  if ((i != m_shooterAlphaCoeff.kI))
-  {
-    m_shooterAlphaCoeff.kI = i;
-  }
-  if ((d != m_shooterAlphaCoeff.kD))
-  {
-    m_shooterAlphaCoeff.kD = d;
-  }
-  if ((max != m_shooterAlphaCoeff.kMaxOutput) || (min != m_shooterAlphaCoeff.kMinOutput))
-  {
-    m_shooterAlphaCoeff.kMinOutput = min;
-    m_shooterAlphaCoeff.kMaxOutput = max;
-  }
-
-  p = frc::SmartDashboard::GetNumber("Beta Motor P Gain", 0);
-  std::cout << "Read Dashboard Beta Motor P Gain: " << p << "\n";
-  i = frc::SmartDashboard::GetNumber("Beta Motor I Gain", 0);
-  std::cout << "Read Dashboard Beta Motor I Gain: " << i << "\n";
-  d = frc::SmartDashboard::GetNumber("Beta Motor D Gain", 0);
-  std::cout << "Read Dashboard Beta Motor D Gain: " << d << "\n";
-  min = frc::SmartDashboard::GetNumber("Beta Motor Min Output", 0);
-  max = frc::SmartDashboard::GetNumber("Beta Motor Max Output", 0);
-
-  if ((p != m_shooterBetaCoeff.kP))
-  {
-    m_shooterBetaCoeff.kP = p;
-  }
-  if ((i != m_shooterBetaCoeff.kI))
-  {
-    m_shooterBetaCoeff.kI = i;
-  }
-  if ((d != m_shooterBetaCoeff.kD))
-  {
-    m_shooterBetaCoeff.kD = d;
-  }
-  if ((max != m_shooterBetaCoeff.kMaxOutput) || (min != m_shooterBetaCoeff.kMinOutput))
-  {
-    m_shooterBetaCoeff.kMinOutput = min;
-    m_shooterBetaCoeff.kMaxOutput = max;
-  }
 }
