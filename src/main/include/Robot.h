@@ -103,6 +103,7 @@ class Robot : public frc::TimedRobot {
   // frc::SimpleMotorFeedforward<units::meters> m_feedforward{kS, kV, kA};
 
   double m_driveExponent = 1.2;
+  double m_turnFactor = 0.6;
   bool shootMan;
   bool limelightTrackingBool = false;
   bool wrongBall;

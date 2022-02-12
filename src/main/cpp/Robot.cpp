@@ -160,14 +160,22 @@ void Robot::TeleopInit() {
 
 void Robot::TeleopPeriodic() {
 
+  double a = .375/.4495;
+  double b = .0745/.4495;
   //Read controller input
-
-  double throttle = m_stick.GetRightTriggerAxis() - m_stick.GetLeftTriggerAxis();
-
+  double throttle = m_stick.GetLeftTriggerAxis() - m_stick.GetRightTriggerAxis();
+ 
+  double throttleExp = a * pow(throttle, 4) + b * pow(throttle, 2);
+ 
+  if (throttleExp > 1) {
+    throttleExp = 1;
+  } else if (throttleExp < -1) {
+    throttleExp = -1;
+  }
   //Looks like Ethan wants exponents...
-  double throttleExp = pow(throttle, m_driveExponent);
-  double turnInput = pow(m_stick.GetRightX(), m_driveExponent);
-
+   
+  double turnInput = m_stick.GetLeftX()*m_turnFactor - m_stick.GetLeftY()*m_turnFactor;
+ 
   m_drive.ArcadeDrive(throttleExp, turnInput);
 
   //TODO: climber controls
