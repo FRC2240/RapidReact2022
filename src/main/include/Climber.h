@@ -12,18 +12,21 @@
 class Climber {
 public:
   //ClimberSubsystem();
-  void RaiseLeft();
   void ClimberPIDInit();
   void ClimberDashRead();
   void ClimberDashInit();
-  void RaiseRight();
-  void LowerLeft();
-  void LowerRight();
-  void RotateLeft(char dirL); // f = forwards, b = backwards. All lowercase
-  void RotateRight(char dirR);
+  void ExtendALowerL(double setpointL);
+  void ExtendALowerR(double setpointR);
+  void RotateLeft(double rotatePointL); // f = forwards, b = backwards. All lowercase
+  void RotateRight(double rotatePointR);
+
+  void Progress();
+  void Kill();
+  void Run();
 
 
 private:
+  bool CanIProgress(); 
   frc::SendableChooser<std::string> m_chooser;
 
 
@@ -66,11 +69,20 @@ private:
 
   //vars
 
-  double m_forthSetPointR, m_forthSetPointL = 0.0;
-  double m_backSetPointR, m_backSetPointL = 0.0;
+  double m_rotateSetpointR, m_rotateSetpointL = 0.0;
+  //double m_backSetPointR, m_backSetPointL = 0.0;
+
 
   double m_climbExtendPointR, m_climbExtendPointL = 0.0;
-  double m_climbLowerPointR, m_climbLowerPointL = 0.0;
+  //double m_climbLowerPointR, m_climbLowerPointL = 0.0;
+
+  int m_phase = 0;
+
+  //position values
+
+  double phaseOneLift, phaseTwoRetract, phaseThreeRotate, phaseFourRetract, phaseFiveExtend, phaseSixRetract, 
+  phaseSevenRetract, phaseSevenExtend, phaseEightRotate, phaseNineRetract;
+  
 };
 
 
