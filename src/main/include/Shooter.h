@@ -20,7 +20,9 @@
 
 
 #include <frc/DriverStation.h>
-#include <frc/XboxController.h>
+#include <frc/XboxController.h> 
+
+#include "ctre/Phoenix.h"
 
 
 
@@ -30,14 +32,15 @@ class Shooter {
   
   void Fire();
   void InitializePIDControllers();
+  void InitializeDashboard();
+  void ReadDashboard();
 
  private:
 
   double CalculateRPM(double d);
   bool LimelightTracking();
   double LimelightDistance();
-  void InitializeDashboard();
-  void ReadDashboard();
+  
 
   frc::DifferentialDrive* m_drive;
   frc::XboxController*    m_stick;
@@ -54,18 +57,12 @@ class Shooter {
   double constantLimelightAngle;
 
   //Limelight init should go here
-  static const int shootingMotorAlphaDeviceID = 7;
-  static const int shootingMotorBetaDeviceID = 8;
 
-  rev::CANSparkMax m_shootingMotorAlpha{shootingMotorAlphaDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_shootingMotorBeta{shootingMotorBetaDeviceID, rev::CANSparkMax::MotorType::kBrushless};
+  WPI_TalonFX m_shootingMotorAlpha {21};
+  WPI_TalonFX m_shootingMotorBeta {20};
 
-  rev::SparkMaxRelativeEncoder m_shootingMotorAlphaEncoder = m_shootingMotorAlpha.GetEncoder(); 
-  rev::SparkMaxRelativeEncoder m_shootingMotorBetaEncoder = m_shootingMotorBeta.GetEncoder();
-  double tx_OFFSET = 0.0;
-
-  rev::SparkMaxPIDController m_shooterAlphaPIDController = m_shootingMotorAlpha.GetPIDController();
-  rev::SparkMaxPIDController m_shooterBetaPIDController = m_shootingMotorBeta.GetPIDController();
+  TalonFXSensorCollection m_shootingMotorAlphaEncoder = m_shootingMotorAlpha.GetSensorCollection();
+  TalonFXSensorCollection m_shootingMotorBetaEncoder = m_shootingMotorBeta.GetSensorCollection();
 
   struct pidCoeff {
     double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;

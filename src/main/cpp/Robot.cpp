@@ -13,6 +13,12 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 void Robot::RobotInit() {
+  m_climber.ClimberPIDInit();
+  m_climber.ClimberDashInit();
+
+  m_shooter.InitializePIDControllers(); 
+  m_shooter.InitializeDashboard();
+
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   m_chooser.AddOption(kThreeBallBlue, kThreeBallBlue);
@@ -145,6 +151,11 @@ void Robot::AutonomousPeriodic() {
 
 void Robot::TeleopInit() {
   m_shooter.InitializePIDControllers();
+  m_shooter.ReadDashboard();
+
+  m_climber.ClimberDashRead();
+  m_climber.ClimberPIDInit();
+
 }
 
 void Robot::TeleopPeriodic() {
@@ -356,8 +367,6 @@ void Robot::InitializeDashboard() {
 void Robot::ReadDashboard() {
   m_climber.ClimberDashRead();
   m_take.TakeDashRead();
-
-  
 }
 
 // void Robot::setSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds) {
