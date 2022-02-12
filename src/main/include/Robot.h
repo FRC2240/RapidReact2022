@@ -98,7 +98,7 @@ class Robot : public frc::TimedRobot {
   static constexpr auto   kV = 1.53 * 1_V * 1_s / 1_m;         
   static constexpr auto   kA = 0.254 * 1_V * 1_s * 1_s / 1_m; 
 
-  frc::DifferentialDriveOdometry m_odometry;
+  frc::DifferentialDriveOdometry *m_odometry;
   frc::DifferentialDriveKinematics m_kinematics{kTrackWidth};
   frc::SimpleMotorFeedforward<units::meters> m_feedforward{kS, kV, kA};
 

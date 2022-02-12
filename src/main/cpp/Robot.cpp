@@ -13,6 +13,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 void Robot::RobotInit() {
+  m_odometry = new frc::DifferentialDriveOdometry(frc::Rotation2d(0_deg));
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   m_chooser.AddOption(kThreeBallBlue, kThreeBallBlue);
@@ -385,7 +386,7 @@ void Robot::autoDrive(units::meters_per_second_t xSpeed, units::radians_per_seco
 void Robot::autoFollowPath(){
   if (autoTimer.Get() < m_trajectory.TotalTime()) {
     auto desiredPose = m_trajectory.Sample(autoTimer.Get());
-    auto refChassisSpeeds = controller1.Calculate(m_odometry.GetPose(), desiredPose);
+    auto refChassisSpeeds = controller1.Calculate(m_odometry->GetPose(), desiredPose);
  
     autoDrive(refChassisSpeeds.vx, refChassisSpeeds.omega);
   } else {
