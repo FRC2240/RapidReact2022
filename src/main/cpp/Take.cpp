@@ -11,7 +11,7 @@
 // RIP void Take::TakePeriodic()
 // Once you were garbage, now you are missed garbage
 
-void Take::UptakeStart(double speed) {
+void Take::UptakeStart(doublespeed) {
 m_spinIntakeMotor.Set(speed);
 m_uptakeMotor.Set(speed);
 }

@@ -58,6 +58,7 @@ bool Shooter::LimelightTracking()
   {
     return false;
   }
+
 }
 
 double Shooter::CalculateRPM(double d)
@@ -67,8 +68,11 @@ double Shooter::CalculateRPM(double d)
 
 //Shooter::Arm was removed as it was a relic of an old shooter
 
-void Shooter::Fire()
-{
+void Shooter::Fire() {
+  if (m_overridenRPM != 0) {
+    m_shootingMotorAlpha.Set(ControlMode::Velocity, m_overridenRPM*(2048.0/600.0));
+    m_shootingMotorBeta.Set(ControlMode::Velocity, m_overridenRPM*(2048.0/600.0));
+  }
   if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed)
   {
     if (m_take->BallColorRoom() == 'r')
@@ -270,6 +274,16 @@ void Shooter::InitializePIDControllers()
 
 void Shooter::InitializeDashboard()
 {
+  // Belle bell
+
+  frc::SmartDashboard::PutNumber("Shooter Alpha RPM",     m_shootingMotorAlpha.GetSelectedSensorVelocity());
+  frc::SmartDashboard::PutNumber("Shooter Beta RPM",     m_shootingMotorBeta.GetSelectedSensorVelocity());
+
+  if (m_overridenRPM != 0) { frc::SmartDashboard::PutNumber("Overridden RPM", m_overridenRPM);}
+
+  frc::SmartDashboard::PutNumber("Desired RPM", CalculateRPM(LimelightDistance()));
+  frc::SmartDashboard::PutNumber("Reported Distance", LimelightDistance());
+
   frc::SmartDashboard::PutNumber("Alpha P Gain", m_shooterAlphaCoeff.kP);
   frc::SmartDashboard::PutNumber("Alpha I Gain", m_shooterAlphaCoeff.kI);
   frc::SmartDashboard::PutNumber("Alpha D Gain", m_shooterAlphaCoeff.kD);
@@ -287,6 +301,9 @@ void Shooter::InitializeDashboard()
 
 void Shooter::ReadDashboard()
 {
+
+  m_overridenRPM = frc::SmartDashboard::GetNumber("Overridden RPM", 0.0);
+
   m_shooterAlphaCoeff.kP   = frc::SmartDashboard::GetNumber("Alpha P Gain", 0.0);
   m_shooterAlphaCoeff.kI   = frc::SmartDashboard::GetNumber("Alpha I Gain", 0.0);
   m_shooterAlphaCoeff.kD   = frc::SmartDashboard::GetNumber("Alpha D Gain", 0.0);
