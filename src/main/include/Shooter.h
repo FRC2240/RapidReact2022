@@ -51,6 +51,7 @@ class Shooter {
   bool  shootMan;
   bool  wrongBall;
 
+  double m_overridenRPM;
   double taLowBound, taHighBound;
   double txLowBound, txHighBound;
   double tyLowBound, tyHighBound;
