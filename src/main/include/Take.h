@@ -17,8 +17,6 @@
 
 class Take {
     public:
-  void TakePeriodic();
-
   void TakePIDInit();
   void TakeDashRead();
   void TakeDashInit();
@@ -86,7 +84,10 @@ class Take {
     double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
 };
 
-pidCoeff m_rotateIntakeCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; 
+double kMaxVel = 4000, kMinVel = 0, kMaxAcc = 2500, kAllErr = 0;
+pidCoeff m_rotateIntakeCoeff {3.0e-4, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
+
+
 pidCoeff m_uptakeCoeff {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 pidCoeff m_waitingRoomCoeff {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; 
 

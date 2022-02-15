@@ -8,9 +8,6 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
-// RIP void Take::TakePeriodic()
-// Once you were garbage, now you are missed garbage
-
 void Take::UptakeStart(double speed) {
 m_spinIntakeMotor.Set(speed);
 m_uptakeMotor.Set(speed);
@@ -22,13 +19,11 @@ void Take::UptakeStop() {
 }
 
 void Take::DeployIntake() {
-  //TODO PIDs
-
+  m_rotateIntakePIDController.SetReference(10.17, rev::CANSparkMax::ControlType::kSmartMotion);
 }
 
 void Take::ReturnIntake() {
-  //TODO PIDs
-
+  m_rotateIntakePIDController.SetReference(0.0, rev::CANSparkMax::ControlType::kSmartMotion);
 }
 
 bool Take::RightColorBall() {
@@ -286,6 +281,11 @@ void Take::TakePIDInit() {
   m_rotateIntakePIDController.SetIZone(m_rotateIntakeCoeff.kIz);
   m_rotateIntakePIDController.SetFF(m_rotateIntakeCoeff.kFF);
   m_rotateIntakePIDController.SetOutputRange(m_rotateIntakeCoeff.kMinOutput, m_rotateIntakeCoeff.kMaxOutput);
+
+  m_rotateIntakePIDController.SetSmartMotionMaxVelocity(kMaxVel);
+  m_rotateIntakePIDController.SetSmartMotionMinOutputVelocity(kMinVel);
+  m_rotateIntakePIDController.SetSmartMotionMaxAccel(kMaxAcc);
+  m_rotateIntakePIDController.SetSmartMotionAllowedClosedLoopError(kAllErr);
 
   m_uptakePIDController.SetP(m_uptakeCoeff.kP);
   m_uptakePIDController.SetI(m_uptakeCoeff.kI);
