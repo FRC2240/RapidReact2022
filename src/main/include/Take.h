@@ -92,9 +92,9 @@ pidCoeff m_waitingRoomCoeff {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
   //Sensors
   
-
-  rev::ColorSensorV3 m_uptakeSensor {frc::I2C::Port::kOnboard};
-  rev::ColorSensorV3 m_waitingRoomSensor {frc::I2C::Port::kOnboard};
+// FIXME When Color Sensors have been wired
+// rev::ColorSensorV3 m_uptakeSensor {frc::I2C::Port::kOnboard};
+// rev::ColorSensorV3 m_waitingRoomSensor {frc::I2C::Port::kOnboard};
 
   //Colors
 static constexpr frc::Color kBlue = frc::Color(0.143, 0.427, 0.429);
@@ -105,8 +105,9 @@ frc::Color desiredColor;
 frc::Color undesiredColor;
 frc::Color nothingDetected = kBlack;
 
- frc::Color uptakeDetectedColor = m_uptakeSensor.GetColor();
- frc::Color waitingRoomDetectedColor = m_waitingRoomSensor.GetColor();
+// FIXME 
+frc::Color uptakeDetectedColor; //= m_uptakeSensor.GetColor();
+frc::Color waitingRoomDetectedColor; //= m_waitingRoomSensor.GetColor();
 
   //Theese are values form 0 to 225 determing the r or b value
   //Needed for being a certain color
@@ -116,8 +117,8 @@ frc::Color nothingDetected = kBlack;
  rev::ColorMatch m_colorMatcher;
 
  double confidence = 0.0;
-frc::Color uptakeMatchedColor = m_colorMatcher.MatchClosestColor(uptakeDetectedColor, confidence);
-frc::Color waitingRoomMatchedColor = m_colorMatcher.MatchClosestColor(waitingRoomDetectedColor, confidence);
+frc::Color uptakeMatchedColor; // FIXME = m_colorMatcher.MatchClosestColor(uptakeDetectedColor, confidence);
+frc::Color waitingRoomMatchedColor; // FIXME = m_colorMatcher.MatchClosestColor(waitingRoomDetectedColor, confidence);
 
 double m_stopOne, m_stopTwo;
 

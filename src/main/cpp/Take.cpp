@@ -57,8 +57,9 @@ int Take::HoldBall(){
   //If it's the wrong color and the waiting room is empty it sh(oo|i)ts the ball
   //If it's the wrong color and the waitng room is full, it reverses the (int|up)take
 
-  frc::Color uptakeColor = m_uptakeSensor.GetColor();
-  frc::Color roomColor = m_waitingRoomSensor.GetColor();
+// FIXME
+  frc::Color uptakeColor; // = m_uptakeSensor.GetColor();
+  frc::Color roomColor; // = m_waitingRoomSensor.GetColor();
 
 
   if (Take::RightColorBall() && Take::RoomLiveStatus() == 'e') {
@@ -91,8 +92,9 @@ int Take::EjectBall(){
   //If it's the wrong color and the waiting room is empty it sh(oo|i)ts the ball //secnario 3
   //If it's the wrong color and the waitng room is full, it reverses the (int|up)take //secnario 4
 
-  frc::Color uptakeColor = m_uptakeSensor.GetColor();
-  frc::Color roomColor = m_waitingRoomSensor.GetColor();
+// FIXME
+  frc::Color uptakeColor; // = m_uptakeSensor.GetColor();
+  frc::Color roomColor; // = m_waitingRoomSensor.GetColor();
 
 
   if (!Take::RightColorBall() && Take::RoomLiveStatus() == 'e'){
@@ -158,7 +160,8 @@ void Take::SetColor() {
 char Take::BallColorUptake(){
   if (Take::UptakeLiveStatus() != 'e'){
 
-  frc::Color detectedColor = m_uptakeSensor.GetColor();
+  // FIXME
+  frc::Color detectedColor; // = m_uptakeSensor.GetColor();
   if (detectedColor.blue > detectedColor.red) {
     if (detectedColor.blue > m_blueFloor) {
       return 'b';
@@ -188,7 +191,8 @@ char Take::BallColorUptake(){
 
 char Take::BallColorRoom(){
   if (Take::RoomLiveStatus() != 'e'){
-  frc::Color detectedColor = m_waitingRoomSensor.GetColor();
+  // FIXME
+  frc::Color detectedColor; // = m_waitingRoomSensor.GetColor();
   if (detectedColor.blue > detectedColor.red) {
     if (detectedColor.blue > m_blueFloor) {
       return 'b';
@@ -219,7 +223,8 @@ char Take::BallColorRoom(){
 
 //r for red, b for blue, e for empty and E for error
 char Take::RoomLiveStatus(){
-  frc::Color detectedColor = m_waitingRoomSensor.GetColor();
+  // FIXME
+  frc::Color detectedColor; // = m_waitingRoomSensor.GetColor();
   if (detectedColor.blue > detectedColor.red) {
     if (detectedColor.blue > m_blueFloor) {
       return 'b';
@@ -246,7 +251,8 @@ char Take::RoomLiveStatus(){
 }
 
 char Take::UptakeLiveStatus(){
-  frc::Color detectedColor = m_uptakeSensor.GetColor();
+  // FIXME
+  frc::Color detectedColor; // = m_uptakeSensor.GetColor();
   if (detectedColor.blue > detectedColor.red) {
     if (detectedColor.blue > m_blueFloor) {
       return 'b';
@@ -373,16 +379,18 @@ void Take::TakeDashRead() {
     m_waitingRoomPIDController.SetOutputRange(min, max); 
     m_waitingRoomCoeff.kMinOutput = min; m_uptakeCoeff.kMaxOutput = max; 
   }
-    frc::Color dashDetectedColorUptake = m_uptakeSensor.GetColor();
-    double dashUptakeIR = m_uptakeSensor.GetIR();
+    // FIXME
+    frc::Color dashDetectedColorUptake; // = m_uptakeSensor.GetColor();
+    double dashUptakeIR; // = m_uptakeSensor.GetIR();
 
   frc::SmartDashboard::PutNumber("Red", dashDetectedColorUptake.red);
   frc::SmartDashboard::PutNumber("Green", dashDetectedColorUptake.green);
   frc::SmartDashboard::PutNumber("Blue", dashDetectedColorUptake.blue);
   frc::SmartDashboard::PutNumber("IR", dashUptakeIR);
 
-  frc::Color dashDetectedColorRoom = m_waitingRoomSensor.GetColor();
-  double dashRoomIR = m_waitingRoomSensor.GetIR();
+  // FIXME
+  frc::Color dashDetectedColorRoom; // = m_waitingRoomSensor.GetColor();
+  double dashRoomIR; // = m_waitingRoomSensor.GetIR();
 
   frc::SmartDashboard::PutNumber("Red", dashDetectedColorRoom.red);
   frc::SmartDashboard::PutNumber("Green", dashDetectedColorRoom.green);
