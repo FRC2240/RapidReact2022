@@ -17,6 +17,8 @@ void Robot::RobotInit() {
 
   m_climber.ClimberPIDInit();
   m_climber.ClimberDashInit();
+  m_take.TakePIDInit();
+
 
   m_shooter.InitializePIDControllers(); 
   m_shooter.InitializeDashboard();
@@ -163,6 +165,7 @@ void Robot::TeleopInit() {
 
   m_climber.ClimberDashRead();
   m_climber.ClimberPIDInit();
+  m_take.TakePIDInit();
 
 }
 
