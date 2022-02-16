@@ -48,8 +48,14 @@ class Take {
 
   enum teamColorEnum {redTeam, blueTeam};
   enum BallStatusEnum {rightEmpty, rightFull, wrongEmpty, wrongFull};
-  enum BallColor {blueBall, redBall, nullBall};
+  enum BallColor {blueBall, redBall, nullBall, errorBall};
+  enum TakeExitMessages {exitNominal, exitNull, exitExecption, exitUnexpected};
 
+  //What these mean:
+  // exitNominal: a filler exit message for when things go well
+  // exitNull: an exit message for when nothing happens
+  // exitException: an exit message for when something goes wrong
+  // exitUnexpected: for when something happens that shouldn't happen
     private:
 
   // (right|wrong) means ball color
@@ -112,7 +118,7 @@ frc::Color undesiredColor;
 frc::Color nothingDetected = kBlack;
 
 // FIXME
-
+  // temporatly 
   frc::Color uptakeDetectedColor; //= m_uptakeSensor.GetColor();
 frc::Color waitingRoomDetectedColor; //= m_waitingRoomSensor.GetColor();
 

@@ -17,7 +17,9 @@ void Robot::RobotInit() {
 
   m_climber.ClimberPIDInit();
   m_climber.ClimberDashInit();
+
   m_take.TakePIDInit();
+  m_take.TakeDashInit();
 
 
   m_shooter.InitializePIDControllers(); 
@@ -213,12 +215,12 @@ void Robot::TeleopPeriodic() {
 //Better Uptake
   if (m_take.ManipulateBall() == m_take.rightEmpty) {} // Hold in waiting room, no shooter action needed
   if (m_take.ManipulateBall() == m_take.rightFull) {} // Hold in uptake, no shooter action needed
-  // The above lines are precationary
+  // The above lines are precautionary
 
   if (m_take.ManipulateBall() == m_take.wrongEmpty) { // Spit out the ball
     m_shooter.Spit(0.1);
   }
-  if (m_take.ManipulateBall() == m_take.wrongFull) {} // Reverse uptake
+  if (m_take.ManipulateBall() == m_take.wrongFull) {} // Reverse uptake, done internally 
 
   /*
  //uptake

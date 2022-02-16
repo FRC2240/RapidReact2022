@@ -37,6 +37,9 @@ bool Take::RightColorBall() {
 int Take::TeamColor() {
   if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {return redTeam;}
   if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) {return blueTeam;}
+  else {
+    return exitExecption;
+  }
 }
 
 
@@ -60,13 +63,13 @@ int Take::ManipulateBall(){
     //scenario 1
     m_spinIntakeMotor.Set(0.1);
     m_uptakeMotor.Set(0.1);
-    return 1;
+    return rightEmpty;
   }
 
   if (Take::RightColorBall() && Take::RoomLiveStatus() != nullBall) {
     //secnario 2
     m_spinIntakeMotor.Set(0.1);
-    return 2;
+    return rightFull;
   }
 
 
@@ -75,7 +78,7 @@ int Take::ManipulateBall(){
     m_spinIntakeMotor.Set(0.1);
     m_uptakeMotor.Set(0.1);
     m_waitingRoomMotor.Set(0.1);
-    return 3;
+    return wrongEmpty;
 
   }
 
@@ -83,7 +86,11 @@ int Take::ManipulateBall(){
     //secnario 4
     m_spinIntakeMotor.Set(-0.1);
     m_uptakeMotor.Set(-0.1);
-    return 4;
+    return wrongFull;
+  }
+  else {
+    return exitUnexpected;
+    std::cout << "[WARN]: Unexpected behavior in Take::ManipulateBall()" << "\n";
   }
 
 }
@@ -147,7 +154,8 @@ int Take::BallColorUptake(){
     }
   }
 
-  if (detectedColor.red > detectedColor.blue) {
+  else {
+    if (detectedColor.red > detectedColor.blue) {
     if (detectedColor.red > m_redFloor) {
       return redBall;
     }
@@ -161,12 +169,18 @@ int Take::BallColorUptake(){
  }
 }
 
+  else {
+    return exitNominal;
+  }
+  std::cout << "[WARN]: Unexpected behavior in Take::BallColorUptake \n";
+  return exitExecption;
+}
+
 
 //enumed
 char Take::BallColorRoom(){
   frc::Color detectedColor; //Null for now
-  if (Take::RoomLiveStatus() != nullBall){}
-    if (detectedColor.blue > detectedColor.red) {
+
   if (Take::RoomLiveStatus() != nullBall){
     frc::Color detectedColor; // = m_waitingRoomDetectedColor.GetColor();
     if (detectedColor.blue > m_blueFloor) {
@@ -184,14 +198,16 @@ char Take::BallColorRoom(){
     if (detectedColor.red > m_redFloor) {
       return redBall;
     }
-    else {
       if (detectedColor.blue > m_blueFloor){
         //How did we get here
         return blueBall;
-      }
     }
   }
+    else {
+      return exitNominal;
  }
+  return exitExecption;
+  std::cout << "[WARN]: Unexpected behavior in Take::BallColorRoom \n";
 }
 
 //Theese are for the current status of the sensors
@@ -228,6 +244,7 @@ char Take::RoomLiveStatus(){
   else {
     return nullBall;
   }
+  return exitExecption;
 }
 
 char Take::UptakeLiveStatus(){
@@ -256,6 +273,10 @@ char Take::UptakeLiveStatus(){
       }
     }
   }
+  else {
+    return errorBall;
+  }
+  return exitExecption;
 }
 
 
@@ -364,22 +385,23 @@ void Take::TakeDashRead() {
     m_waitingRoomPIDController.SetOutputRange(min, max); 
     m_waitingRoomCoeff.kMinOutput = min; m_uptakeCoeff.kMaxOutput = max; 
   }
+
     // FIXME
     frc::Color dashDetectedColorUptake; // = m_uptakeSensor.GetColor();
-    double dashUptakeIR; // = m_uptakeSensor.GetIR();
+    //    double dashUptakeIR; // = m_uptakeSensor.GetIR(); //unused
 
   frc::SmartDashboard::PutNumber("Red", dashDetectedColorUptake.red);
   frc::SmartDashboard::PutNumber("Green", dashDetectedColorUptake.green);
   frc::SmartDashboard::PutNumber("Blue", dashDetectedColorUptake.blue);
-  frc::SmartDashboard::PutNumber("IR", dashUptakeIR);
+  //  frc::SmartDashboard::PutNumber("IR", dashUptakeIR); // UNUSED
 
   // FIXME
   frc::Color dashDetectedColorRoom; // = m_waitingRoomSensor.GetColor();
-  double dashRoomIR; // = m_waitingRoomSensor.GetIR();
+  //  double dashRoomIR; // = m_waitingRoomSensor.GetIR(); // Unused
 
   frc::SmartDashboard::PutNumber("Red", dashDetectedColorRoom.red);
   frc::SmartDashboard::PutNumber("Green", dashDetectedColorRoom.green);
   frc::SmartDashboard::PutNumber("Blue", dashDetectedColorRoom.blue);
-  frc::SmartDashboard::PutNumber("IR", dashRoomIR);
+  //  frc::SmartDashboard::PutNumber("IR", dashRoomIR); //Unsued
 
 }
