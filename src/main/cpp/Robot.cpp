@@ -180,6 +180,8 @@ void Robot::TeleopPeriodic() {
   //kill button (button subject to change)
   if (m_stick_climb.GetBButtonPressed()) {
     m_climber.Kill();
+    // Today we mourn the loss of our climber
+    // It's sacrifice will not be forgotten, rest in peace
   }
 
   m_climber.Run(); //constantly running, initially set to zero but changes whenever progress is called
@@ -206,18 +208,19 @@ void Robot::TeleopPeriodic() {
 
   //TODO: climber controls
 
-/*
+  // Why was this commented out. Eh.
+
 //Better Uptake
-  if (m_take.HoldBall() == 1) {} // Hold in waiting room, no shooter action needed
-  if (m_take.HoldBall() == 2) {} // Hold in uptake, no shooter action needed
+  if (m_take.ManipulateBall() == m_take.rightEmpty) {} // Hold in waiting room, no shooter action needed
+  if (m_take.ManipulateBall() == m_take.rightFull) {} // Hold in uptake, no shooter action needed
   // The above lines are precationary
 
-  if (m_take.EjectBall() == 3) { // Spit out the ball
+  if (m_take.ManipulateBall() == m_take.wrongEmpty) { // Spit out the ball
     m_shooter.Spit(0.1);
   }
-  if (m_take.EjectBall() == 4) {} // Reverse uptake
+  if (m_take.ManipulateBall() == m_take.wrongFull) {} // Reverse uptake
 
-
+  /*
  //uptake
  if (m_stick.GetAButtonPressed()) {
    if (uptakeBool == true) {
@@ -230,7 +233,8 @@ void Robot::TeleopPeriodic() {
      m_take.DeployIntake();
      uptakeBool = true;
    }
- }*/
+ }
+  */
 
 //Possibly uneeded
  /*

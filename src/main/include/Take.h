@@ -30,15 +30,15 @@ class Take {
   void DeployIntake();
   void ReturnIntake();
 
-  int HoldBall();
-  int EjectBall();
+  int ManipulateBall();
+
   void UptakeBall();
 
-  char BallColorUptake();
+  int BallColorUptake();
   char BallColorRoom();
 
   //Probably should be private
-  char TeamColor();
+  int TeamColor();
 
   bool RightColorBall();
 
@@ -46,9 +46,14 @@ class Take {
   char RoomLiveStatus();
   char UptakeLiveStatus();
 
+  enum teamColorEnum {redTeam, blueTeam};
+  enum BallStatusEnum {rightEmpty, rightFull, wrongEmpty, wrongFull};
+  enum BallColor {blueBall, redBall, nullBall};
 
     private:
 
+  // (right|wrong) means ball color
+  // (Empty | Full) means intake status
 
     frc::SendableChooser<std::string> m_chooser;
 
@@ -106,8 +111,9 @@ frc::Color desiredColor;
 frc::Color undesiredColor;
 frc::Color nothingDetected = kBlack;
 
-// FIXME 
-frc::Color uptakeDetectedColor; //= m_uptakeSensor.GetColor();
+// FIXME
+
+  frc::Color uptakeDetectedColor; //= m_uptakeSensor.GetColor();
 frc::Color waitingRoomDetectedColor; //= m_waitingRoomSensor.GetColor();
 
   //Theese are values form 0 to 225 determing the r or b value
