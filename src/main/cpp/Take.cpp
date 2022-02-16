@@ -60,13 +60,13 @@ int Take::ManipulateBall(){
     //scenario 1
     m_spinIntakeMotor.Set(0.1);
     m_uptakeMotor.Set(0.1);
-    return 1;
+    return rightEmpty;
   }
 
   if (Take::RightColorBall() && Take::RoomLiveStatus() != nullBall) {
     //secnario 2
     m_spinIntakeMotor.Set(0.1);
-    return 2;
+    return rightFull;
   }
 
 
@@ -75,7 +75,7 @@ int Take::ManipulateBall(){
     m_spinIntakeMotor.Set(0.1);
     m_uptakeMotor.Set(0.1);
     m_waitingRoomMotor.Set(0.1);
-    return 3;
+    return wrongEmpty;
 
   }
 
@@ -83,7 +83,7 @@ int Take::ManipulateBall(){
     //secnario 4
     m_spinIntakeMotor.Set(-0.1);
     m_uptakeMotor.Set(-0.1);
-    return 4;
+    return wrongFull;
   }
 
 }
@@ -159,6 +159,9 @@ int Take::BallColorUptake(){
     }
   }
  }
+  else {
+    return errorBall;
+  }
 }
 
 
@@ -192,6 +195,9 @@ char Take::BallColorRoom(){
     }
   }
  }
+    else {
+      return errorBall;
+    }
 }
 
 //Theese are for the current status of the sensors
@@ -255,6 +261,9 @@ char Take::UptakeLiveStatus(){
         return blueBall;
       }
     }
+  }
+  else {
+    return errorBall;
   }
 }
 

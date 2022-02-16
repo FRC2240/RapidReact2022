@@ -73,15 +73,15 @@ void Shooter::Fire() {
   }
   if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed)
   {
-    if (m_take->BallColorRoom() == 'r')
+    if (m_take->BallColorRoom() == m_take->redBall)
     {
       wrongBall = false;
     }
-    if (m_take->BallColorRoom() == 'b')
+    if (m_take->BallColorRoom() == m_take->blueBall)
     {
       wrongBall = true;
     }
-    if (m_take->BallColorRoom() == 'E')
+    if (m_take->BallColorRoom() == m_take->errorBall)
     {
       std::cout << "[WARN]: Color Sensor issue \n";
     }
@@ -89,15 +89,15 @@ void Shooter::Fire() {
 
   if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue)
   {
-    if (m_take->BallColorRoom() == 'r')
+    if (m_take->BallColorRoom() == m_take->redBall)
     {
       wrongBall = true;
     }
-    if (m_take->BallColorRoom() == 'b')
+    if (m_take->BallColorRoom() == m_take->blueBall)
     {
       wrongBall = false;
     }
-    if (m_take->BallColorRoom() == 'E')
+    if (m_take->BallColorRoom() == m_take->errorBall)
     {
       std::cout << "[WARN]: Color Sensor issue \n";
     }

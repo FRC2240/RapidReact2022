@@ -48,7 +48,7 @@ class Take {
 
   enum teamColorEnum {redTeam, blueTeam};
   enum BallStatusEnum {rightEmpty, rightFull, wrongEmpty, wrongFull};
-  enum BallColor {blueBall, redBall, nullBall};
+  enum BallColor {blueBall, redBall, nullBall, errorBall};
 
     private:
 
@@ -112,7 +112,7 @@ frc::Color undesiredColor;
 frc::Color nothingDetected = kBlack;
 
 // FIXME
-
+  // temporatly 
   frc::Color uptakeDetectedColor; //= m_uptakeSensor.GetColor();
 frc::Color waitingRoomDetectedColor; //= m_waitingRoomSensor.GetColor();
 
