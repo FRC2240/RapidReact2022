@@ -111,8 +111,9 @@ frc::Color desiredColor;
 frc::Color undesiredColor;
 frc::Color nothingDetected = kBlack;
 
-// FIXME 
-frc::Color uptakeDetectedColor; //= m_uptakeSensor.GetColor();
+// FIXME
+
+  frc::Color uptakeDetectedColor; //= m_uptakeSensor.GetColor();
 frc::Color waitingRoomDetectedColor; //= m_waitingRoomSensor.GetColor();
 
   //Theese are values form 0 to 225 determing the r or b value
