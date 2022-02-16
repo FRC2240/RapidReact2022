@@ -8,9 +8,6 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
-// RIP void Take::TakePeriodic()
-// Once you were garbage, now you are missed garbage
-
 void Take::UptakeStart(double speed) {
 m_spinIntakeMotor.Set(speed);
 m_uptakeMotor.Set(speed);
@@ -22,13 +19,11 @@ void Take::UptakeStop() {
 }
 
 void Take::DeployIntake() {
-  //TODO PIDs
-
+  m_rotateIntakePIDController.SetReference(10.17, rev::CANSparkMax::ControlType::kSmartMotion);
 }
 
 void Take::ReturnIntake() {
-  //TODO PIDs
-
+  m_rotateIntakePIDController.SetReference(0.0, rev::CANSparkMax::ControlType::kSmartMotion);
 }
 
 // enumified
@@ -56,8 +51,9 @@ int Take::ManipulateBall(){
   //If it's the wrong color and the waiting room is empty it sh(oo|i)ts the ball
   //If it's the wrong color and the waitng room is full, it reverses the (int|up)take
 
-  frc::Color uptakeColor = m_uptakeSensor.GetColor();
-  frc::Color roomColor = m_waitingRoomSensor.GetColor();
+// FIXME
+  frc::Color uptakeColor; // = m_uptakeSensor.GetColor();
+  frc::Color roomColor; // = m_waitingRoomSensor.GetColor();
 
 
   if (Take::RightColorBall() && Take::RoomLiveStatus() == nullBall) {
@@ -74,7 +70,9 @@ int Take::ManipulateBall(){
   }
 
 
+
   if (!Take::RightColorBall() && Take::RoomLiveStatus() == nullBall){
+
     //secnario 3
     m_spinIntakeMotor.Set(0.1);
     m_uptakeMotor.Set(0.1);
@@ -138,7 +136,8 @@ void Take::SetColor() {
 int Take::BallColorUptake(){
   if (Take::UptakeLiveStatus() != nullBall){
 
-  frc::Color detectedColor = m_uptakeSensor.GetColor();
+  // FIXME
+  frc::Color detectedColor; // = m_uptakeSensor.GetColor();
   if (detectedColor.blue > detectedColor.red) {
     if (detectedColor.blue > m_blueFloor) {
       return blueBall;
@@ -168,8 +167,10 @@ int Take::BallColorUptake(){
 
 //enumed
 char Take::BallColorRoom(){
+
   if (Take::RoomLiveStatus() != nullBall){
   frc::Color detectedColor = m_waitingRoomSensor.GetColor();
+
   if (detectedColor.blue > detectedColor.red) {
     if (detectedColor.blue > m_blueFloor) {
       return blueBall;
@@ -202,7 +203,8 @@ char Take::BallColorRoom(){
 
 //enumd
 char Take::RoomLiveStatus(){
-  frc::Color detectedColor = m_waitingRoomSensor.GetColor();
+  // FIXME
+  frc::Color detectedColor; // = m_waitingRoomSensor.GetColor();
   if (detectedColor.blue > detectedColor.red) {
     if (detectedColor.blue > m_blueFloor) {
       return blueBall;
@@ -232,7 +234,8 @@ char Take::RoomLiveStatus(){
 }
 
 char Take::UptakeLiveStatus(){
-  frc::Color detectedColor = m_uptakeSensor.GetColor();
+  // FIXME
+  frc::Color detectedColor; // = m_uptakeSensor.GetColor();
   if (detectedColor.blue > detectedColor.red) {
     if (detectedColor.blue > m_blueFloor) {
       return blueBall;
@@ -266,6 +269,11 @@ void Take::TakePIDInit() {
   m_rotateIntakePIDController.SetIZone(m_rotateIntakeCoeff.kIz);
   m_rotateIntakePIDController.SetFF(m_rotateIntakeCoeff.kFF);
   m_rotateIntakePIDController.SetOutputRange(m_rotateIntakeCoeff.kMinOutput, m_rotateIntakeCoeff.kMaxOutput);
+
+  m_rotateIntakePIDController.SetSmartMotionMaxVelocity(kMaxVel);
+  m_rotateIntakePIDController.SetSmartMotionMinOutputVelocity(kMinVel);
+  m_rotateIntakePIDController.SetSmartMotionMaxAccel(kMaxAcc);
+  m_rotateIntakePIDController.SetSmartMotionAllowedClosedLoopError(kAllErr);
 
   m_uptakePIDController.SetP(m_uptakeCoeff.kP);
   m_uptakePIDController.SetI(m_uptakeCoeff.kI);
@@ -359,16 +367,18 @@ void Take::TakeDashRead() {
     m_waitingRoomPIDController.SetOutputRange(min, max); 
     m_waitingRoomCoeff.kMinOutput = min; m_uptakeCoeff.kMaxOutput = max; 
   }
-    frc::Color dashDetectedColorUptake = m_uptakeSensor.GetColor();
-    double dashUptakeIR = m_uptakeSensor.GetIR();
+    // FIXME
+    frc::Color dashDetectedColorUptake; // = m_uptakeSensor.GetColor();
+    double dashUptakeIR; // = m_uptakeSensor.GetIR();
 
   frc::SmartDashboard::PutNumber("Red", dashDetectedColorUptake.red);
   frc::SmartDashboard::PutNumber("Green", dashDetectedColorUptake.green);
   frc::SmartDashboard::PutNumber("Blue", dashDetectedColorUptake.blue);
   frc::SmartDashboard::PutNumber("IR", dashUptakeIR);
 
-  frc::Color dashDetectedColorRoom = m_waitingRoomSensor.GetColor();
-  double dashRoomIR = m_waitingRoomSensor.GetIR();
+  // FIXME
+  frc::Color dashDetectedColorRoom; // = m_waitingRoomSensor.GetColor();
+  double dashRoomIR; // = m_waitingRoomSensor.GetIR();
 
   frc::SmartDashboard::PutNumber("Red", dashDetectedColorRoom.red);
   frc::SmartDashboard::PutNumber("Green", dashDetectedColorRoom.green);

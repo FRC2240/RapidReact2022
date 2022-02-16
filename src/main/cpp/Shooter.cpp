@@ -32,11 +32,9 @@ bool Shooter::LimelightTracking()
 
   double ta, tx, ty;
 
-  auto inst = nt::NetworkTableInstance::GetDefault();
-  auto table = inst.GetTable("limelight-bepis");
-  txEntry = table->GetEntry("tx");
-  tyEntry = table->GetEntry("ty");
-  taEntry = table->GetEntry("ta");
+  txEntry = m_table->GetEntry("tx");
+  tyEntry = m_table->GetEntry("ty");
+  taEntry = m_table->GetEntry("ta");
 
   tx = txEntry.GetDouble(0.0);
   ty = tyEntry.GetDouble(0.0);
@@ -122,11 +120,9 @@ void Shooter::Fire() {
 
   double /*ta,*/ tx, ty;
 
-  auto inst = nt::NetworkTableInstance::GetDefault();
-  auto table = inst.GetTable("limelight-bepis");
-  txEntry = table->GetEntry("tx");
-  tyEntry = table->GetEntry("ty");
-  taEntry = table->GetEntry("ta");
+  txEntry = m_table->GetEntry("tx");
+  tyEntry = m_table->GetEntry("ty");
+  taEntry = m_table->GetEntry("ta");
 
   tx = txEntry.GetDouble(0.0);
   ty = tyEntry.GetDouble(0.0);
@@ -188,12 +184,9 @@ double Shooter::LimelightDistance(){
 
   double ta, tx, ty;
 
-  auto inst = nt::NetworkTableInstance::GetDefault();
-  auto table = inst.GetTable("limelight-bepis");
-  txEntry = table->GetEntry("tx");
-  tyEntry = table->GetEntry("ty");
-  taEntry = table->GetEntry("ta");
-
+  txEntry = m_table->GetEntry("tx");
+  tyEntry = m_table->GetEntry("ty");
+  taEntry = m_table->GetEntry("ta");
 
   txEntry.SetDouble(tx);
   tyEntry.SetDouble(ty);
