@@ -32,15 +32,15 @@ class Take {
   void DeployIntake();
   void ReturnIntake();
 
-  int HoldBall();
-  int EjectBall();
+  int ManipulateBall();
+
   void UptakeBall();
 
-  char BallColorUptake();
+  int BallColorUptake();
   char BallColorRoom();
 
   //Probably should be private
-  char TeamColor();
+  int TeamColor();
 
   bool RightColorBall();
 
@@ -48,9 +48,14 @@ class Take {
   char RoomLiveStatus();
   char UptakeLiveStatus();
 
+  enum teamColorEnum {redTeam, blueTeam};
+  enum BallStatusEnum {rightEmpty, rightFull, wrongEmpty, wrongFull};
+  enum BallColor {blueBall, redBall, nullBall};
 
     private:
 
+  // (right|wrong) means ball color
+  // (Empty | Full) means intake status
 
     frc::SendableChooser<std::string> m_chooser;
 
