@@ -164,9 +164,10 @@ int Take::BallColorUptake(){
 
 //enumed
 char Take::BallColorRoom(){
+  if (Take::RoomLiveStatus() != nullBall){}
+    if (detectedColor.blue > detectedColor.red) {
   if (Take::RoomLiveStatus() != nullBall){
   frc::Color detectedColor = m_waitingRoomSensor.GetColor();
-  if (detectedColor.blue > detectedColor.red) {
     if (detectedColor.blue > m_blueFloor) {
       return blueBall;
     }
