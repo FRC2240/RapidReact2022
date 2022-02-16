@@ -31,23 +31,22 @@ void Take::ReturnIntake() {
 
 }
 
+// enumified
 bool Take::RightColorBall() {
-  if (Take::BallColorUptake() == 'b' && Take::TeamColor() == 'b') {return true;}
-  if (Take::BallColorUptake() == 'r' && Take::TeamColor() == 'r') {return true;}
+  if (Take::BallColorUptake() == 'b' && Take::TeamColor() == blueTeam) {return true;}
+  if (Take::BallColorUptake() == 'r' && Take::TeamColor() == redTeam) {return true;}
   else {return false;}
 }
 
-char Take::TeamColor() {
-  if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {return 'r';}
-  if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) {return 'b';}
+// enumed
+int Take::TeamColor() {
+  if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {return redTeam;}
+  if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) {return blueTeam;}
 }
 
-// WHY EJECT/HOLD BALL IS AN INT:
-// For better comunication with other classes, (namley shooter) a double allows
-// Eject ball to comunicate with Teleop which will then call shooter
-// The value of Eject/Hold Ball is the secnario name
-// See below for scenario IDs
-int Take::HoldBall(){
+
+// Formerly an int, now an enum
+int Take::ManipulateBall(){
 
   //Here is a logn block comment on the flow of the system
   //
@@ -61,41 +60,21 @@ int Take::HoldBall(){
   frc::Color roomColor = m_waitingRoomSensor.GetColor();
 
 
-  if (Take::RightColorBall() && Take::RoomLiveStatus() == 'e') {
+  if (Take::RightColorBall() && Take::RoomLiveStatus() == nullBall) {
     //scenario 1
     m_spinIntakeMotor.Set(0.1);
     m_uptakeMotor.Set(0.1);
     return 1;
   }
 
-  if (Take::RightColorBall() && Take::RoomLiveStatus() != 'e') {
+  if (Take::RightColorBall() && Take::RoomLiveStatus() != nullBall) {
     //secnario 2
     m_spinIntakeMotor.Set(0.1);
     return 2;
   }
 
-}
 
-
-// WHY EJECT/HOLD BALL IS AN INT:
-// For better comunication with other classes, (namley shooter) a double allows
-// Eject ball to comunicate with Teleop which will then call shooter
-// The value of Eject/Hold Ball is the secnario name
-// See below for scenario IDs
-int Take::EjectBall(){
-  //Here is a logn block comment on the flow of the system
-  //
-  //If it's the right color and the waiting room is empty, it holds in waiting room
-  //If it's the right color and the waiting room is full, it holds in the (int|up)take
-  // ---
-  //If it's the wrong color and the waiting room is empty it sh(oo|i)ts the ball //secnario 3
-  //If it's the wrong color and the waitng room is full, it reverses the (int|up)take //secnario 4
-
-  frc::Color uptakeColor = m_uptakeSensor.GetColor();
-  frc::Color roomColor = m_waitingRoomSensor.GetColor();
-
-
-  if (!Take::RightColorBall() && Take::RoomLiveStatus() == 'e'){
+  if (!Take::RightColorBall() && Take::RoomLiveStatus() == nullBall){
     //secnario 3
     m_spinIntakeMotor.Set(0.1);
     m_uptakeMotor.Set(0.1);
@@ -104,7 +83,7 @@ int Take::EjectBall(){
 
   }
 
-  if (!Take::RightColorBall() && Take::RoomLiveStatus() != 'e'){
+  if (!Take::RightColorBall() && Take::RoomLiveStatus() != nullBall){
     //secnario 4
     m_spinIntakeMotor.Set(-0.1);
     m_uptakeMotor.Set(-0.1);
@@ -155,30 +134,31 @@ void Take::SetColor() {
 
 //TODO: make it so it doesn't update vars if a ball isn't there
 //Theese should be for the last ball to pass through the area
-char Take::BallColorUptake(){
-  if (Take::UptakeLiveStatus() != 'e'){
+
+int Take::BallColorUptake(){
+  if (Take::UptakeLiveStatus() != nullBall){
 
   frc::Color detectedColor = m_uptakeSensor.GetColor();
   if (detectedColor.blue > detectedColor.red) {
     if (detectedColor.blue > m_blueFloor) {
-      return 'b';
+      return blueBall;
     }
     else {
       if (detectedColor.red > m_redFloor){
         //How did we get here?
-        return 'r';
+        return redBall;
       }
     }
   }
 
   if (detectedColor.red > detectedColor.blue) {
     if (detectedColor.red > m_redFloor) {
-      return 'r';
+      return redBall;
     }
     else {
       if (detectedColor.blue > m_blueFloor){
         //How did we get here
-        return 'b';
+        return blueBall;
       }
     }
   }
@@ -186,29 +166,30 @@ char Take::BallColorUptake(){
 }
 
 
+//enumed
 char Take::BallColorRoom(){
-  if (Take::RoomLiveStatus() != 'e'){
+  if (Take::RoomLiveStatus() != nullBall){
   frc::Color detectedColor = m_waitingRoomSensor.GetColor();
   if (detectedColor.blue > detectedColor.red) {
     if (detectedColor.blue > m_blueFloor) {
-      return 'b';
+      return blueBall;
     }
     else {
       if (detectedColor.red > m_redFloor){
         //How did we get here?
-        return 'r';
+        return redBall;
       }
     }
   }
 
   if (detectedColor.red > detectedColor.blue) {
     if (detectedColor.red > m_redFloor) {
-      return 'r';
+      return redBall;
     }
     else {
       if (detectedColor.blue > m_blueFloor){
         //How did we get here
-        return 'b';
+        return blueBall;
       }
     }
   }
@@ -218,30 +199,35 @@ char Take::BallColorRoom(){
 //Theese are for the current status of the sensors
 
 //r for red, b for blue, e for empty and E for error
+
+//enumd
 char Take::RoomLiveStatus(){
   frc::Color detectedColor = m_waitingRoomSensor.GetColor();
   if (detectedColor.blue > detectedColor.red) {
     if (detectedColor.blue > m_blueFloor) {
-      return 'b';
+      return blueBall;
     }
     else {
       if (detectedColor.red > m_redFloor){
         //How did we get here?
-        return 'r';
+        return redBall;
       }
     }
   }
 
   if (detectedColor.red > detectedColor.blue) {
     if (detectedColor.red > m_redFloor) {
-      return 'r';
+      return redBall;
     }
     else {
       if (detectedColor.blue > m_blueFloor){
         //How did we get here
-        return 'b';
+        return blueBall;
       }
     }
+  }
+  else {
+    return nullBall;
   }
 }
 
@@ -249,24 +235,24 @@ char Take::UptakeLiveStatus(){
   frc::Color detectedColor = m_uptakeSensor.GetColor();
   if (detectedColor.blue > detectedColor.red) {
     if (detectedColor.blue > m_blueFloor) {
-      return 'b';
+      return blueBall;
     }
     else {
       if (detectedColor.red > m_redFloor){
         //How did we get here?
-        return 'r';
+        return redBall;
       }
     }
   }
 
   if (detectedColor.red > detectedColor.blue) {
     if (detectedColor.red > m_redFloor) {
-      return 'r';
+      return redBall;
     }
     else {
       if (detectedColor.blue > m_blueFloor){
         //How did we get here
-        return 'b';
+        return blueBall;
       }
     }
   }
