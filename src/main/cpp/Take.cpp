@@ -8,6 +8,25 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
+int Take::ErrorHandler(){
+  if (Take::RightColorBall() ==  exitError) {
+    LOGGER(ERROR) << "Issue in Take::RightColorBall, all balls now counted valid";
+    LOGGER(INFO) << "Fix for Take::RightColorBall: check color sensor functionality";
+    bool Take::RightColorBall(){return true;}
+  }
+  if (Take::TeamColor() == exitError) {
+    LOGGER(ERROR) << "Issue in Take::TeamColor, all balls now counted valid";
+    LOGGER(INFO) << "Fix for Take::TeamColor: check if team was declared";
+    bool Take::RightColorBall(){return true;}
+  }
+  if (Take::ManipulateBall() == exitError) {
+    LOGGER(ERROR) << "Issue in Take::ManipulateBall, all balls counted valid and waiting room considered empty";
+    
+  }
+  if (Take::BallColorUptake() == exitError) {}
+  if (Take::BallColorRoom() == exitError) {}
+}
+
 void Take::UptakeStart(double speed) {
 m_spinIntakeMotor.Set(speed);
 m_uptakeMotor.Set(speed);
@@ -30,16 +49,18 @@ void Take::ReturnIntake() {
 bool Take::RightColorBall() {
   if (Take::BallColorUptake() == 'b' && Take::TeamColor() == blueTeam) {return true;}
   if (Take::BallColorUptake() == 'r' && Take::TeamColor() == redTeam) {return true;}
-  else {return false;}
+
+  if (Take::BallColorUptake() == 'b' && Take::TeamColor() == redTeam) {return false;}
+  if (Take::BallColorUptake() == 'r' && Take::TeamColor() == blueTeam) {return false;}
+  else {return exitError;}
 }
 
 // enumed
 int Take::TeamColor() {
   if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {return redTeam;}
   if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) {return blueTeam;}
-  else {
-    return exitExecption;
-  }
+
+return exitError;
 }
 
 
@@ -88,11 +109,7 @@ int Take::ManipulateBall(){
     m_uptakeMotor.Set(-0.1);
     return wrongFull;
   }
-  else {
-    return exitUnexpected;
-    std::cout << "[WARN]: Unexpected behavior in Take::ManipulateBall()" << "\n";
-  }
-
+    return exitError;
 }
 // Eric's code, probably better but I don't know how it works so...
 /*
@@ -168,12 +185,7 @@ int Take::BallColorUptake(){
   }
  }
 }
-
-  else {
-    return exitNominal;
-  }
-  std::cout << "[WARN]: Unexpected behavior in Take::BallColorUptake \n";
-  return exitExecption;
+  return exitError;
 }
 
 
@@ -203,11 +215,7 @@ char Take::BallColorRoom(){
         return blueBall;
     }
   }
-    else {
-      return exitNominal;
- }
-  return exitExecption;
-  std::cout << "[WARN]: Unexpected behavior in Take::BallColorRoom \n";
+  return exitError;
 }
 
 //Theese are for the current status of the sensors
@@ -244,7 +252,6 @@ char Take::RoomLiveStatus(){
   else {
     return nullBall;
   }
-  return exitExecption;
 }
 
 char Take::UptakeLiveStatus(){
@@ -273,10 +280,8 @@ char Take::UptakeLiveStatus(){
       }
     }
   }
-  else {
-    return errorBall;
-  }
-  return exitExecption;
+
+  return nullBall;
 }
 
 

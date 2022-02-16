@@ -1,5 +1,6 @@
 #pragma once
 
+#include "log.h"
 #include "rev/CANSparkMax.h"
 
 #include <frc/smartdashboard/SendableChooser.h>
@@ -17,6 +18,8 @@
 
 class Take {
     public:
+  int ErrorHandler();
+
   void TakePIDInit();
   void TakeDashRead();
   void TakeDashInit();
@@ -49,7 +52,7 @@ class Take {
   enum teamColorEnum {redTeam, blueTeam};
   enum BallStatusEnum {rightEmpty, rightFull, wrongEmpty, wrongFull};
   enum BallColor {blueBall, redBall, nullBall, errorBall};
-  enum TakeExitMessages {exitNominal, exitNull, exitExecption, exitUnexpected};
+  enum TakeExitMessages {exitNominal, exitError};
 
   //What these mean:
   // exitNominal: a filler exit message for when things go well
