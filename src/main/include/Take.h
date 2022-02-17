@@ -1,6 +1,5 @@
 #pragma once
 
-#include "log.h"
 #include "rev/CANSparkMax.h"
 
 #include <frc/smartdashboard/SendableChooser.h>

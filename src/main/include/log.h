@@ -1,3 +1,4 @@
+#pragma once
 #ifndef __LOG_H__
 #define __LOG_H__
 
@@ -35,7 +36,7 @@ Log::Log() {}
 
 std::ostringstream& Log::Get(TLogLevel level)
 {
-    os << NowTime()
+  os << NowTime();
     os << " " << ToString(level) << ": ";
     os << std::string(level > DEBUG1 ? level - DEBUG1 : 0, '\t');
     return os;

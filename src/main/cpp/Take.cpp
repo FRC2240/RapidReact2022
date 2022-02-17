@@ -1,5 +1,7 @@
 #include "Take.h"
 
+#include "log.h"
+
 #include <iostream>
 
 #include <fmt/core.h>
@@ -8,24 +10,7 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
-int Take::ErrorHandler(){
-  if (Take::RightColorBall() ==  exitError) {
-    LOGGER(ERROR) << "Issue in Take::RightColorBall, all balls now counted valid";
-    LOGGER(INFO) << "Fix for Take::RightColorBall: check color sensor functionality";
-    bool Take::RightColorBall(){return true;}
-  }
-  if (Take::TeamColor() == exitError) {
-    LOGGER(ERROR) << "Issue in Take::TeamColor, all balls now counted valid";
-    LOGGER(INFO) << "Fix for Take::TeamColor: check if team was declared";
-    bool Take::RightColorBall(){return true;}
-  }
-  if (Take::ManipulateBall() == exitError) {
-    LOGGER(ERROR) << "Issue in Take::ManipulateBall, all balls counted valid and waiting room considered empty";
-    
-  }
-  if (Take::BallColorUptake() == exitError) {}
-  if (Take::BallColorRoom() == exitError) {}
-}
+
 
 void Take::UptakeStart(double speed) {
 m_spinIntakeMotor.Set(speed);
@@ -52,13 +37,20 @@ bool Take::RightColorBall() {
 
   if (Take::BallColorUptake() == 'b' && Take::TeamColor() == redTeam) {return false;}
   if (Take::BallColorUptake() == 'r' && Take::TeamColor() == blueTeam) {return false;}
-  else {return exitError;}
-}
 
+  LOGGER(ERROR) << "Issue in Take::RightColorBall, all balls now counted valid";
+  LOGGER(INFO) << "Fix for Take::RightColorBall: check color sensor functionality";
+
+ return true;
+}
 // enumed
 int Take::TeamColor() {
   if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed) {return redTeam;}
   if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue) {return blueTeam;}
+
+  LOGGER(ERROR) << "Issue in Take::TeamColor, all balls now counted valid";
+  LOGGER(INFO) << "Fix for Take::TeamColor: check if team was declared";
+  LOGGER(DEBUG1) << "Take::TeamColor returned exitError";
 
 return exitError;
 }
@@ -109,8 +101,13 @@ int Take::ManipulateBall(){
     m_uptakeMotor.Set(-0.1);
     return wrongFull;
   }
-    return exitError;
+
+  LOGGER(ERROR) << "Issue in Take::ManipulateBall, all balls counted valid and waiting room considered empty";
+  LOGGER(INFO) << "Fix for Take::ManipulateBall, you're on your own, buddy";
+
+return rightEmpty;
 }
+
 // Eric's code, probably better but I don't know how it works so...
 /*
 
@@ -185,6 +182,10 @@ int Take::BallColorUptake(){
   }
  }
 }
+  LOGGER(ERROR) << "Issue in Take::BallColorUptake, all balls now counted as valid";
+  LOGGER(INFO) << "Fix for Take::BallColorUptake: check color sensor functionality";
+  LOGGER(DEBUG1) << "Take::BallColorUptake returned exitError, expect error chaining";
+
   return exitError;
 }
 
@@ -215,6 +216,11 @@ char Take::BallColorRoom(){
         return blueBall;
     }
   }
+
+  LOGGER(ERROR) << "Issue in Take::BallColorRoom, all balls now counted as valid";
+  LOGGER(INFO) << "Fix for Take::BallColorRoom: check color sensor functionality";
+  LOGGER(DEBUG1) << "Take::BallColorRoom returned exitError, expect error chaining";
+
   return exitError;
 }
 
