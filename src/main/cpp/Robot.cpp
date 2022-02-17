@@ -272,6 +272,7 @@ void Robot::InitializePIDControllers() {
   //Climber intializes PIDs in it's own function
   m_climber.ClimberPIDInit();
   m_take.TakePIDInit();
+  m_shooter.InitializePIDControllers();
 
 }
 
@@ -279,7 +280,7 @@ void Robot::InitializeDashboard() {
   //Climbers do that in their own function
   m_climber.ClimberDashInit();
   m_take.TakeDashInit();
-
+  m_shooter.InitializeDashboard();
 // Winch Motors
 
   /*
@@ -292,6 +293,7 @@ void Robot::InitializeDashboard() {
 void Robot::ReadDashboard() {
   m_climber.ClimberDashRead();
   m_take.TakeDashRead();
+  m_shooter.ReadDashboard();
 }
 
 void Robot::setSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds) {

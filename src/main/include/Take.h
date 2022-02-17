@@ -17,8 +17,6 @@
 
 class Take {
     public:
-  int ErrorHandler();
-
   void TakePIDInit();
   void TakeDashRead();
   void TakeDashInit();

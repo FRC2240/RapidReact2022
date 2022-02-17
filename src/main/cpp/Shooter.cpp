@@ -8,6 +8,7 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
+
 Shooter::Shooter(frc::DifferentialDrive* d, frc::XboxController* s, Take* t)
     : m_drive(d),
       m_stick(s),

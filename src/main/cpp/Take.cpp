@@ -32,11 +32,11 @@ void Take::ReturnIntake() {
 
 // enumified
 bool Take::RightColorBall() {
-  if (Take::BallColorUptake() == 'b' && Take::TeamColor() == blueTeam) {return true;}
-  if (Take::BallColorUptake() == 'r' && Take::TeamColor() == redTeam) {return true;}
+  if (Take::BallColorUptake() == blueBall && Take::TeamColor() == blueTeam) {return true;}
+  if (Take::BallColorUptake() == redBall && Take::TeamColor() == redTeam) {return true;}
 
-  if (Take::BallColorUptake() == 'b' && Take::TeamColor() == redTeam) {return false;}
-  if (Take::BallColorUptake() == 'r' && Take::TeamColor() == blueTeam) {return false;}
+  if (Take::BallColorUptake() == blueBall && Take::TeamColor() == redTeam) {return false;}
+  if (Take::BallColorUptake() == redBall && Take::TeamColor() == blueTeam) {return false;}
 
   LOGGER(ERROR) << "Issue in Take::RightColorBall, all balls now counted valid";
   LOGGER(INFO) << "Fix for Take::RightColorBall: check color sensor functionality";
