@@ -266,7 +266,34 @@ void Robot::DisabledPeriodic() {}
 
 void Robot::TestInit() {}
 
-void Robot::TestPeriodic() {}
+void Robot::TestPeriodic() {
+  double throttle = m_stick.GetLeftTriggerAxis() - m_stick.GetRightTriggerAxis();
+ 
+  //  double throttleExp = a * pow(throttle, 4) + b * pow(throttle, 1.48);
+ 
+  /*
+    if (throttleExp > 1) {
+    throttleExp = 1;
+    } else if (throttleExp < -1) {
+    throttleExp = -1;
+    }*/
+  //Looks like Ethan wants exponents...
+   
+  double turnInput = m_stick.GetLeftX(); //- m_stick.GetLeftY()*m_turnFactor;
+ 
+  m_drive.ArcadeDrive(throttle, turnInput);
+  std::shared_ptr<nt::NetworkTable> m_table = nt::NetworkTableInstance::GetDefault().GetTable("limelight-brute");
+
+  double ty = m_table->GetNumber("ty", 0.0);
+  double tx = m_table->GetNumber("tx", 0.0);
+  double ta = m_table->GetNumber("ta", 0.0);
+
+
+  std::cout << " TX: " << tx << " || TY: " << ty << "  || TA: " << ta << "\n";
+  m_shooter.LimelightTracking();
+
+  
+}
 
 void Robot::InitializePIDControllers() {
   //Climber intializes PIDs in it's own function

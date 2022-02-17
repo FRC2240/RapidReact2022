@@ -27,22 +27,34 @@ void Shooter::Spit(double vel = 0.1) {
 
 bool Shooter::LimelightTracking()
 {
-  nt::NetworkTableEntry txEntry;
-  nt::NetworkTableEntry tyEntry;
-  nt::NetworkTableEntry taEntry;
 
-  double ta, tx, ty;
 
-  txEntry = m_table->GetEntry("tx");
-  tyEntry = m_table->GetEntry("ty");
-  taEntry = m_table->GetEntry("ta");
+  double ty = m_table->GetNumber("ty", 0.0);
+  double tx = m_table->GetNumber("tx", 0.0);
+  double ta = m_table->GetNumber("ta", 0.0);
 
+
+  std::cout << " TX: " << tx << "  TY: " << ty << "   TA: " << ta << "\n";
+
+  /*
+  //  nt::NetworkTableEntry txEntry;
+  //  nt::NetworkTableEntry tyEntry;
+  //  nt::NetworkTableEntry taEntry;
+
+  double ty = m_table->GetNumber("ty", 0.0);
+  double tx = m_table->GetNumber("tx", 0.0);
+  double ta = m_table->GetNumber("ta", 0.0);
+
+
+  //txEntry = m_table->GetEntry("tx");
+  //tyEntry = m_table->GetEntry("ty");
+  //  taEntry = m_table->GetEntry("ta");
+  /*
   tx = txEntry.GetDouble(0.0);
   ty = tyEntry.GetDouble(0.0);
   ta = taEntry.GetDouble(0.0);
-
-  std::cout << tx << ty << ta << "\n";
-
+  */
+  /*
   // Dummy values
   if (ta <= taHighBound &&
       ta >= taLowBound &&
@@ -57,7 +69,7 @@ bool Shooter::LimelightTracking()
   {
     return false;
   }
-
+  */
 }
 
 double Shooter::CalculateRPM(double d)
@@ -193,6 +205,8 @@ double Shooter::LimelightDistance(){
   tyEntry.SetDouble(ty);
   taEntry.SetDouble(ta);
 
+  std::cout << "TX: " << tx << " TY: " << ty << " TA: " << ta << "\n";
+
   //Map tyEntry (0-1) to Limelight FOV (0 - 49.7 deg)
 
   //How I got constants:
@@ -204,6 +218,7 @@ double Shooter::LimelightDistance(){
 
   //TODO: Better comments 
   double limelightDistance = (76.545/tan(theta));
+  std::cout << "Limelight Distance" << limelightDistance << "\n";
 
   return limelightDistance;
 }

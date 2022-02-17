@@ -29,7 +29,7 @@
 class Shooter {
  public:
   Shooter(frc::DifferentialDrive* d, frc::XboxController* s, Take* t);
-  
+
   void Fire();
   void InitializePIDControllers();
   void InitializeDashboard();
@@ -37,11 +37,16 @@ class Shooter {
 
   void Spit(double vel);
 
+  bool LimelightTracking();
+
+  double LimelightDistance();
+
+  std::shared_ptr<nt::NetworkTable> m_table = nt::NetworkTableInstance::GetDefault().GetTable("limelight-brute");
+  //  std::shared_ptr<nt::NetworkTable> m_table = nt::NetworkTableInstance::GetDefault().GetTable("limelight-brute");
+
  private:
 
   double CalculateRPM(double d);
-  bool LimelightTracking();
-  double LimelightDistance();
   
 
   frc::DifferentialDrive* m_drive;
@@ -74,5 +79,5 @@ class Shooter {
   pidCoeff m_shooterAlphaCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
   pidCoeff m_shooterBetaCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-  std::shared_ptr<nt::NetworkTable> m_table = nt::NetworkTableInstance::GetDefault().GetTable("limelight-brute");
+
 };
