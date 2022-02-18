@@ -21,6 +21,7 @@ void Shooter::Reset()
 {
   m_table->PutNumber("ledMode", 1); // lights off
   m_shootingMotorAlpha.Set(0.0);    // motors off
+  m_take->Feed(0.0);                // feed off
 }
 
 // Weak l'il spit
@@ -92,12 +93,12 @@ void Shooter::Fire()
     // std::cout << "distance = " << distance
     //           << " want = " << rpm << " got = " << m_shootingMotorAlpha.GetSelectedSensorVelocity() << std::endl;
 
-    // Enable uptake if we're at 98% of desired shooter speed
+    // Enable feed if we're at 98% of desired shooter speed
     if (m_shootingMotorAlpha.GetSelectedSensorVelocity() > (rpm * 0.98))
     {
-      m_take->UptakeStart(0.5);
+      m_take->Feed(0.5);
     } else {
-      m_take->UptakeStop();
+      m_take->Feed(0.0);
     }
   }
 }

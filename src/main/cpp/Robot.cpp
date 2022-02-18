@@ -172,11 +172,11 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
-  
+
   // Shooter
   if (m_stick.GetRightBumper()) {
     m_shooter.Fire();
-  } else {
+  if (m_stick.GetRightBumperReleased()) {
     m_shooter.Reset();
   }
 

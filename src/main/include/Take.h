@@ -23,6 +23,7 @@ class Take {
   void ColorsInit();
   void SetColor();
 
+  void Feed(double speed);
   //For testing, not operation
   void UptakeStart(double speed);
   void UptakeStop();
