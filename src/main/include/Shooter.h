@@ -48,7 +48,7 @@ class Shooter {
   frc::XboxController*    m_stick;
   Take*                   m_take;
 
-  bool  manuealShootingEnabled;
+  bool  manualShootingEnabled;
   bool  wrongBallInSystem;
 
   double m_overridenRPM;

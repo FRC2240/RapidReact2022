@@ -45,7 +45,7 @@ void Robot::RobotInit() {
   
   // TODO: Add break ball functionality once available 
 
-  manuealShootingEnabled = true;
+  manualShootingEnabled = true;
   wrongBallInSystem = false;
 
   // Setup mid motor pair
