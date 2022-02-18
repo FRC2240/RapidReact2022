@@ -1,14 +1,11 @@
 #include "Climber.h"
 
 #include <iostream>
-
 #include <fmt/core.h>
-
 #include <math.h>
-
 #include <frc/smartdashboard/SmartDashboard.h>
 
-//need a kill button 
+// TODO: Add a kill button 
 
 
 

@@ -76,11 +76,11 @@ void Shooter::Fire() {
   {
     if (m_take->BallColorRoom() == m_take->redBall)
     {
-      wrongBall = false;
+      wrongBallInSystem = false;
     }
     if (m_take->BallColorRoom() == m_take->blueBall)
     {
-      wrongBall = true;
+      wrongBallInSystem = true;
     }
     if (m_take->BallColorRoom() == m_take->errorBall)
     {
@@ -92,11 +92,11 @@ void Shooter::Fire() {
   {
     if (m_take->BallColorRoom() == m_take->redBall)
     {
-      wrongBall = true;
+      wrongBallInSystem = true;
     }
     if (m_take->BallColorRoom() == m_take->blueBall)
     {
-      wrongBall = false;
+      wrongBallInSystem = false;
     }
     if (m_take->BallColorRoom() == m_take->errorBall)
     {
@@ -104,12 +104,12 @@ void Shooter::Fire() {
     }
   }
 
-  if (wrongBall)
+  if (wrongBallInSystem)
   {
     m_stick->SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 1.0);
     m_stick->SetRumble(frc::GenericHID::RumbleType::kRightRumble, 1.0);
   }
-  if (!wrongBall)
+  if (!wrongBallInSystem)
   {
     m_stick->SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.0);
     m_stick->SetRumble(frc::GenericHID::RumbleType::kRightRumble, 0.0);
@@ -131,7 +131,7 @@ void Shooter::Fire() {
 
   ty = ty * -1;
 
-  if (shootMan)
+  if (manuealShootingEnabled)
   {
     if (LimelightTracking() == true)
     {
@@ -160,7 +160,7 @@ void Shooter::Fire() {
     }
   }
 
-  if (!shootMan)
+  if (!manuealShootingEnabled)
   {
     // Code stolen. Procedure is to map ty to theta, subtract a value I forget and then you get your angle. Solve from there.
     double distance = Shooter::LimelightDistance();
