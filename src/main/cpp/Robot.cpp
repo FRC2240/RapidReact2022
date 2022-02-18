@@ -172,6 +172,14 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
+  
+  // Shooter
+  if (m_stick.GetRightBumper()) {
+    m_shooter.Fire();
+  } else {
+    m_shooter.Reset();
+  }
+
   //climber
 
   //move to next phase if button pressed (button subject to change)
