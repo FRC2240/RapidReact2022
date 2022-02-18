@@ -45,6 +45,7 @@ void Robot::RobotInit() {
   m_backRightMotor.Follow(m_frontRightMotor);
   m_backLeftMotor.Follow(m_frontLeftMotor);
 
+  m_drive.SetSafetyEnabled(false);
 
 }
 
@@ -172,6 +173,9 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
+  // Intake
+  m_take.Run(m_stick.GetLeftBumperPressed());
+
   //climber
 
   //move to next phase if button pressed (button subject to change)
