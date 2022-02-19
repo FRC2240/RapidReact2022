@@ -4,27 +4,31 @@
 
 #include "Robot.h"
 
+
+// Standard C++ Libraries
 #include <iostream>
-
-#include <fmt/core.h>
-
 #include <math.h>
 
+// FIRST Specific Libraries
+#include <fmt/core.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
+/**
+ * Initialization method for Robot. Call Subsystem initialization methods here
+ * in addition to setting up dashboard
+ */
 void Robot::RobotInit() {
+  
+  // Setup initiate Diff Drive object with an initial heading of zero
   m_odometry = new frc::DifferentialDriveOdometry(frc::Rotation2d(0_deg));
+  
+  // Initialize PID controllers
+  this->InitializePIDControllers();
 
-  m_climber.ClimberPIDInit();
-  m_climber.ClimberDashInit();
+  // Initalize Dashboard
+  this->InitializeDashboard();
 
-  m_take.TakePIDInit();
-  m_take.TakeDashInit();
-
-
-  m_shooter.InitializePIDControllers(); 
-  m_shooter.InitializeDashboard();
-
+  // Setup Autonomous options
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   m_chooser.AddOption(kThreeBallBlue, kThreeBallBlue);
@@ -32,16 +36,23 @@ void Robot::RobotInit() {
   m_chooser.AddOption(kThreeBallRed, kThreeBallRed);
   m_chooser.AddOption(kTwoBallRed, kTwoBallRed);
 
+  // Add Autonomous options to dashboard
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
-// right side might need to be inverted depending on construction
+  
+  
+  // Invert left side of drive train (if needed due to construction)
   m_leftDrive.SetInverted(true);
   
-  //  double ballsInShooter = 0; //add when break bar functionality is added
-  shootMan = true;
-  wrongBall = false;
+  // TODO: Add break ball functionality once available 
 
+  manualShootingEnabled = true;
+  wrongBallInSystem = false;
+
+  // Setup mid motor pair
   m_midRightMotor.Follow(m_frontRightMotor);
   m_midLeftMotor.Follow(m_frontLeftMotor);
+
+  //Setup back motor pair
   m_backRightMotor.Follow(m_frontRightMotor);
   m_backLeftMotor.Follow(m_frontLeftMotor);
 
@@ -71,11 +82,13 @@ void Robot::RobotPeriodic() {}
  */
 void Robot::AutonomousInit() {
 
+  // Get choosen autonomous mode
   m_autoSelected = m_chooser.GetSelected();
-  // m_autoSelected = SmartDashboard::GetString("Auto Selector",
-  //     kAutoNameDefault);
+
+  // Print out the selected autonomous mode
   fmt::print("Auto selected: {}\n", m_autoSelected);
 
+  // TODO: Make the following a switch statement
   if (m_autoSelected == kThreeBallBlue) {
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
     deployDirectory = deployDirectory / "autos" / "Patheaver/autos/ThreeBallBlue.wpilib.json";
@@ -99,82 +112,42 @@ void Robot::AutonomousInit() {
     deployDirectory = deployDirectory / "autos" / "Patheaver/autos/TwoBallRed.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
-      // Custom Auto goes here
-  else {
-      // Default Auto goes here
-    }
 }
 
+/**
+ * This is the method called every 20ms (by default, can be changed)
+ * during the autonomous period
+ */
 void Robot::AutonomousPeriodic() {
+
+  // Check if current auto mode is the custom auto mode
   if (m_autoSelected == kAutoNameCustom) {
     // Custom Auto goes here
   } else {
     // Default Auto goes here
   }
 
+  // Follow the defined path for autonomous
   autoFollowPath();
-  // Iteration one
-  /*
-   autoTimer.Start();
-   if (autoTimer.Get() <= units::time::second_t(4)) {
-     LimelightTracking();
-     ShooterArm();
-     ShooterFire();
-   }
-   if (autoTimer.Get() > units::time::second_t(4) && autoTimer.Get() <= units::time::second_t(5)) {
-     m_drive.ArcadeDrive(0.5,0);
-   }
-*/
-
-  // Iteration two
-  /*
-  autoTimer.Start();
-  if (autoTimer.Get() <= units::time::second_t(0.5)) {
-  }
-  if (autoTimer.Get() > units::time::second_t(0.5) && autoTimer.Get() <= units::time::second_t(5)) {
-    m_drive.ArcadeDrive(0.5, 0);
-  }
-  if  (autoTimer.Get() > units::time::second_t(5) && autoTimer.Get() <= units::time::second_t(8)) {
-    m_drive.ArcadeDrive(0, 0.5);
-  }
-  if  (autoTimer.Get() > units::time::second_t(8) && autoTimer.Get() <= units::time::second_t(12)) {
-    LimelightTracking();
-  }
-  if  (autoTimer.Get() > units::time::second_t(12) && autoTimer.Get() <= units::time::second_t(15)) {
-    LimelightTracking();
-  }
-  */
-
-  // Iteration three
-
-  /*
-  autoTimer.Start();
-  if (autoTimer.Get() <= units::time::second_t(4)) {
-    LimelightTracking();
-    ShooterArm();
-    ShooterFire();
-  }
-  if (autoTimer.Get() > units::time::second_t(4) && autoTimer.Get() <= units::time::second_t(8)) {
-
-  }
-  ready aim and fire the two extra balls
-  */
 }
 
+/**
+ * This is the method called at the beginning of teleoperated mode
+ */
 void Robot::TeleopInit() {
-  m_shooter.InitializePIDControllers();
-  m_shooter.ReadDashboard();
+  
+  // Initialize PID Controllers
+  // QUESTION: I replaced this with the method you guys had already written
+  // But this has already been called in RobotInit(). Why the repeat?
+  this->InitializePIDControllers();
 
-  m_climber.ClimberDashRead();
-  m_climber.ClimberPIDInit();
-  m_take.TakePIDInit();
-
+  // Initialize Dashboard
+  this->ReadDashboard();
 }
 
 void Robot::TeleopPeriodic() {
-  //climber
 
-  //move to next phase if button pressed (button subject to change)
+  // Move to next Climber phase if button pressed (button subject to change)
   if (m_stick_climb.GetAButtonReleased()) { 
     m_climber.Progress();
   }
@@ -182,149 +155,139 @@ void Robot::TeleopPeriodic() {
   //kill button (button subject to change)
   if (m_stick_climb.GetBButtonPressed()) {
     m_climber.Kill();
-    // Today we mourn the loss of our climber
-    // It's sacrifice will not be forgotten, rest in peace
   }
 
-  m_climber.Run(); //constantly running, initially set to zero but changes whenever progress is called
+  // Runs ever period. Phase is initially zero but changes whenever progress is called
+  m_climber.Run();
 
-
+  // Throttle output function: ax^4 + bx^2 = y
   double a = .375/.4495;
   double b = .0745/.4495;
+
   //Read controller input
   double throttle = m_stick.GetLeftTriggerAxis() - m_stick.GetRightTriggerAxis();
- 
+
+  // Calculate throttle (y)
+  // TODO: because of how this function is defined, it can only return positive numbers
   double throttleExp = a * pow(throttle, 4) + b * pow(throttle, 1.48);
- 
- /*
-  if (throttleExp > 1) {
-    throttleExp = 1;
-  } else if (throttleExp < -1) {
-    throttleExp = -1;
-  }*/
-  //Looks like Ethan wants exponents...
-   
+
+  // Calculate turn factor
   double turnInput = m_stick.GetLeftX()*m_turnFactor - m_stick.GetLeftY()*m_turnFactor;
- 
+
+  // Call arcade drive function with calculated values
   m_drive.ArcadeDrive(throttleExp, turnInput);
 
-  //TODO: climber controls
+  // TODO: climber controls
 
-  // Why was this commented out. Eh.
+  // Semi-Autonomous Uptake Control
+  // Get ManipulateBall status
+  int intakeStatus = m_take.ManipulateBall();
 
-//Better Uptake
-  if (m_take.ManipulateBall() == m_take.rightEmpty) {} // Hold in waiting room, no shooter action needed
-  if (m_take.ManipulateBall() == m_take.rightFull) {} // Hold in uptake, no shooter action needed
-  // The above lines are precautionary
-
-  if (m_take.ManipulateBall() == m_take.wrongEmpty) { // Spit out the ball
-    m_shooter.Spit(0.1);
+  // TODO: Replace this with a switch statement
+  // If uptake has the right ball and shooter is empty
+  if (intakeStatus == m_take.rightEmpty) {
+    // Hold in waiting room, no shooter action needed
+  } 
+  // If uptake has the right ball and shooter is full
+  else if (m_take.ManipulateBall() == m_take.rightFull) {
+    // Hold in uptake, no shooter action needed
+  } 
+  // If uptake has the wrong ball and shooter is empty
+  else if (m_take.ManipulateBall() == m_take.wrongEmpty) {
+    // Eject the ball
   }
-  if (m_take.ManipulateBall() == m_take.wrongFull) {} // Reverse uptake, done internally 
-
-  /*
- //uptake
- if (m_stick.GetAButtonPressed()) {
-   if (uptakeBool == true) {
-     //stop uptake
-     m_take.ReturnIntake();
-     uptakeBool = false;
-   }
-   if (uptakeBool == false) {
-     //Start uptake
-     m_take.DeployIntake();
-     uptakeBool = true;
-   }
- }
-  */
-
-//Possibly uneeded
- /*
- if (m_stick.GetStartButton()){
-   if (shootMan){
-     shootMan = false;
-     std::cout << "[MSG]: Shooter is in manual mode \n";
-   }
-   if (!shootMan){
-     shootMan = true;
-     std::cout << "[MSG]: Shooter is in automatic mode \n";
-   }
- }
-
-
- if (m_stick.GetLeftBumperPressed()) {
-   m_shooter.Fire();
- }
- */
+  // If the uptake has the wrong ball and shooter is full
+  if (m_take.ManipulateBall() == m_take.wrongFull) {
+    // Reverse the intake
+  }  
 }
 
-
-
+// This method is called at the beginning of the disabled state
 void Robot::DisabledInit() {}
 
+// This method is called every 20ms (by default) during disabled
 void Robot::DisabledPeriodic() {}
 
+// This method is called at the beginning of the testing state
 void Robot::TestInit() {}
 
+// This method is called every 20ms (by default) during testing
 void Robot::TestPeriodic() {}
 
+// Method for initializing PID Controller
 void Robot::InitializePIDControllers() {
-  //Climber intializes PIDs in it's own function
   m_climber.ClimberPIDInit();
   m_take.TakePIDInit();
   m_shooter.InitializePIDControllers();
 
 }
 
+// Method for initializing the Dashboard
 void Robot::InitializeDashboard() {
-  //Climbers do that in their own function
   m_climber.ClimberDashInit();
   m_take.TakeDashInit();
   m_shooter.InitializeDashboard();
-// Winch Motors
-
-  /*
-  if (shootMan){frc::SmartDashboard::PutNumber("Shooter Mode", "Auto");}
-  if (!shootMan){frc::SmartDashboard::PutNumber("Shooter Mode", "Manual");}
-  */
-
 }
 
+// Method for reading the Dashboard
 void Robot::ReadDashboard() {
   m_climber.ClimberDashRead();
   m_take.TakeDashRead();
   m_shooter.ReadDashboard();
 }
 
+// Method for determining speeds during autonomous
 void Robot::setSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds) {
+
+  // QUESTION: Why are these consts? Const in this context means you can't change
+  // it after it has been set, but since these variables are local in scope and
+  // not changed anywheres after that doesn't make much sense
   const auto leftFeedforward = m_feedforward.Calculate(speeds.left);
   const auto rightFeedforward = m_feedforward.Calculate(speeds.right);
  
+  // QUESTION: Same as above
   const double leftOutput = m_frontRightMotorPIDController.Calculate(m_frontRightMotor.GetActiveTrajectoryVelocity(), speeds.left.to<double>());
   const double rightOutput = m_frontLeftMotorPIDController.Calculate(m_frontLeftMotor.GetActiveTrajectoryVelocity(), speeds.right.to<double>());
  
+  // Set the voltages for the left and right drive motor groups
   m_leftGroup->SetVoltage(units::volt_t{leftOutput} + leftFeedforward);
   m_rightGroup->SetVoltage(units::volt_t{rightOutput} + rightFeedforward);
  
 }
 
+// QUESTION: Why is this a seperate method? Since you are just passing input
+// parameters to a method and nothing else, this is just not needed
+// Unless there is a plan to add more complexity/logic to THIS specfic function
 void Robot::autoDrive(units::meters_per_second_t xSpeed, units::radians_per_second_t rot){
   setSpeeds(m_kinematics.ToWheelSpeeds({xSpeed, 0_mps, rot}));
 }
 
+// This method gets called every teleop period and follows the predetermined
+// autonomous paths based on auto state
 void Robot::autoFollowPath(){
+
+  // QUESTION: Why all the auto types?
+
+  // If the robot is still within the trajectory time frame
   if (autoTimer.Get() < m_trajectory.TotalTime()) {
+    // Get desired pose
     auto desiredPose = m_trajectory.Sample(autoTimer.Get());
+    // Get desired speeds from current pose vs desired pose
     auto refChassisSpeeds = controller1.Calculate(m_odometry->GetPose(), desiredPose);
- 
+    
+    // Drive based on desired speeds
     autoDrive(refChassisSpeeds.vx, refChassisSpeeds.omega);
-  } else {
+  }
+  else {
+    // Stop the robot
     autoDrive(0_mps, 0_rad_per_s);
   }
 }
 
+// If we are not running in test mode
 #ifndef RUNNING_FRC_TESTS
 int main() {
+  // Start the robot
   return frc::StartRobot<Robot>();
 }
 #endif
