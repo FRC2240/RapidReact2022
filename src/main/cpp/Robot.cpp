@@ -15,12 +15,6 @@
 void Robot::RobotInit() {
   m_odometry = new frc::DifferentialDriveOdometry(frc::Rotation2d(0_deg));
 
-  m_climber.ClimberPIDInit();
-  m_climber.ClimberDashInit();
-
-  m_take.TakePIDInit();
-  m_take.TakeDashInit();
-
 
   m_shooter.InitializePIDControllers(); 
   m_shooter.InitializeDashboard();
@@ -165,23 +159,30 @@ void Robot::TeleopInit() {
   m_shooter.InitializePIDControllers();
   m_shooter.ReadDashboard();
 
-  m_climber.ClimberDashRead();
-  m_climber.ClimberPIDInit();
-  m_take.TakePIDInit();
-
 }
 
 void Robot::TeleopPeriodic() {
+  double a = .375/.4495;
+  double b = .0745/.4495;
+  //Read controller input
+  //double throttle = m_stick.GetLeftTriggerAxis() - m_stick.GetRightTriggerAxis();
+ 
+  double throttleExp = a * pow(m_stick.GetLeftTriggerAxis(), 4) + b * pow(m_stick.GetLeftTriggerAxis(), 1.48)-a * pow(m_stick.GetRightTriggerAxis(), 4) + b * pow(m_stick.GetRightTriggerAxis(), 1.48);
+  double turnInput = m_stick.GetLeftX()*m_turnFactor - m_stick.GetLeftY()*m_turnFactor;
+ 
 
   // Shooter
   if (m_stick.GetRightBumper()) {
     m_shooter.Fire();
+  } else {
+    m_drive.ArcadeDrive(throttleExp, turnInput);
+  }
   if (m_stick.GetRightBumperReleased()) {
     m_shooter.Reset();
   }
 
   //climber
-
+/*
   //move to next phase if button pressed (button subject to change)
   if (m_stick_climb.GetAButtonReleased()) { 
     m_climber.Progress();
@@ -195,15 +196,9 @@ void Robot::TeleopPeriodic() {
   }
 
   m_climber.Run(); //constantly running, initially set to zero but changes whenever progress is called
+*/
 
-
-  double a = .375/.4495;
-  double b = .0745/.4495;
-  //Read controller input
-  double throttle = m_stick.GetLeftTriggerAxis() - m_stick.GetRightTriggerAxis();
- 
-  double throttleExp = a * pow(throttle, 4) + b * pow(throttle, 1.48);
- 
+  
  /*
   if (throttleExp > 1) {
     throttleExp = 1;
@@ -212,15 +207,12 @@ void Robot::TeleopPeriodic() {
   }*/
   //Looks like Ethan wants exponents...
    
-  double turnInput = m_stick.GetLeftX()*m_turnFactor - m_stick.GetLeftY()*m_turnFactor;
- 
-  m_drive.ArcadeDrive(throttleExp, turnInput);
-
   //TODO: climber controls
 
   // Why was this commented out. Eh.
 
 //Better Uptake
+/*
   if (m_take.ManipulateBall() == m_take.rightEmpty) {} // Hold in waiting room, no shooter action needed
   if (m_take.ManipulateBall() == m_take.rightFull) {} // Hold in uptake, no shooter action needed
   // The above lines are precautionary
@@ -229,7 +221,7 @@ void Robot::TeleopPeriodic() {
     m_shooter.Spit(0.1);
   }
   if (m_take.ManipulateBall() == m_take.wrongFull) {} // Reverse uptake, done internally 
-
+*/
   /*
  //uptake
  if (m_stick.GetAButtonPressed()) {

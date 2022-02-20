@@ -31,8 +31,8 @@ class Shooter {
 
   double m_overrideRPM;
   double kHeightOfTarget   = 103.0; // TODO: Measure
-  double kHeightLimelight  = 27.2;  // TODO: Measure
-  double kLimelightAngle   = 38.7;  // TODO: Measure
+  double kHeightLimelight  = 28.0;  // TODO: Measure
+  double kLimelightAngle   = 13.861;  // TODO: Measure
   double kRadiusOfTarget   = 26.7;
 
   WPI_TalonFX m_shootingMotorAlpha {21};
@@ -45,7 +45,7 @@ class Shooter {
     double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
   };
 
-  pidCoeff m_shooterCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  pidCoeff m_shooterCoeff{0.35, 0.000002, 0.0, 0.0, 0.06, 1.0, -1.0};
 
   std::shared_ptr<nt::NetworkTable> m_table = nt::NetworkTableInstance::GetDefault().GetTable("limelight-brute");
 };

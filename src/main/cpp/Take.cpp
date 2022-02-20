@@ -11,7 +11,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 void Take::Feed(double speed) {
-  m_uptakeMotor.Set(speed);
+  m_uptakeMotor.Set(-speed);
   m_waitingRoomMotor.Set(speed);
 }
 
