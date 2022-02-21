@@ -1,10 +1,8 @@
 #pragma once
 
-#include "rev/CANSparkMax.h"
-
-#include "frc/smartdashboard/SmartDashboard.h"
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/DriverStation.h>
-
+#include "rev/CANSparkMax.h"
 #include "rev/ColorSensorV3.h"
 
 class Take

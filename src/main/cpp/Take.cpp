@@ -1,11 +1,7 @@
 #include "Take.h"
-
 #include "log.h"
-
 #include <iostream>
-
 #include <frc/smartdashboard/SmartDashboard.h>
-
 
 void Take::Run(bool toggle, frc::DriverStation::Alliance alliance)
 {
