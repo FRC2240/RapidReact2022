@@ -69,7 +69,7 @@ bool Shooter::LimelightTracking()
 
 double Shooter::CalculateRPM(double d)
 {
-  return 2000.0; // TODO: Add equation
+  return 8097 + (-116 * d) + (0.748 * pow(d, 2)) + (-1.47e-3 * pow(d, 3)); // TODO: Add equation
 }
 
 void Shooter::Fire()
@@ -99,7 +99,7 @@ void Shooter::Fire()
     if ((distance < 250) && (distance > 70))
     {
       std::cout << "RPM: " << rpm << "\n"; 
-      m_shootingMotorAlpha.Set(ControlMode::Velocity, rpm * (2048.0 / 600.0));
+      m_shootingMotorAlpha.Set(ControlMode::Velocity, -rpm * (2048.0 / 600.0));
     }
     // std::cout << "distance = " << distance
     //           << " want = " << rpm << " got = " << m_shootingMotorAlpha.GetSelectedSensorVelocity() << std::endl;

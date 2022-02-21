@@ -14,10 +14,9 @@
 
 void Robot::RobotInit() {
   m_odometry = new frc::DifferentialDriveOdometry(frc::Rotation2d(0_deg));
-
-
-  m_shooter.InitializePIDControllers(); 
-  m_shooter.InitializeDashboard();
+  
+  InitializePIDControllers(); 
+  InitializeDashboard();
 
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
@@ -156,9 +155,12 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
+  /*
   m_shooter.InitializePIDControllers();
   m_shooter.ReadDashboard();
-
+*/
+  InitializePIDControllers();
+  ReadDashboard();
 }
 
 void Robot::TeleopPeriodic() {
@@ -264,9 +266,19 @@ void Robot::DisabledInit() {}
 
 void Robot::DisabledPeriodic() {}
 
-void Robot::TestInit() {}
+void Robot::TestInit() {
+ // m_shooter.InitializePIDControllers();
+}
 
-void Robot::TestPeriodic() {}
+void Robot::TestPeriodic() {
+  if (m_stick.GetAButton()) {
+   // m_shooter.m_shootingMotorAlpha.Set(ControlMode::Velocity, 10.0 * (2048.0 / 600.0));
+  }
+  else {
+   // m_shooter.m_shootingMotorAlpha.Set(ControlMode::Velocity, 0.0);
+  }
+
+}
 
 void Robot::InitializePIDControllers() {
   //Climber intializes PIDs in it's own function

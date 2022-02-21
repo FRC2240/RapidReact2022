@@ -20,6 +20,8 @@ class Shooter {
 
   void Spit(double vel);
 
+  
+
  private:
 
   double CalculateRPM(double d);
