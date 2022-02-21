@@ -1,13 +1,24 @@
+
+
+// Standard C++ Libraries
 #include <iostream>
 #include <math.h>
+
+// FIRST Specific Libraries
+#include <fmt/core.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include "Shooter.h"
 
-Shooter::Shooter(frc::DifferentialDrive *d, frc::XboxController *s, Take *t)
+
+ */
+Shooter::Shooter(frc::DifferentialDrive* d, frc::XboxController* s, Take* t)
     : m_drive(d),
       m_stick(s),
       m_take(t)
 {
+  // QUESTION: These are being manually called in Robot.cpp, but they are also being called on class instantiation
+  // Why is it being repeated? 
+  // Initialize Dashboard and PID Controllers
   InitializeDashboard();
   InitializePIDControllers();
 
@@ -24,13 +35,24 @@ void Shooter::Reset()
   m_take->Feed(0.0);                // feed off
 }
 
-// Weak l'il spit
-// Default value not working, investigate later
-void Shooter::Spit(double vel = 0.1)
-{
+
+/**
+ *  Method to eject wrong colored balls out of the shooter
+ * 
+ * parameters:
+ *   vel - double representing velocity to spit. Defaults to 0.1
+ */
+void Shooter::Spit(double vel = 0.1) {
   m_shootingMotorAlpha.Set(vel);
 }
 
+/**
+ * Method for Limelight Tracking. Returns true/false depending on if
+ * the target for shooting is in frame
+ * 
+ * returns:
+ *   boolean for target in frame
+ */
 bool Shooter::LimelightTracking()
 {
   bool shoot = false;
@@ -47,6 +69,7 @@ bool Shooter::LimelightTracking()
   //std::cout << "tx: " << tx << "; tv: " << tv << "\n";
 
   double limelightTurnCmd = 0.0;
+
 
   if (tv > 0.0)
   {
@@ -67,10 +90,14 @@ bool Shooter::LimelightTracking()
   return shoot;
 }
 
+/**
+ * Method to calculate shooter RPM. Not defined at the moment
+ */
 double Shooter::CalculateRPM(double d)
 {
-  return 8097 + (-116 * d) + (0.748 * pow(d, 2)) + (-1.47e-3 * pow(d, 3)); // TODO: Add equation
+  return 8097 + (-116 * d) + (0.748 * pow(d, 2)) + (-1.47e-3 * pow(d, 3)); 
 }
+
 
 void Shooter::Fire()
 {
@@ -114,9 +141,13 @@ void Shooter::Fire()
   }
 }
 
+
 void Shooter::InitializePIDControllers()
 {
+
+  // Read current dashboard values
   ReadDashboard();
+
   /* Factory default hardware to prevent unexpected behavior */
   m_shootingMotorAlpha.ConfigFactoryDefault();
   m_shootingMotorBeta.ConfigFactoryDefault();
@@ -147,8 +178,12 @@ void Shooter::InitializePIDControllers()
   m_shootingMotorAlpha.Config_kP(0, m_shooterCoeff.kP, 10);
   m_shootingMotorAlpha.Config_kI(0, m_shooterCoeff.kI, 10);
   m_shootingMotorAlpha.Config_kD(0, m_shooterCoeff.kD, 10);
+
 }
 
+/**
+ * Initialize the dashboard for the shooter
+ */
 void Shooter::InitializeDashboard()
 {
   frc::SmartDashboard::PutNumber("Overridden RPM", m_overrideRPM);
@@ -159,8 +194,12 @@ void Shooter::InitializeDashboard()
   frc::SmartDashboard::PutNumber("Shooter FF Gain", m_shooterCoeff.kFF);
   frc::SmartDashboard::PutNumber("Shooter Max Output", m_shooterCoeff.kMaxOutput);
   frc::SmartDashboard::PutNumber("Shooter Min Output", m_shooterCoeff.kMinOutput);
+
 }
 
+/**
+ * Read the dashboard for the shooter
+ */
 void Shooter::ReadDashboard()
 {
   m_overrideRPM = frc::SmartDashboard::GetNumber("Overridden RPM", 0.0);
@@ -171,4 +210,5 @@ void Shooter::ReadDashboard()
   m_shooterCoeff.kFF = frc::SmartDashboard::GetNumber("Shooter FF Gain", 0.0);
   m_shooterCoeff.kMinOutput = frc::SmartDashboard::GetNumber("Shooter Min Output", 0.0);
   m_shooterCoeff.kMaxOutput = frc::SmartDashboard::GetNumber("Shooter Max Output", 0.0);
+
 }
