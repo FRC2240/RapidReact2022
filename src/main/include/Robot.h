@@ -133,8 +133,10 @@ class Robot : public frc::TimedRobot {
   WPI_TalonFX m_midRightMotor = {3};
   WPI_TalonFX m_backRightMotor = {7};
   WPI_TalonFX m_frontLeftMotor = {2};
-  WPI_TalonFX m_midLeftMotor = {1}; 
-  WPI_TalonFX m_backLeftMotor = {17}; 
+
+  WPI_TalonFX m_midLeftMotor = {1};
+  WPI_TalonFX m_backLeftMotor = {17};
+
 
   // Left side of the robot is inverted
   // Tonk drive
@@ -166,4 +168,5 @@ frc::Trajectory m_trajectory;
 
 Shooter m_shooter{&m_drive, &m_stick, &m_take};
 
+frc::DriverStation::Alliance m_alliance = frc::DriverStation::Alliance::kInvalid;
 };

@@ -54,6 +54,7 @@ void Robot::RobotInit() {
   m_backRightMotor.Follow(m_frontRightMotor);
   m_backLeftMotor.Follow(m_frontLeftMotor);
 
+  m_drive.SetSafetyEnabled(false);
 
 }
 
@@ -134,15 +135,15 @@ void Robot::AutonomousPeriodic() {
  */
 void Robot::TeleopInit() {
 
-  /*
-  m_shooter.InitializePIDControllers();
-  m_shooter.ReadDashboard();
-*/
-  InitializePIDControllers();
+  m_alliance = frc::DriverStation::GetAlliance();
+   InitializePIDControllers();
   ReadDashboard();
 }
 
 void Robot::TeleopPeriodic() {
+  // Intake
+  m_take.Run(m_stick.GetLeftBumperPressed(), m_alliance);
+  
   double a = .375/.4495;
   double b = .0745/.4495;
   //Read controller input
@@ -162,6 +163,7 @@ void Robot::TeleopPeriodic() {
     m_shooter.Reset();
   }
 
+
   //climber
 /*
   //move to next phase if button pressed (button subject to change)
@@ -174,7 +176,6 @@ void Robot::TeleopPeriodic() {
   if (m_stick_climb.GetBButtonPressed()) {
     m_climber.Kill();
   }
-
 
   m_climber.Run(); //constantly running, initially set to zero but changes whenever progress is called
 */
@@ -260,9 +261,11 @@ void Robot::TeleopPeriodic() {
  */
 
   // If the uptake has the wrong ball and shooter is full
+  /*
   if (m_take.ManipulateBall() == m_take.wrongFull) {
     // Reverse the intake
   }  
+  */
 
 }
 
