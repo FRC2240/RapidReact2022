@@ -191,9 +191,6 @@ void Robot::TeleopPeriodic() {
   //TODO: climber controls
 
 
-  // Calculate turn factor
-  double turnInput = m_stick.GetLeftX()*m_turnFactor - m_stick.GetLeftY()*m_turnFactor;
-
 
 //Better Uptake
 /*
