@@ -22,11 +22,9 @@ void Robot::RobotInit() {
   // Setup initiate Diff Drive object with an initial heading of zero
   m_odometry = new frc::DifferentialDriveOdometry(frc::Rotation2d(0_deg));
   
-  // Initialize PID controllers
-  this->InitializePIDControllers();
 
-  // Initalize Dashboard
-  this->InitializeDashboard();
+  InitializePIDControllers(); 
+  InitializeDashboard();
 
   // Setup Autonomous options
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
@@ -135,19 +133,39 @@ void Robot::AutonomousPeriodic() {
  * This is the method called at the beginning of teleoperated mode
  */
 void Robot::TeleopInit() {
-  
-  // Initialize PID Controllers
-  // QUESTION: I replaced this with the method you guys had already written
-  // But this has already been called in RobotInit(). Why the repeat?
-  this->InitializePIDControllers();
 
-  // Initialize Dashboard
-  this->ReadDashboard();
+  /*
+  m_shooter.InitializePIDControllers();
+  m_shooter.ReadDashboard();
+*/
+  InitializePIDControllers();
+  ReadDashboard();
 }
 
 void Robot::TeleopPeriodic() {
+  double a = .375/.4495;
+  double b = .0745/.4495;
+  //Read controller input
+  //double throttle = m_stick.GetLeftTriggerAxis() - m_stick.GetRightTriggerAxis();
+ 
+  double throttleExp = a * pow(m_stick.GetLeftTriggerAxis(), 4) + b * pow(m_stick.GetLeftTriggerAxis(), 1.48)-a * pow(m_stick.GetRightTriggerAxis(), 4) + b * pow(m_stick.GetRightTriggerAxis(), 1.48);
+  double turnInput = m_stick.GetLeftX()*m_turnFactor - m_stick.GetLeftY()*m_turnFactor;
+ 
 
-  // Move to next Climber phase if button pressed (button subject to change)
+  // Shooter
+  if (m_stick.GetRightBumper()) {
+    m_shooter.Fire();
+  } else {
+    m_drive.ArcadeDrive(throttleExp, turnInput);
+  }
+  if (m_stick.GetRightBumperReleased()) {
+    m_shooter.Reset();
+  }
+
+  //climber
+/*
+  //move to next phase if button pressed (button subject to change)
+
   if (m_stick_climb.GetAButtonReleased()) { 
     m_climber.Progress();
   }
@@ -157,25 +175,32 @@ void Robot::TeleopPeriodic() {
     m_climber.Kill();
   }
 
-  // Runs ever period. Phase is initially zero but changes whenever progress is called
-  m_climber.Run();
 
-  // Throttle output function: ax^4 + bx^2 = y
-  double a = .375/.4495;
-  double b = .0745/.4495;
+  m_climber.Run(); //constantly running, initially set to zero but changes whenever progress is called
+*/
 
-  //Read controller input
-  double throttle = m_stick.GetLeftTriggerAxis() - m_stick.GetRightTriggerAxis();
+  
+ /*
+  if (throttleExp > 1) {
+    throttleExp = 1;
+  } else if (throttleExp < -1) {
+    throttleExp = -1;
+  }*/
+  //Looks like Ethan wants exponents...
+   
+  //TODO: climber controls
 
-  // Calculate throttle (y)
-  // TODO: because of how this function is defined, it can only return positive numbers
-  double throttleExp = a * pow(throttle, 4) + b * pow(throttle, 1.48);
 
-  // Calculate turn factor
-  double turnInput = m_stick.GetLeftX()*m_turnFactor - m_stick.GetLeftY()*m_turnFactor;
+
+//Better Uptake
+/*
+  if (m_take.ManipulateBall() == m_take.rightEmpty) {} // Hold in waiting room, no shooter action needed
+  if (m_take.ManipulateBall() == m_take.rightFull) {} // Hold in uptake, no shooter action needed
+  // The above lines are precautionary
 
   // Call arcade drive function with calculated values
   m_drive.ArcadeDrive(throttleExp, turnInput);
+
 
   // TODO: climber controls
 
@@ -196,10 +221,49 @@ void Robot::TeleopPeriodic() {
   else if (m_take.ManipulateBall() == m_take.wrongEmpty) {
     // Eject the ball
   }
+
+  if (m_take.ManipulateBall() == m_take.wrongFull) {} // Reverse uptake, done internally 
+*/
+  /*
+ //uptake
+ if (m_stick.GetAButtonPressed()) {
+   if (uptakeBool == true) {
+     //stop uptake
+     m_take.ReturnIntake();
+     uptakeBool = false;
+   }
+   if (uptakeBool == false) {
+     //Start uptake
+     m_take.DeployIntake();
+     uptakeBool = true;
+   }
+ }
+  */
+
+//Possibly uneeded
+ /*
+ if (m_stick.GetStartButton()){
+   if (shootMan){
+     shootMan = false;
+     std::cout << "[MSG]: Shooter is in manual mode \n";
+   }
+   if (!shootMan){
+     shootMan = true;
+     std::cout << "[MSG]: Shooter is in automatic mode \n";
+   }
+ }
+
+
+ if (m_stick.GetLeftBumperPressed()) {
+   m_shooter.Fire();
+ }
+ */
+
   // If the uptake has the wrong ball and shooter is full
   if (m_take.ManipulateBall() == m_take.wrongFull) {
     // Reverse the intake
   }  
+
 }
 
 // This method is called at the beginning of the disabled state
@@ -208,11 +272,13 @@ void Robot::DisabledInit() {}
 // This method is called every 20ms (by default) during disabled
 void Robot::DisabledPeriodic() {}
 
+
 // This method is called at the beginning of the testing state
 void Robot::TestInit() {}
 
 // This method is called every 20ms (by default) during testing
 void Robot::TestPeriodic() {}
+
 
 // Method for initializing PID Controller
 void Robot::InitializePIDControllers() {
