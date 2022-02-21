@@ -72,48 +72,7 @@ void Shooter::Fire() {
     m_shootingMotorAlpha.Set(ControlMode::Velocity, m_overridenRPM*(2048.0/600.0));
     m_shootingMotorBeta.Set(ControlMode::Velocity, m_overridenRPM*(2048.0/600.0));
   }
-  if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kRed)
-  {
-    if (m_take->BallColorRoom() == m_take->redBall)
-    {
-      wrongBall = false;
-    }
-    if (m_take->BallColorRoom() == m_take->blueBall)
-    {
-      wrongBall = true;
-    }
-    if (m_take->BallColorRoom() == m_take->errorBall)
-    {
-      std::cout << "[WARN]: Color Sensor issue \n";
-    }
-  }
-
-  if (frc::DriverStation::GetAlliance() == frc::DriverStation::Alliance::kBlue)
-  {
-    if (m_take->BallColorRoom() == m_take->redBall)
-    {
-      wrongBall = true;
-    }
-    if (m_take->BallColorRoom() == m_take->blueBall)
-    {
-      wrongBall = false;
-    }
-    if (m_take->BallColorRoom() == m_take->errorBall)
-    {
-      std::cout << "[WARN]: Color Sensor issue \n";
-    }
-  }
-
-  if (wrongBall)
-  {
-    m_stick->SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 1.0);
-    m_stick->SetRumble(frc::GenericHID::RumbleType::kRightRumble, 1.0);
-  }
-  if (!wrongBall)
-  {
-    m_stick->SetRumble(frc::GenericHID::RumbleType::kLeftRumble, 0.0);
-    m_stick->SetRumble(frc::GenericHID::RumbleType::kRightRumble, 0.0);
-  }
+  
 
   nt::NetworkTableEntry txEntry;
   nt::NetworkTableEntry tyEntry;

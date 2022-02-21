@@ -4,38 +4,88 @@
 
 #include <iostream>
 
-#include <fmt/core.h>
-
-#include <math.h>
-
 #include <frc/smartdashboard/SmartDashboard.h>
 
-Take::Take() {
-  m_colorMatcher.AddColorMatch(kBlue);
-  m_colorMatcher.AddColorMatch(kRed);
-  m_colorMatcher.AddColorMatch(kBlack);
-}
 
-void Take::Run(bool toggle)
+void Take::Run(bool toggle, frc::DriverStation::Alliance alliance)
 {
-  if (toggle)
-  {
-    intakeRunning = intakeRunning ? false : true; // toggle it
+  ReadSensors();
 
-    if (!intakeRunning)
-    {
-      // stop
-      ReturnIntake();
-      m_spinIntakeMotor.Set(0.0);
-      return;
-    }
-    else
-    {
-      // start
-      DeployIntake();
-      m_spinIntakeMotor.Set(1.0);
+  auto currentState = m_state;
+
+  // Driver input?
+  if (toggle && currentState == Intaking) {
+    m_state = Off;
+  }
+
+  // Driver input?
+  if (toggle && currentState == Off) {
+    m_state = Intaking;
+  }
+
+  // Full?
+  if ((m_waitingRoomState != nullBall) && (m_uptakeState != nullBall)) {
+    m_state = Off;
+  }
+
+  // Wrong color in uptake?
+  if (!RightColor(m_uptakeState, alliance)) {
+    m_state = Ejecting;
+    m_ejectTimer = 50;
+  }
+
+  // Timer complete?
+  if (m_ejectTimer != 0) {
+    --m_ejectTimer;
+
+    if (m_ejectTimer == 0) {
+      m_state = Intaking;
     }
   }
+
+  // Intake ON or OFF (manual toggle or auto-stop because we're full)
+  if (m_state != currentState)
+  {
+    switch (m_state) {
+      case Ejecting:
+        m_spinIntakeMotor.Set(1.0);
+        m_uptakeMotor.Set(1.0);
+        break;
+      case Intaking:
+        DeployIntake();
+        m_spinIntakeMotor.Set(-1.0);
+        m_uptakeMotor.Set(-0.5);
+        break;
+      case Off:
+      default:
+        ReturnIntake();
+        m_spinIntakeMotor.Set(0.0);
+        m_uptakeMotor.Set(0.0);
+    }
+  }
+}
+
+void Take::ReadSensors() {
+  static int count = 0;
+
+  ++count;
+
+  // Only read the I2C data once per 10 loops
+  if (count < 10) {
+    return;
+  }
+
+  // Read data
+  auto uptake  = m_uptakeSensor.GetColor();
+  auto waiting = m_waitingRoomSensor.GetColor();
+
+  // Determine colors
+  m_uptakeState      = Color(uptake);
+  m_waitingRoomState = Color(waiting);
+
+  std::cout << "Uptake: " << m_uptakeState << "Wa: " << m_waitingRoomState << std::endl;
+
+  count = 0;
 }
 
 void Take::UptakeStart(double speed)
@@ -60,159 +110,28 @@ void Take::ReturnIntake()
   m_rotateIntakePIDController.SetReference(0.0, rev::CANSparkMax::ControlType::kSmartMotion);
 }
 
-bool Take::RightColorBall()
+// Measurements from REV Color Sensors:
+// RED  BALL: R (0.40 - 0.54),  G (0.34 - 0.40), B (0.12 - 0.20)
+// BLUE BALL: R (0.14 - 0.20),  G (0.39 - 0.44), B (0.36 - 0.47)
+//   NO BALL: R (0.25), G (0.47), B (0.28)
+Take::BallColor Take::Color(frc::Color color) {
+  if ((color.red > 0.37) && (color.blue < 0.23)) {
+    return Take::redBall;
+  }
+
+  if ((color.red < 0.23) && (color.blue > 0.33)) {
+    return Take::blueBall;
+  }
+
+  return Take::nullBall;
+}
+
+bool Take::RightColor(BallColor ball, frc::DriverStation::Alliance alliance)
 {
-  if (BallColorUptake() == blueBall && TeamColor() == blueTeam) { return true; }
-  if (BallColorUptake() == redBall && TeamColor() == redTeam)   { return true; }
-  if (BallColorUptake() == blueBall && TeamColor() == redTeam)  { return false; }
-  if (BallColorUptake() == redBall && TeamColor() == blueTeam)  { return false; }
+  if (ball == blueBall && alliance == frc::DriverStation::Alliance::kBlue) { return true; }
+  if (ball == redBall && alliance == frc::DriverStation::Alliance::kRed)   { return true; }
 
-  // LOGGER(ERROR) << "Issue in Take::RightColorBall, all balls now counted valid";
-  // LOGGER(INFO) << "Fix for Take::RightColorBall: check color sensor functionality";
-
-  return true;
-}
-
-// enumed
-int Take::TeamColor()
-{
-  auto teamColor = frc::DriverStation::GetAlliance();
-
-  if (teamColor == frc::DriverStation::Alliance::kRed)  { return redTeam; }
-  if (teamColor == frc::DriverStation::Alliance::kBlue) { return blueTeam; }
-
-  // LOGGER(ERROR) << "Issue in Take::TeamColor, all balls now counted valid";
-  // LOGGER(INFO) << "Fix for Take::TeamColor: check if team was declared";
-  // LOGGER(DEBUG1) << "Take::TeamColor returned exitError";
-
-  return exitError;
-}
-
-// Formerly an int, now an enum
-int Take::ManipulateBall()
-{
-  // Here is a logn block comment on the flow of the system
-  //
-  // If it's the right color and the waiting room is empty, it holds in waiting room (scenario 1)
-  // If it's the right color and the waiting room is full, it holds in the (int|up)take (secnario 2)
-  // ---
-  // If it's the wrong color and the waiting room is empty it sh(oo|i)ts the ball
-  // If it's the wrong color and the waitng room is full, it reverses the (int|up)take
-
-  if (Take::RightColorBall() && Take::BallColorRoom() == nullBall)
-  {
-    // scenario 1
-    m_uptakeMotor.Set(0.25);
-    return rightEmpty;
-  }
-
-  if (Take::RightColorBall() && Take::BallColorRoom() != nullBall)
-  {
-    // secnario 2
-    return rightFull;
-  }
-
-  if (!Take::RightColorBall() && Take::BallColorRoom() == nullBall)
-  {
-    // secnario 3
-    m_uptakeMotor.Set(0.1);
-    m_waitingRoomMotor.Set(0.1);
-    return wrongEmpty;
-  }
-
-  if (!Take::RightColorBall() && Take::BallColorRoom() != nullBall)
-  {
-    // secnario 4
-    m_spinIntakeMotor.Set(-0.1);
-    m_uptakeMotor.Set(-0.1);
-    return wrongFull;
-  }
-
-  // LOGGER(ERROR) << "Issue in Take::ManipulateBall, all balls counted valid and waiting room considered empty";
-  // LOGGER(INFO) << "Fix for Take::ManipulateBall, you're on your own, buddy";
-
-  return rightEmpty;
-}
-
-// Eric's code, probably better but I don't know how it works so...
-/*
-
-void Take::UptakeBall() {
-  if (uptakeMatchedColor == desiredColor ) {
-    if (waitingRoomMatchedColor == desiredColor) {
-      //waiting room occupied, uptake should spin for a little bit before stopping
-      m_uptakePIDController.SetReference(m_stopOne, rev::CANSparkMax::ControlType::kPosition);
-    }
-
-    else if (waitingRoomMatchedColor == nothingDetected) {
-      //waiting room unoccupied, spin ball all the way into it
-      m_uptakePIDController.SetReference(m_stopTwo, rev::CANSparkMax::ControlType::kPosition);
-    }
-  }
-  else {
-    EjectBall();
-  }
-
-}
-
-void Take::EjectBall() {
-  if (uptakeMatchedColor == undesiredColor) {
-    if (waitingRoomMatchedColor == nothingDetected) {
-      //slight issue, we want to shoot the ball here, but shooter initialization is in a different class
-    }
-
-  }
-
-}
-
-void Take::ColorsInit() {
- m_colorMatcher.AddColorMatch(kBlue);
- m_colorMatcher.AddColorMatch(kRed);
-}
-
-void Take::SetColor() {
-  //figure out how to switch desired color/undesired color from red to green and vice versa
-}
-*/
-
-// TODO: make it so it doesn't update vars if a ball isn't there
-// Theese should be for the last ball to pass through the area
-
-Take::BallColor Take::BallColorUptake()
-{
-  frc::Color detectedColor = m_uptakeSensor.GetColor();
-  frc::Color matchedColor = m_colorMatcher.MatchClosestColor(detectedColor, m_colorConfidence);
-
-  if (matchedColor == kBlue) {
-      return BallColor::blueBall;
-  }
-  if (matchedColor == kRed) {
-      return BallColor::redBall;
-  }
-
-  //LOGGER(ERROR) << "Issue in Take::BallColorUptake, all balls now counted as valid";
-  //LOGGER(INFO) << "Fix for Take::BallColorUptake: check color sensor functionality";
-  //LOGGER(DEBUG1) << "Take::BallColorUptake returned exitError, expect error chaining";
-
-  return BallColor::nullBall;
-}
-
-Take::BallColor Take::BallColorRoom()
-{
-  /*frc::Color detectedColor = m_waitingRoomSensor.GetColor();
-  frc::Color matchedColor = m_colorMatcher.MatchClosestColor(detectedColor, m_colorConfidence);
-
-  if (matchedColor == kBlue) {
-      return BallColor::blueBall;
-  }
-  if (matchedColor == kRed) {
-      return BallColor::redBall;
-  }
-  //LOGGER(ERROR) << "Issue in Take::BallColorRoom, all balls now counted as valid";
-  //LOGGER(INFO) << "Fix for Take::BallColorRoom: check color sensor functionality";
-  //LOGGER(DEBUG1) << "Take::BallColorRoom returned exitError, expect error chaining";
-  */
-  return BallColor::nullBall;
+  return false;
 }
 
 void Take::TakePIDInit()

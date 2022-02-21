@@ -2,27 +2,21 @@
 
 #include "rev/CANSparkMax.h"
 
-#include <frc/smartdashboard/SendableChooser.h>
 #include "frc/smartdashboard/SmartDashboard.h"
 #include <frc/DriverStation.h>
 
-#include "frc/DigitalInput.h"
-//#include <frc/util/color.h>
-
 #include "rev/ColorSensorV3.h"
-#include "rev/ColorMatch.h"
 
 class Take
 {
 public:
-  explicit Take();
   void TakePIDInit();
   void TakeDashRead();
   void TakeDashInit();
   void ColorsInit();
   void SetColor();
 
-  void Run(bool toggle);
+  void Run(bool toggle, frc::DriverStation::Alliance alliance);
 
   // For testing, not operation
   void UptakeStart(double speed);
@@ -31,52 +25,29 @@ public:
   void DeployIntake();
   void ReturnIntake();
 
-  int ManipulateBall();
-
-  void UptakeBall();
-
-  // Probably should be private
-  int TeamColor();
-
-  bool RightColorBall();
-
-  enum teamColorEnum
-  {
-    redTeam,
-    blueTeam
-  };
-  enum BallStatusEnum
-  {
-    rightEmpty,
-    rightFull,
-    wrongEmpty,
-    wrongFull
-  };
   enum BallColor
   {
     blueBall,
     redBall,
     nullBall,
-    errorBall
-  };
-  enum TakeExitMessages
-  {
-    exitNominal,
-    exitError
   };
 
-  BallColor BallColorUptake();
-  BallColor BallColorRoom();
+  enum IntakeState {
+    Off,
+    Intaking,
+    Ejecting,
+  };
 
-  // What these mean:
-  //  exitNominal: a filler exit message for when things go well
-  //  exitNull: an exit message for when nothing happens
-  //  exitException: an exit message for when something goes wrong
-  //  exitUnexpected: for when something happens that shouldn't happen
 private:
 
-  // (right|wrong) means ball color
-  // (Empty | Full) means intake status
+  // Determine the ball color from Color Sensor value
+  BallColor Color(frc::Color);
+
+  // Compare ball color with alliance color
+  bool RightColor(BallColor ball, frc::DriverStation::Alliance alliance);
+
+  // Read Color Sensors
+  void ReadSensors();
 
   // Device IDs
   static const int rotateIntakeMotorDeviceID = 5;
@@ -84,9 +55,9 @@ private:
   static const int uptakeMotorDeviceID       = 9;
   static const int waitingRoomMotorDeviceID  = 14;
 
-  //static constexpr auto i2cPort = frc::I2C::Port::kOnboard;
-
   bool intakeRunning = false;
+
+  frc::DriverStation::Alliance m_alliance;
 
   // Motors
   rev::CANSparkMax m_rotateIntakeMotor{rotateIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
@@ -118,21 +89,12 @@ private:
 
   // Sensors
   rev::ColorSensorV3 m_uptakeSensor {frc::I2C::Port::kOnboard};
-  //rev::ColorSensorV3 m_waitingRoomSensor {frc::I2C::Port::kMXP};
+  rev::ColorSensorV3 m_waitingRoomSensor {frc::I2C::Port::kMXP};
 
-  // Colors
-  static constexpr frc::Color kBlue = frc::Color(0.143, 0.427, 0.429);
-  static constexpr frc::Color kRed = frc::Color(0.561, 0.232, 0.114);
-  static constexpr frc::Color kBlack = frc::Color(0.0, 0.0, 0.0);
+  BallColor m_waitingRoomState = nullBall;
+  BallColor m_uptakeState      = nullBall;
 
+  IntakeState m_state = Off;
 
-  frc::Color desiredColor;
-  frc::Color undesiredColor;
-  frc::Color nothingDetected = kBlack;
-
-  rev::ColorMatch m_colorMatcher;
-
-  double m_colorConfidence = 0.0;
-
-  double m_stopOne, m_stopTwo;
+  int m_ejectTimer = 0;
 };

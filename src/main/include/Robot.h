@@ -129,12 +129,12 @@ class Robot : public frc::TimedRobot {
 // A second controler
   frc::XboxController m_stick_climb{1};
 
-  WPI_TalonFX m_frontRightMotor = {1};
-  WPI_TalonFX m_midRightMotor = {15};
-  WPI_TalonFX m_backRightMotor = {2};
-  WPI_TalonFX m_frontLeftMotor = {3};
-  WPI_TalonFX m_midLeftMotor = {16};
-  WPI_TalonFX m_backLeftMotor = {4};
+  WPI_TalonFX m_frontRightMotor = {8};
+  WPI_TalonFX m_midRightMotor = {3};
+  WPI_TalonFX m_backRightMotor = {7};
+  WPI_TalonFX m_frontLeftMotor = {2};
+  WPI_TalonFX m_midLeftMotor = {1};
+  WPI_TalonFX m_backLeftMotor = {17};
 
   // Left side of the robot is inverted
   // Tonk drive
@@ -166,4 +166,5 @@ frc::Trajectory m_trajectory;
 
 Shooter m_shooter{&m_drive, &m_stick, &m_take};
 
+frc::DriverStation::Alliance m_alliance = frc::DriverStation::Alliance::kInvalid;
 };

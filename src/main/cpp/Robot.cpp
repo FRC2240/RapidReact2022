@@ -163,21 +163,22 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
-  m_shooter.InitializePIDControllers();
-  m_shooter.ReadDashboard();
+  //m_shooter.InitializePIDControllers();
+  //m_shooter.ReadDashboard();
 
-  m_climber.ClimberDashRead();
-  m_climber.ClimberPIDInit();
-  m_take.TakePIDInit();
+  //m_climber.ClimberDashRead();
+  //m_climber.ClimberPIDInit();
+  //m_take.TakePIDInit();
 
+  m_alliance = frc::DriverStation::GetAlliance();
 }
 
 void Robot::TeleopPeriodic() {
   // Intake
-  m_take.Run(m_stick.GetLeftBumperPressed());
+  m_take.Run(m_stick.GetLeftBumperPressed(), m_alliance);
 
   //climber
-
+/*
   //move to next phase if button pressed (button subject to change)
   if (m_stick_climb.GetAButtonReleased()) { 
     m_climber.Progress();
@@ -191,7 +192,7 @@ void Robot::TeleopPeriodic() {
   }
 
   m_climber.Run(); //constantly running, initially set to zero but changes whenever progress is called
-
+*/
 
   double a = .375/.4495;
   double b = .0745/.4495;
@@ -217,6 +218,7 @@ void Robot::TeleopPeriodic() {
   // Why was this commented out. Eh.
 
 //Better Uptake
+/*
   if (m_take.ManipulateBall() == m_take.rightEmpty) {} // Hold in waiting room, no shooter action needed
   if (m_take.ManipulateBall() == m_take.rightFull) {} // Hold in uptake, no shooter action needed
   // The above lines are precautionary
@@ -225,7 +227,7 @@ void Robot::TeleopPeriodic() {
     m_shooter.Spit(0.1);
   }
   if (m_take.ManipulateBall() == m_take.wrongFull) {} // Reverse uptake, done internally 
-
+*/
   /*
  //uptake
  if (m_stick.GetAButtonPressed()) {
