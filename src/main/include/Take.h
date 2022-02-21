@@ -44,7 +44,7 @@ private:
   BallColor Color(frc::Color);
 
   // Compare ball color with alliance color
-  bool RightColor(BallColor ball, frc::DriverStation::Alliance alliance);
+  bool WrongColor(BallColor ball, frc::DriverStation::Alliance alliance);
 
   // Read Color Sensors
   void ReadSensors();

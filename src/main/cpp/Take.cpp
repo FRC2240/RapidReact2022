@@ -9,9 +9,16 @@
 
 void Take::Run(bool toggle, frc::DriverStation::Alliance alliance)
 {
-  ReadSensors();
-
+  // Events that will affect state:
+  // - Driver input
+  // - Uptake/Waiting Room become full
+  // - Wrong color detected
+  // - Eject complete
   auto currentState = m_state;
+
+  if (toggle || currentState != Off) {
+    ReadSensors();
+  }
 
   // Driver input?
   if (toggle && currentState == Intaking) {
@@ -29,9 +36,9 @@ void Take::Run(bool toggle, frc::DriverStation::Alliance alliance)
   }
 
   // Wrong color in uptake?
-  if (!RightColor(m_uptakeState, alliance)) {
+  if (WrongColor(m_uptakeState, alliance)) {
     m_state = Ejecting;
-    m_ejectTimer = 50;
+    m_ejectTimer = 40;
   }
 
   // Timer complete?
@@ -48,19 +55,19 @@ void Take::Run(bool toggle, frc::DriverStation::Alliance alliance)
   {
     switch (m_state) {
       case Ejecting:
-        m_spinIntakeMotor.Set(1.0);
         m_uptakeMotor.Set(1.0);
+        m_spinIntakeMotor.Set(1.0);
         break;
       case Intaking:
         DeployIntake();
         m_spinIntakeMotor.Set(-1.0);
-        m_uptakeMotor.Set(-0.5);
+        m_uptakeMotor.Set(-0.4);
         break;
       case Off:
       default:
-        ReturnIntake();
-        m_spinIntakeMotor.Set(0.0);
         m_uptakeMotor.Set(0.0);
+        m_spinIntakeMotor.Set(0.0);
+        ReturnIntake();
     }
   }
 }
@@ -126,10 +133,10 @@ Take::BallColor Take::Color(frc::Color color) {
   return Take::nullBall;
 }
 
-bool Take::RightColor(BallColor ball, frc::DriverStation::Alliance alliance)
+bool Take::WrongColor(BallColor ball, frc::DriverStation::Alliance alliance)
 {
-  if (ball == blueBall && alliance == frc::DriverStation::Alliance::kBlue) { return true; }
-  if (ball == redBall && alliance == frc::DriverStation::Alliance::kRed)   { return true; }
+  if (ball == blueBall && alliance == frc::DriverStation::Alliance::kRed) { return true; }
+  if (ball == redBall && alliance == frc::DriverStation::Alliance::kBlue) { return true; }
 
   return false;
 }
