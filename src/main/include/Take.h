@@ -14,9 +14,11 @@ public:
   void ColorsInit();
   void SetColor();
 
+
   void Run(bool toggle, frc::DriverStation::Alliance alliance);
 
   // For testing, not operation
+
   void UptakeStart(double speed);
   void UptakeStop();
 

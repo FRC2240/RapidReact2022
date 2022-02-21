@@ -108,9 +108,9 @@ class Robot : public frc::TimedRobot {
 
   double m_driveExponent = 1.2;
   double m_turnFactor = 0.6;
-  bool shootMan;
+  bool manualShootingEnabled;
   bool limelightTrackingBool = false;
-  bool wrongBall;
+  bool wrongBallInSystem;
   bool uptakeBool;
   fs::path deployDirectory;
 
@@ -133,8 +133,10 @@ class Robot : public frc::TimedRobot {
   WPI_TalonFX m_midRightMotor = {3};
   WPI_TalonFX m_backRightMotor = {7};
   WPI_TalonFX m_frontLeftMotor = {2};
+
   WPI_TalonFX m_midLeftMotor = {1};
   WPI_TalonFX m_backLeftMotor = {17};
+
 
   // Left side of the robot is inverted
   // Tonk drive
