@@ -35,6 +35,7 @@ class Shooter {
   double kLimelightAngle   = 13.861;  // TODO: Measure
   double kRadiusOfTarget   = 26.7;
 
+
   WPI_TalonFX m_shootingMotorAlpha {21};
   WPI_TalonFX m_shootingMotorBeta {20};
 
