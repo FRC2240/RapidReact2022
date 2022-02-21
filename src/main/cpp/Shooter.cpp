@@ -85,7 +85,7 @@ bool Shooter::LimelightTracking()
  */
 double Shooter::CalculateRPM(double d)
 {
-  return 8097 + (-116 * d) + (0.748 * pow(d, 2)) + (-1.47e-3 * pow(d, 3)); 
+  return 2924 + (-9.04 * d) + (0.0447 * pow(d, 2)); //new equation
 }
 
 
