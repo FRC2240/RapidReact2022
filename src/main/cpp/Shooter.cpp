@@ -32,7 +32,7 @@ void Shooter::Reset()
 {
   m_table->PutNumber("ledMode", 1); // lights off
   m_shootingMotorAlpha.Set(0.0);    // motors off
-  m_take->Feed(0.0);                // feed off
+  //m_take->Feed(0.0);                // feed off
 }
 
 
@@ -125,9 +125,9 @@ void Shooter::Fire()
     // Enable feed if we're at 98% of desired shooter speed
     if (fabs(m_shootingMotorAlpha.GetSelectedSensorVelocity()) > fabs(rpm * 0.97))
     {
-      m_take->Feed(1.0);
+      //m_take->Feed(1.0);
     } else {
-      m_take->Feed(0.0);
+      //m_take->Feed(0.0);
     }
   }
 }

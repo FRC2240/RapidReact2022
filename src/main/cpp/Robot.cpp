@@ -261,9 +261,11 @@ void Robot::TeleopPeriodic() {
  */
 
   // If the uptake has the wrong ball and shooter is full
+  /*
   if (m_take.ManipulateBall() == m_take.wrongFull) {
     // Reverse the intake
   }  
+  */
 
 }
 
