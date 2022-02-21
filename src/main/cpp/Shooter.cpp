@@ -24,12 +24,6 @@ void Shooter::Reset()
   m_take->Feed(0.0);                // feed off
 }
 
-// Weak l'il spit
-// Default value not working, investigate later
-void Shooter::Spit(double vel = 0.1)
-{
-  m_shootingMotorAlpha.Set(vel);
-}
 
 bool Shooter::LimelightTracking()
 {

@@ -18,8 +18,6 @@ class Shooter {
   void InitializeDashboard();
   void ReadDashboard();
 
-  void Spit(double vel);
-
   
 
  private:
