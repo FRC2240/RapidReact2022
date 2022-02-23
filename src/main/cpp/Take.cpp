@@ -134,6 +134,11 @@ void Take::ReadSensors() {
   count = 0;
 }
 
+void Take::Feed(double speed) {
+  m_uptakeMotor.Set(-speed);
+  m_waitingRoomMotor.Set(speed);
+}
+
 void Take::UptakeStart(double speed)
 {
   m_spinIntakeMotor.Set(speed);
