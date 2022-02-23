@@ -150,8 +150,7 @@ void Robot::TeleopPeriodic() {
   //double throttle = m_stick.GetLeftTriggerAxis() - m_stick.GetRightTriggerAxis();
  
   double throttleExp = a * pow(m_stick.GetLeftTriggerAxis(), 4) + b * pow(m_stick.GetLeftTriggerAxis(), 1.48)-a * pow(m_stick.GetRightTriggerAxis(), 4) + b * pow(m_stick.GetRightTriggerAxis(), 1.48);
-  double turnInput = m_stick.GetLeftX()*m_turnFactor - m_stick.GetLeftY()*m_turnFactor;
- 
+  double turnInput = pow(m_stick.GetLeftX()*m_turnFactor,1.72) - pow(m_stick.GetLeftY()*m_turnFactor,1.72);
 
   // Shooter
   if (m_stick.GetRightBumper()) {
