@@ -13,6 +13,7 @@ public:
   void TakeDashInit();
   void ColorsInit();
   void SetColor();
+  void Feed(double speed);
 
 
   void Run(bool toggle, frc::DriverStation::Alliance alliance);
