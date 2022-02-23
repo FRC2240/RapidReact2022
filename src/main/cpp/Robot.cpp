@@ -202,7 +202,7 @@ void Robot::TeleopPeriodic() {
   }*/
   //Looks like Ethan wants exponents...
    
-  double turnInput = m_stick.GetLeftX()*m_turnFactor - m_stick.GetLeftY()*m_turnFactor;
+  double turnInput = pow(m_stick.GetLeftX()*m_turnFactor,1.72) - pow(m_stick.GetLeftY()*m_turnFactor,1.72);
  
   m_drive.ArcadeDrive(throttleExp, turnInput);
 
