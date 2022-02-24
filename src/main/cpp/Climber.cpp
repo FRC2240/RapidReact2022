@@ -386,4 +386,18 @@ void Climber::Run() {
       ExtendALowerL(phaseNineRetract);
       break;
   }
+
+  
+}
+
+void Climber::GetEncoderValues() {
+  std::cout << "Left Extender Encoder: " << m_leftClimberExtender.GetSelectedSensorPosition() << "; Left Rotation Encoder: " << m_leftClimberEncoder.GetPosition() << "\n";
+  std::cout << "Right Extender Encoder: " << m_rightClimberExtender.GetSelectedSensorPosition() << "; Right Rotation Encoder: " << m_rightClimberEncoder.GetPosition() << "\n";
+  }
+
+void Climber::InitializeEncoders() {
+  m_leftClimberExtender.SetSelectedSensorPosition(0.0);
+  m_leftClimberEncoder.SetPosition(0.0);
+  m_rightClimberExtender.SetSelectedSensorPosition(0.0);
+  m_rightClimberEncoder.SetPosition(0.0);
 }

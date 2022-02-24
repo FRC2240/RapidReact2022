@@ -364,3 +364,7 @@ void Take::TakeDashRead()
   frc::SmartDashboard::PutNumber("Blue", dashDetectedColorRoom.blue);
   //  frc::SmartDashboard::PutNumber("IR", dashRoomIR); //Unsued
 }
+
+void Take::InitializeEncoders() {
+  m_rotateIntakeEncoder.SetPosition(0.0);
+}
