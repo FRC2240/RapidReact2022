@@ -24,7 +24,11 @@ void Robot::RobotInit() {
   
 
   InitializePIDControllers(); 
-  InitializeDashboard();
+  //InitializeDashboard();
+
+//Test
+  m_climber.TestDashInit();
+  m_take.TestDashInit();
 
   m_climber.InitializeEncoders();
   m_take.InitializeEncoders(); 
@@ -172,8 +176,14 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {
 
   m_alliance = frc::DriverStation::GetAlliance();
+  /*
    InitializePIDControllers();
   ReadDashboard();
+  */
+
+ InitializePIDControllers();
+  m_climber.TestReadDash(); 
+  m_take.TakeDashRead();
 }
 
 void Robot::TeleopPeriodic() {
@@ -199,7 +209,20 @@ void Robot::TeleopPeriodic() {
   }
 
 
-  //climber
+  //climber testing
+  if (m_stick.GetLeftBumper()) {
+  m_climber.TestL();
+}
+else {
+  m_climber.RotateLeft(0.0);
+}
+
+if (m_stick.GetRightBumper()) {
+  m_climber.TestR();
+}
+else {
+  m_climber.RotateRight(0.0);
+}
 
 
 }
@@ -212,10 +235,15 @@ void Robot::DisabledPeriodic() {}
 
 
 // This method is called at the beginning of the testing state
-void Robot::TestInit() {}
+void Robot::TestInit() {
+  
+}
 
 // This method is called every 20ms (by default) during testing
-void Robot::TestPeriodic() {}
+void Robot::TestPeriodic() {
+
+
+}
 
 
 // Method for initializing PID Controller

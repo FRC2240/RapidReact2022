@@ -62,6 +62,15 @@ void Climber::RotateRight(double rotatePointR){
   m_rightClimberRotatePIDController.SetReference(m_rotateSetpointR, rev::CANSparkMax::ControlType::kSmartMotion);
 }
 
+void Climber::EngageLeft(double throttle) {
+  //could set overall (max) soft limits here? Also, should do throttle?? Or do velocity PIDs??
+  m_leftClimberExtender.Set(throttle);
+}
+
+void Climber::EngageRight(double throttle) {
+  m_rightClimberExtender.Set(throttle);
+}
+
 /**
  * Method to initialize the climber dashboard
  */
@@ -286,40 +295,40 @@ bool Climber::CanIProgress() {
       break;
     
     case 1:
-      return m_leftClimberExtender.GetSelectedSensorPosition() == phaseOneLift; 
+      //return m_leftClimberExtender.GetSelectedSensorPosition() == phaseOneLift; 
       break;
 
     case 2:
-      return m_leftClimberExtender.GetSelectedSensorPosition() == phaseTwoRetract;
+     // return m_leftClimberExtender.GetSelectedSensorPosition() == phaseTwoRetract;
       break;
 
     case 3:
-      return m_rightClimberEncoder.GetPosition() == phaseThreeRotate;
+      //return m_rightClimberEncoder.GetPosition() == phaseThreeRotate;
       break;
 
     case 4:
-      return m_leftClimberExtender.GetSelectedSensorPosition() == phaseFourRetract;
+     // return m_leftClimberExtender.GetSelectedSensorPosition() == phaseFourRetract;
       break;
 
     case 5:
-      return m_rightClimberExtender.GetSelectedSensorPosition() == phaseFiveExtend;
+     // return m_rightClimberExtender.GetSelectedSensorPosition() == phaseFiveExtend;
       break;
 
     case 6:
-      return m_rightClimberExtender.GetSelectedSensorPosition() == phaseSixRetract;
+     // return m_rightClimberExtender.GetSelectedSensorPosition() == phaseSixRetract;
       break;
 
     case 7:
-      return m_rightClimberExtender.GetSelectedSensorPosition() == phaseSevenRetract 
-        && m_leftClimberExtender.GetSelectedSensorPosition() == phaseSevenExtend;
+     // return m_rightClimberExtender.GetSelectedSensorPosition() == phaseSevenRetract 
+      //  && m_leftClimberExtender.GetSelectedSensorPosition() == phaseSevenExtend;
       break;
 
     case 8:
-      return m_leftClimberEncoder.GetPosition() == phaseEightRotate;
+    //  return m_leftClimberEncoder.GetPosition() == phaseEightRotate;
       break;
 
     case 9:
-      return m_leftClimberExtender.GetSelectedSensorPosition() == phaseNineRetract;
+     // return m_leftClimberExtender.GetSelectedSensorPosition() == phaseNineRetract;
       break;
   }
 }
@@ -339,51 +348,59 @@ void Climber::Kill() {
 void Climber::Run() {
   switch(m_phase) {
     case 0:
-      // NOTE: Is there no break here on purpose?
+    //Default: hold arms in frame perimeter
+    RotateLeft(defaultL);
+    RotateRight(defaultR);
+    break;
     case 1: 
-      // Raise left arm --> driver then drives robot towards bars
-      ExtendALowerL(phaseOneLift);
+      // Center Left Arm, rotate right arm out of the way (might not be necessary depending on which arm we choose to start w/)
+      RotateLeft(centerL);
       break;
 
     case 2:
-      // Retract left arm untill hooked on bar
-      ExtendALowerL(phaseTwoRetract);
+    //Ratchet Engages, set soft limits for each case??
+      // Extend left arm (could possibly merge w/ case 1), driver then drives up to bar 
+      
       break;
 
     case 3:
-      // Rotate right bar
-      RotateRight(phaseThreeRotate);
+      //Contract left fully
+      
       break;
 
     case 4:
-      // Retract left arm further
-      ExtendALowerL(phaseFourRetract);
+      // Rotate right arm
+      
       break;
 
     case 5:
-      // Extend right bar
-      ExtendALowerR(phaseFiveExtend);
+      // Extend right bar (could possibly merge w/ case 4)
+      
       break;
 
     case 6: 
       // Retract right bar until it's hooked
-      ExtendALowerR(phaseSixRetract);
+      
       break;
 
     case 7: 
       // Retract right and extend left until left is unhooked
+
+      /*
       ExtendALowerR(phaseSevenRetract);
       ExtendALowerL(phaseSevenExtend);
+      */
       break;
 
     case 8: 
+    //Currently unsure if cases 8 and 9 are necessary/what we want to do with them
       // Rotate left
-      RotateLeft(phaseEightRotate);
+     // RotateLeft(phaseEightRotate);
       break;
 
     case 9: 
       // Retract left until it's hooked
-      ExtendALowerL(phaseNineRetract);
+     // ExtendALowerL(phaseNineRetract);
       break;
   }
 
@@ -393,6 +410,9 @@ void Climber::Run() {
 void Climber::GetEncoderValues() {
   std::cout << "Left Extender Encoder: " << m_leftClimberExtender.GetSelectedSensorPosition() << "; Left Rotation Encoder: " << m_leftClimberEncoder.GetPosition() << "\n";
   std::cout << "Right Extender Encoder: " << m_rightClimberExtender.GetSelectedSensorPosition() << "; Right Rotation Encoder: " << m_rightClimberEncoder.GetPosition() << "\n";
+
+  std::cout << "Right Climber Rotation Point: " << m_rightClimberEncoder.GetPosition() << "\n";
+  std::cout << "Left Climber Rotation Point: " << m_leftClimberEncoder.GetPosition() << "\n";
   }
 
 void Climber::InitializeEncoders() {
@@ -400,4 +420,63 @@ void Climber::InitializeEncoders() {
   m_leftClimberEncoder.SetPosition(0.0);
   m_rightClimberExtender.SetSelectedSensorPosition(0.0);
   m_rightClimberEncoder.SetPosition(0.0);
+}
+
+void Climber::TestDashInit() {
+  // PID Constants for Left Climber Rotation
+  frc::SmartDashboard::PutNumber("Left Climber Rotate P Gain", m_leftClimberRotateCoeff.kP);
+  frc::SmartDashboard::PutNumber("Left Climber Rotate I Gain", m_leftClimberRotateCoeff.kI);
+  frc::SmartDashboard::PutNumber("Left Climber Rotate D Gain", m_leftClimberRotateCoeff.kD);
+  frc::SmartDashboard::PutNumber("Left Climber Rotate Max Output", m_leftClimberRotateCoeff.kMaxOutput);
+  frc::SmartDashboard::PutNumber("Left Climber Rotate Min Output", m_leftClimberRotateCoeff.kMinOutput);
+
+  // PID Constants for Right Climber Rotation
+  frc::SmartDashboard::PutNumber("Right Climber Rotate P Gain", m_rightClimberRotateCoeff.kP);
+  frc::SmartDashboard::PutNumber("Right Climber Rotate I Gain", m_rightClimberRotateCoeff.kI);
+  frc::SmartDashboard::PutNumber("Right Climber Rotate D Gain", m_rightClimberRotateCoeff.kD);
+  frc::SmartDashboard::PutNumber("Right Climber Rotate Max Output", m_rightClimberRotateCoeff.kMaxOutput);
+  frc::SmartDashboard::PutNumber("Right Climber Rotate Min Output", m_rightClimberRotateCoeff.kMinOutput);
+
+  // Rotation Positions
+  frc::SmartDashboard::PutNumber("Right Climber Rotation Point", m_rotationR);
+  frc::SmartDashboard::PutNumber("Left Climber Rotation Point", m_rotationL);
+
+  // Puts Encoder Values
+  frc::SmartDashboard::PutNumber("Left Climber Rotation Position: ", m_leftClimberEncoder.GetPosition());
+  frc::SmartDashboard::PutNumber("Right Climber Rotation Position: ", m_rightClimberEncoder.GetPosition());
+  frc::SmartDashboard::PutNumber("Left Climber Extension Position: ", m_leftClimberExtender.GetSelectedSensorPosition());
+  frc::SmartDashboard::PutNumber("Right Climber Extension Position: ", m_rightClimberExtender.GetSelectedSensorPosition());
+
+
+}
+
+void Climber::TestReadDash() {
+  double p, i, d, min, max;
+
+  // Read climber rotation PID constants
+  p   = frc::SmartDashboard::GetNumber("Right Climber Rotate P Gain", 0.0);
+  i   = frc::SmartDashboard::GetNumber("Right Climber Rotate I Gain", 0.0);
+  d   = frc::SmartDashboard::GetNumber("Right Climber Rotate D Gain", 0.0);
+  min = frc::SmartDashboard::GetNumber("Right Climber Rotate Min Output", 0.0);
+  max = frc::SmartDashboard::GetNumber("Right Climber Rotate Max Output", 0.0);
+
+  p   = frc::SmartDashboard::GetNumber("Left Climber Rotate P Gain", 0.0);
+  i   = frc::SmartDashboard::GetNumber("Left Climber Rotate I Gain", 0.0);
+  d   = frc::SmartDashboard::GetNumber("Left Climber Rotate D Gain", 0.0);
+  min = frc::SmartDashboard::GetNumber("Left Climber Rotate Min Output", 0.0);
+  max = frc::SmartDashboard::GetNumber("Left Climber Rotate Max Output", 0.0);
+
+  m_rotationR = frc::SmartDashboard::GetNumber("Right Climber Rotation Point", 0.0);
+  m_rotationL = frc::SmartDashboard::GetNumber("Left Climber Rotation Point", 0.0);
+
+}
+
+void Climber::TestL() {
+  std::cout << "Left Rotation Point: " << m_rotationL << "\n";
+  RotateLeft(m_rotationL);
+}
+
+void Climber::TestR() {
+  std::cout << "Right Rotation Point: " << m_rotationR << "\n";
+  RotateRight(m_rotationR);
 }
