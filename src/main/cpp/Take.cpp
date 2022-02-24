@@ -377,7 +377,7 @@ void Take::TestDashInit() {
   frc::SmartDashboard::PutNumber("Rotate Intake Max Output", m_rotateIntakeCoeff.kMaxOutput);
   frc::SmartDashboard::PutNumber("Rotate Intake Min Output", m_rotateIntakeCoeff.kMinOutput);
 
-  frc::SmartDashboard::PutNumber("Intake Rotation Encoder: ", m_rotateIntakeEncoder.GetPosition());
+
 }
 
 void Take::TestDashRead() {
@@ -388,4 +388,8 @@ void Take::TestDashRead() {
   d = frc::SmartDashboard::GetNumber("Rotate Intake D Gain", 0.0);
   min = frc::SmartDashboard::GetNumber("Rotate Intake Min Output", 0.0);
   max = frc::SmartDashboard::GetNumber("Rotate Intake Max Output", 0.0);
+}
+
+void Take::ReadEncoders() {
+  frc::SmartDashboard::PutNumber("Rotate Intake Position: ", m_rotateIntakeEncoder.GetPosition()); 
 }
