@@ -27,6 +27,9 @@ public:
   void DeployIntake();
   void ReturnIntake();
 
+  void TestDashInit();
+  void TestDashRead();
+
   enum BallColor
   {
     blueBall,

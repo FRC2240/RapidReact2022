@@ -19,6 +19,8 @@ public:
   void ExtendALowerR(double setpointR);
   void RotateLeft(double rotatePointL); // f = forwards, b = backwards. All lowercase
   void RotateRight(double rotatePointR);
+  void EngageLeft(double throttle);
+  void EngageRight(double throttle);
 
   void Progress();
   void Kill();
@@ -26,6 +28,11 @@ public:
 
   void GetEncoderValues();
   void InitializeEncoders();
+
+  void TestDashInit();
+  void TestReadDash();
+  void TestL();
+  void TestR();
 
 private:
   bool CanIProgress(); 
@@ -40,8 +47,8 @@ private:
   rev::CANSparkMax m_leftClimberRotationNeo{leftClimberRotationNeoDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 
   // Climber falcons
-  WPI_TalonFX m_leftClimberExtender = {12};
-  WPI_TalonFX m_rightClimberExtender = {13};
+  WPI_TalonFX m_rightClimberExtender = {12}; //pretty sure these were flipped
+  WPI_TalonFX m_leftClimberExtender = {13};
   TalonFXSensorCollection m_leftClimberExtenderEncoder = m_leftClimberExtender.GetSensorCollection();
   TalonFXSensorCollection m_rightClimberExtenderEncoder = m_rightClimberExtender.GetSensorCollection();
 
@@ -80,10 +87,14 @@ private:
 
   int m_phase = 0;
 
-  //position values
+  //rotation positions
+  double defaultL, defaultR, centerL; 
 
-  double phaseOneLift, phaseTwoRetract, phaseThreeRotate, phaseFourRetract, phaseFiveExtend, phaseSixRetract, 
-  phaseSevenRetract, phaseSevenExtend, phaseEightRotate, phaseNineRetract;
+  //extension soft limits
+  double kMaxLeft, kMinLeft, kMaxRight, kMinRight; 
+
+  //testing
+  double m_rotationR, m_rotationL;
   
 };
 
