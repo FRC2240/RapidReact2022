@@ -400,11 +400,18 @@ void Climber::Run() {
 }
 
 void Climber::GetEncoderValues() {
+  /*
   std::cout << "Left Extender Encoder: " << m_leftClimberExtender.GetSelectedSensorPosition() << "; Left Rotation Encoder: " << m_leftClimberEncoder.GetPosition() << "\n";
   std::cout << "Right Extender Encoder: " << m_rightClimberExtender.GetSelectedSensorPosition() << "; Right Rotation Encoder: " << m_rightClimberEncoder.GetPosition() << "\n";
 
   std::cout << "Right Climber Rotation Point: " << m_rightClimberEncoder.GetPosition() << "\n";
   std::cout << "Left Climber Rotation Point: " << m_leftClimberEncoder.GetPosition() << "\n";
+*/
+  // Puts Encoder Values
+  frc::SmartDashboard::PutNumber("Left Climber Rotation Position: ", m_leftClimberEncoder.GetPosition());
+  frc::SmartDashboard::PutNumber("Right Climber Rotation Position: ", m_rightClimberEncoder.GetPosition());
+  frc::SmartDashboard::PutNumber("Left Climber Extension Position: ", m_leftClimberExtender.GetSelectedSensorPosition());
+  frc::SmartDashboard::PutNumber("Right Climber Extension Position: ", m_rightClimberExtender.GetSelectedSensorPosition());
   }
 
 void Climber::InitializeEncoders() {
@@ -432,12 +439,6 @@ void Climber::TestDashInit() {
   // Rotation Positions
   frc::SmartDashboard::PutNumber("Right Climber Rotation Point", m_rotationR);
   frc::SmartDashboard::PutNumber("Left Climber Rotation Point", m_rotationL);
-
-  // Puts Encoder Values
-  frc::SmartDashboard::PutNumber("Left Climber Rotation Position: ", m_leftClimberEncoder.GetPosition());
-  frc::SmartDashboard::PutNumber("Right Climber Rotation Position: ", m_rightClimberEncoder.GetPosition());
-  frc::SmartDashboard::PutNumber("Left Climber Extension Position: ", m_leftClimberExtender.GetSelectedSensorPosition());
-  frc::SmartDashboard::PutNumber("Right Climber Extension Position: ", m_rightClimberExtender.GetSelectedSensorPosition());
 
 
 }

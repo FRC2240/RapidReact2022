@@ -18,6 +18,7 @@ public:
 
   void Run(bool toggle, frc::DriverStation::Alliance alliance);
   void InitializeEncoders();
+  void ReadEncoders();
 
   // For testing, not operation
 
