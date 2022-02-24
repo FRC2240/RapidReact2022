@@ -7,6 +7,7 @@
 #include "frc/smartdashboard/SmartDashboard.h"
 
 #include <frc/controller/PIDController.h>
+#include "frc/Servo.h"
 
 
 class Climber {
@@ -29,6 +30,10 @@ public:
 private:
   bool CanIProgress(); 
   frc::SendableChooser<std::string> m_chooser;
+
+  frc::Servo m_rightExtenderServo {0};
+  frc::Servo m_leftExtenderServo {1};
+
 
 
   // Stolen from Robot.h
