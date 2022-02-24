@@ -24,6 +24,8 @@ public:
   void Kill();
   void Run();
 
+  void GetEncoderValues();
+  void InitializeEncoders();
 
 private:
   bool CanIProgress(); 

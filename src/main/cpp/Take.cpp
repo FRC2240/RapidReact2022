@@ -87,7 +87,7 @@ void Take::ReadSensors() {
   m_uptakeState      = Color(uptake);
   m_waitingRoomState = Color(waiting);
 
-  std::cout << "Uptake: " << m_uptakeState << "Wa: " << m_waitingRoomState << std::endl;
+  //std::cout << "Uptake: " << m_uptakeState << "Wa: " << m_waitingRoomState << std::endl;
 
   count = 0;
 }
@@ -310,4 +310,8 @@ void Take::TakeDashRead()
   frc::SmartDashboard::PutNumber("Green", dashDetectedColorRoom.green);
   frc::SmartDashboard::PutNumber("Blue", dashDetectedColorRoom.blue);
   //  frc::SmartDashboard::PutNumber("IR", dashRoomIR); //Unsued
+}
+
+void Take::InitializeEncoders() {
+  m_rotateIntakeEncoder.SetPosition(0.0);
 }
