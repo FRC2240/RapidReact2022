@@ -284,9 +284,9 @@ void Robot::TestPeriodic() {}
 
 // Method for initializing PID Controller
 void Robot::InitializePIDControllers() {
-  m_climber.ClimberPIDInit();
-  m_take.TakePIDInit();
-  m_shooter.InitializePIDControllers();
+  //  m_climber.ClimberPIDInit();
+  //  m_take.TakePIDInit();
+  //  m_shooter.InitializePIDControllers();
 
 }
 

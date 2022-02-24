@@ -8,6 +8,7 @@
 class Take
 {
 public:
+  Take();
   void TakePIDInit();
   void TakeDashRead();
   void TakeDashInit();

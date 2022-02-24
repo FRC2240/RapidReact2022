@@ -11,6 +11,7 @@
 
 class Climber {
 public:
+  Climber();
   //ClimberSubsystem();
   void ClimberPIDInit();
   void ClimberDashRead();
