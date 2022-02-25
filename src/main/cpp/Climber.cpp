@@ -365,11 +365,14 @@ void Climber::Run() {
     case 2:
     //Ratchet disengages, set soft limits for each case??
       // Extend left arm (could possibly merge w/ case 1), driver then drives up to bar 
-      
+      SetLeftServo(0.7);
+      EngageLeft(0.5); 
+
       break;
 
     case 3:
       //Ratchet reengages, Contract left fully
+      SetLeftServo(0.0);
       
       break;
 
@@ -380,11 +383,13 @@ void Climber::Run() {
 
     case 5:
       // Ratchet disengages, Extend right bar (could possibly merge w/ case 4)
+      SetRightServo(0.5);
       
       break;
 
     case 6: 
       // Ratchet reengages, Retract right bar until it's hooked
+      SetRightServo(0.0); 
       
       break;
 

@@ -194,8 +194,6 @@ else {
   m_take.SetIntakePosition(0.0); 
 }
 
-
-
   //climber testing
   //fully manual
   if (m_stick_climb.GetLeftBumper()) {
@@ -238,10 +236,12 @@ if (m_stick_climb.GetLeftStickButtonReleased()) {
   if (!m_leftServoEngaged) {
     m_climber.SetLeftServo(0.0);
     m_leftServoEngaged = true;
+    std::cout << "Left Servo Engaged\n";
   }
   else {
-    m_climber.SetLeftServo(0.25);
+    m_climber.SetLeftServo(0.7);
     m_leftServoEngaged = false;
+    std::cout << "Left Servo Disengaged\n";
   }
 }
 
@@ -249,10 +249,12 @@ if (m_stick_climb.GetRightStickButtonReleased()) {
   if (!m_rightServoEngaged) {
     m_climber.SetRightServo(0.0);
     m_rightServoEngaged = true;
+    std::cout << "Right Servo Engaged\n";
   }
   else {
-    m_climber.SetRightServo(0.25);
+    m_climber.SetRightServo(0.5);
     m_rightServoEngaged = false;
+    std::cout << "Right Servo Disengaged\n";
   }
 }
 
