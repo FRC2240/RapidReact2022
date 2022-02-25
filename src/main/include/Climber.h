@@ -24,6 +24,9 @@ public:
   void EngageLeft(double throttle);
   void EngageRight(double throttle);
 
+  void SetLeftServo(double position);
+  void SetRightServo(double position);
+
   void Progress();
   void Kill();
   void Run();
@@ -111,6 +114,7 @@ private:
 
   //extension soft limits
   double kMaxLeft, kMinLeft, kMaxRight, kMinRight; 
+
 
   //testing
   double m_rotationR, m_rotationL;
