@@ -31,7 +31,7 @@ Take::Take() {
   m_waitingRoomPIDController.SetOutputRange(m_waitingRoomCoeff.kMinOutput, m_waitingRoomCoeff.kMaxOutput);
 }
 
-int Take::Feed(double feedSpeed) {
+void Take::Feed(double feedSpeed) {
   m_waitingRoomMotor.Set(feedSpeed);
   m_uptakeMotor.Set(feedSpeed);
 }
