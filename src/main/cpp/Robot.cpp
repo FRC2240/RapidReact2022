@@ -27,12 +27,15 @@ void Robot::RobotInit() {
   //InitializeDashboard();
 
 //Test
-m_climber.ClimberPIDInit();
+  m_climber.ClimberPIDInit();
   m_climber.TestDashInit();
+  
   m_take.TestDashInit();
+  m_take.TakePIDInit();
 
   m_climber.InitializeEncoders();
   m_take.InitializeEncoders(); 
+  
 
   // Setup Autonomous options
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
@@ -182,6 +185,16 @@ void Robot::TeleopPeriodic() {
   }
 */
 m_drive.ArcadeDrive(throttle, turnInput);
+
+// Intake PIDs troubleshooting
+if (m_stick.GetYButton()) {
+  m_take.TestRotation();
+}
+else {
+  m_take.SetIntakePosition(0.0); 
+}
+
+
 
   //climber testing
   //fully manual

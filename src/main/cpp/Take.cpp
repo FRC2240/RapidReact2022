@@ -324,20 +324,31 @@ void Take::TestDashInit() {
   frc::SmartDashboard::PutNumber("Rotate Intake Max Output", m_rotateIntakeCoeff.kMaxOutput);
   frc::SmartDashboard::PutNumber("Rotate Intake Min Output", m_rotateIntakeCoeff.kMinOutput);
 
+  frc::SmartDashboard::PutNumber("Rotation Position", m_rotationPosition); 
 
 }
 
 void Take::TestDashRead() {
   double p, i, d, min, max;
   // rotate intake
-  p = frc::SmartDashboard::GetNumber("Rotate Intake P Gain", 0.0);
-  i = frc::SmartDashboard::GetNumber("Rotate Intake I Gain", 0.0);
-  d = frc::SmartDashboard::GetNumber("Rotate Intake D Gain", 0.0);
-  min = frc::SmartDashboard::GetNumber("Rotate Intake Min Output", 0.0);
-  max = frc::SmartDashboard::GetNumber("Rotate Intake Max Output", 0.0);
+  m_rotateIntakeCoeff.kP = frc::SmartDashboard::GetNumber("Rotate Intake P Gain", 0.0);
+  m_rotateIntakeCoeff.kI = frc::SmartDashboard::GetNumber("Rotate Intake I Gain", 0.0);
+  m_rotateIntakeCoeff.kD = frc::SmartDashboard::GetNumber("Rotate Intake D Gain", 0.0);
+  m_rotateIntakeCoeff.kMinOutput = frc::SmartDashboard::GetNumber("Rotate Intake Min Output", 0.0);
+  m_rotateIntakeCoeff.kMaxOutput = frc::SmartDashboard::GetNumber("Rotate Intake Max Output", 0.0);
+  
+  m_rotationPosition = frc::SmartDashboard::GetNumber("Rotation Position", 0.0); 
+}
+
+void Take::SetIntakePosition(double position){
+  m_rotateIntakePIDController.SetReference(position, rev::CANSparkMax::ControlType::kPosition);
+}
+
+void Take::TestRotation() {
+  std::cout << "Rotation Point: " << m_rotationPosition << "\n";
+  SetIntakePosition(m_rotationPosition); 
 }
 
 void Take::ReadEncoders() {
   frc::SmartDashboard::PutNumber("Rotate Intake Position: ", m_rotateIntakeEncoder.GetPosition()); 
-  
 }
