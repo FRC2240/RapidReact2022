@@ -522,3 +522,13 @@ void Climber::RotateRThrottle(double throttle) {
 void Climber::SetPhase(int phase) {
   m_phase = phase; 
 }
+
+void Climber::SetLeftServo(double position) {
+  m_leftExtenderServo.Set(position);
+}
+
+void Climber::SetRightServo(double position) {
+  m_rightExtenderServo.Set(position);
+}
+
+

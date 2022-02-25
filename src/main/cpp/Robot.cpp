@@ -185,14 +185,14 @@ m_drive.ArcadeDrive(throttle, turnInput);
 
   //climber testing
   //fully manual
-  if (m_stick.GetLeftBumper()) {
+  if (m_stick_climb.GetLeftBumper()) {
   m_climber.TestL();
 }
 else {
   m_climber.RotateLeft(0.0);
 }
 
-if (m_stick.GetRightBumper()) {
+if (m_stick_climb.GetRightBumper()) {
   m_climber.TestR();
   //m_climber.RotateRThrottle(0.5);
 }
@@ -201,25 +201,48 @@ else {
  // m_climber.RotateRThrottle(0.0);
 }
 
-if (m_stick.GetXButton()) {
+if (m_stick_climb.GetYButton()) {
   m_climber.EngageLeft(0.5);
 }
-else if (m_stick.GetYButton()) {
+else if (m_stick_climb.GetXButton()) {
   m_climber.EngageLeft(-0.5);
 }
 else {
   m_climber.EngageLeft(0.0);
 }
 
-if (m_stick.GetBButton()) {
+if (m_stick_climb.GetBButton()) {
   m_climber.EngageRight(0.5);
 }
-else if (m_stick.GetAButton()) {
+else if (m_stick_climb.GetAButton()) {
   m_climber.EngageRight(-0.5);
 }
 else {
   m_climber.EngageRight(0.0);
 }
+// engage/disengage servo
+if (m_stick_climb.GetLeftStickButtonReleased()) {
+  if (!m_leftServoEngaged) {
+    m_climber.SetLeftServo(0.0);
+    m_leftServoEngaged = true;
+  }
+  else {
+    m_climber.SetLeftServo(0.25);
+    m_leftServoEngaged = false;
+  }
+}
+
+if (m_stick_climb.GetRightStickButtonReleased()) {
+  if (!m_rightServoEngaged) {
+    m_climber.SetRightServo(0.0);
+    m_rightServoEngaged = true;
+  }
+  else {
+    m_climber.SetRightServo(0.25);
+    m_rightServoEngaged = false;
+  }
+}
+
 
 }
 

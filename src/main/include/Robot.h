@@ -169,4 +169,7 @@ frc::Trajectory m_trajectory;
 Shooter m_shooter{&m_drive, &m_stick, &m_take};
 
 frc::DriverStation::Alliance m_alliance = frc::DriverStation::Alliance::kInvalid;
+
+//servo toggle
+bool m_leftServoEngaged = true, m_rightServoEngaged = true; 
 };
