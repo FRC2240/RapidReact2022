@@ -392,4 +392,5 @@ void Take::TestDashRead() {
 
 void Take::ReadEncoders() {
   frc::SmartDashboard::PutNumber("Rotate Intake Position: ", m_rotateIntakeEncoder.GetPosition()); 
+  
 }

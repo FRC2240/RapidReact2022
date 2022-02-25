@@ -36,8 +36,14 @@ public:
   void TestL();
   void TestR();
 
+  void RotateRThrottle(double throttle);
+
 private:
   bool CanIProgress(); 
+
+  frc::Servo m_rightExtenderServo {0};
+  frc::Servo m_leftExtenderServo {1};
+
   frc::SendableChooser<std::string> m_chooser;
 
   frc::Servo m_rightExtenderServo {0};
@@ -72,8 +78,8 @@ private:
   rev::SparkMaxRelativeEncoder m_leftClimberEncoder = m_leftClimberRotationNeo.GetEncoder(); 
 
   //Neos
-  pidCoeff m_leftClimberRotateCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-  pidCoeff m_rightClimberRotateCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  pidCoeff m_leftClimberRotateCoeff{0.025, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
+  pidCoeff m_rightClimberRotateCoeff{0.025, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
 
   //splish splash, your opinion is trash

@@ -23,10 +23,11 @@ void Robot::RobotInit() {
   m_odometry = new frc::DifferentialDriveOdometry(frc::Rotation2d(0_deg));
   
 
-  InitializePIDControllers(); 
+  //InitializePIDControllers(); 
   //InitializeDashboard();
 
 //Test
+m_climber.ClimberPIDInit();
   m_climber.TestDashInit();
   m_take.TestDashInit();
 
@@ -180,10 +181,9 @@ void Robot::TeleopInit() {
    InitializePIDControllers();
   ReadDashboard();
   */
-
- InitializePIDControllers();
-  m_climber.TestReadDash(); 
+  
   m_take.TakeDashRead();
+  m_climber.TestReadDash(); 
 }
 
 void Robot::TeleopPeriodic() {
@@ -207,7 +207,8 @@ void Robot::TeleopPeriodic() {
   if (m_stick.GetRightBumperReleased()) {
     m_shooter.Reset();
   }
-
+*/
+m_drive.ArcadeDrive(throttle, turnInput);
 
   //climber testing
   if (m_stick.GetLeftBumper()) {
@@ -219,10 +220,33 @@ else {
 
 if (m_stick.GetRightBumper()) {
   m_climber.TestR();
+  //m_climber.RotateRThrottle(0.5);
 }
 else {
-  m_climber.RotateRight(0.0);
+ m_climber.RotateRight(0.0);
+ // m_climber.RotateRThrottle(0.0);
 }
+
+if (m_stick.GetXButton()) {
+  m_climber.EngageLeft(0.5);
+}
+else if (m_stick.GetYButton()) {
+  m_climber.EngageLeft(-0.5);
+}
+else {
+  m_climber.EngageLeft(0.0);
+}
+
+if (m_stick.GetBButton()) {
+  m_climber.EngageRight(0.5);
+}
+else if (m_stick.GetAButton()) {
+  m_climber.EngageRight(-0.5);
+}
+else {
+  m_climber.EngageRight(0.0);
+}
+
 
 
 }
