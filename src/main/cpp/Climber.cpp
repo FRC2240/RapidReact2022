@@ -42,7 +42,7 @@ void Climber::ExtendALowerR(double setPointR) {
  */
 void Climber::RotateLeft(double rotatePointL){
   m_rotateSetpointL = rotatePointL;
- m_leftClimberRotatePIDController.SetReference(m_rotateSetpointL, rev::CANSparkMax::ControlType::kSmartMotion);
+ m_leftClimberRotatePIDController.SetReference(m_rotateSetpointL, rev::CANSparkMax::ControlType::kPosition);
 }
 
 /**
@@ -53,7 +53,7 @@ void Climber::RotateLeft(double rotatePointL){
  */
 void Climber::RotateRight(double rotatePointR){
   m_rotateSetpointR = rotatePointR;
-  m_rightClimberRotatePIDController.SetReference(m_rotateSetpointR, rev::CANSparkMax::ControlType::kSmartMotion);
+  m_rightClimberRotatePIDController.SetReference(m_rotateSetpointR, rev::CANSparkMax::ControlType::kPosition);
 }
 
 void Climber::EngageLeft(double throttle) {
@@ -340,7 +340,7 @@ void Climber::Kill() {
 void Climber::Run() {
   switch(m_phase) {
     case 0:
-    //Default: hold arms in frame perimeter
+    //Default: hold arms in frame perimeter, ratchet engaged (should be when servo is zeroed?)
     RotateLeft(defaultL);
     RotateRight(defaultR);
     break;
@@ -350,13 +350,13 @@ void Climber::Run() {
       break;
 
     case 2:
-    //Ratchet Engages, set soft limits for each case??
+    //Ratchet disengages, set soft limits for each case??
       // Extend left arm (could possibly merge w/ case 1), driver then drives up to bar 
       
       break;
 
     case 3:
-      //Contract left fully
+      //Ratchet reengages, Contract left fully
       
       break;
 
@@ -366,17 +366,17 @@ void Climber::Run() {
       break;
 
     case 5:
-      // Extend right bar (could possibly merge w/ case 4)
+      // Ratchet disengages, Extend right bar (could possibly merge w/ case 4)
       
       break;
 
     case 6: 
-      // Retract right bar until it's hooked
+      // Ratchet reengages, Retract right bar until it's hooked
       
       break;
 
     case 7: 
-      // Retract right and extend left until left is unhooked
+      // Disengage left ratchet, Retract right and extend left until left is unhooked
 
       /*
       ExtendALowerR(phaseSevenRetract);
@@ -400,13 +400,6 @@ void Climber::Run() {
 }
 
 void Climber::GetEncoderValues() {
-  /*
-  std::cout << "Left Extender Encoder: " << m_leftClimberExtender.GetSelectedSensorPosition() << "; Left Rotation Encoder: " << m_leftClimberEncoder.GetPosition() << "\n";
-  std::cout << "Right Extender Encoder: " << m_rightClimberExtender.GetSelectedSensorPosition() << "; Right Rotation Encoder: " << m_rightClimberEncoder.GetPosition() << "\n";
-
-  std::cout << "Right Climber Rotation Point: " << m_rightClimberEncoder.GetPosition() << "\n";
-  std::cout << "Left Climber Rotation Point: " << m_leftClimberEncoder.GetPosition() << "\n";
-*/
   // Puts Encoder Values
   frc::SmartDashboard::PutNumber("Left Climber Rotation Position: ", m_leftClimberEncoder.GetPosition());
   frc::SmartDashboard::PutNumber("Right Climber Rotation Position: ", m_rightClimberEncoder.GetPosition());
@@ -444,20 +437,19 @@ void Climber::TestDashInit() {
 }
 
 void Climber::TestReadDash() {
-  double p, i, d, min, max;
 
   // Read climber rotation PID constants
-  p   = frc::SmartDashboard::GetNumber("Right Climber Rotate P Gain", 0.0);
-  i   = frc::SmartDashboard::GetNumber("Right Climber Rotate I Gain", 0.0);
-  d   = frc::SmartDashboard::GetNumber("Right Climber Rotate D Gain", 0.0);
-  min = frc::SmartDashboard::GetNumber("Right Climber Rotate Min Output", 0.0);
-  max = frc::SmartDashboard::GetNumber("Right Climber Rotate Max Output", 0.0);
+  m_rightClimberRotateCoeff.kP  = frc::SmartDashboard::GetNumber("Right Climber Rotate P Gain", 0.0);
+  m_rightClimberRotateCoeff.kI   = frc::SmartDashboard::GetNumber("Right Climber Rotate I Gain", 0.0);
+  m_rightClimberRotateCoeff.kD   = frc::SmartDashboard::GetNumber("Right Climber Rotate D Gain", 0.0);
+  m_rightClimberRotateCoeff.kMinOutput = frc::SmartDashboard::GetNumber("Right Climber Rotate Min Output", 0.0);
+  m_rightClimberRotateCoeff.kMaxOutput = frc::SmartDashboard::GetNumber("Right Climber Rotate Max Output", 0.0);
 
-  p   = frc::SmartDashboard::GetNumber("Left Climber Rotate P Gain", 0.0);
-  i   = frc::SmartDashboard::GetNumber("Left Climber Rotate I Gain", 0.0);
-  d   = frc::SmartDashboard::GetNumber("Left Climber Rotate D Gain", 0.0);
-  min = frc::SmartDashboard::GetNumber("Left Climber Rotate Min Output", 0.0);
-  max = frc::SmartDashboard::GetNumber("Left Climber Rotate Max Output", 0.0);
+  m_leftClimberRotateCoeff.kP   = frc::SmartDashboard::GetNumber("Left Climber Rotate P Gain", 0.0);
+  m_leftClimberRotateCoeff.kI   = frc::SmartDashboard::GetNumber("Left Climber Rotate I Gain", 0.0);
+  m_leftClimberRotateCoeff.kD   = frc::SmartDashboard::GetNumber("Left Climber Rotate D Gain", 0.0);
+  m_leftClimberRotateCoeff.kMinOutput = frc::SmartDashboard::GetNumber("Left Climber Rotate Min Output", 0.0);
+  m_leftClimberRotateCoeff.kMaxOutput = frc::SmartDashboard::GetNumber("Left Climber Rotate Max Output", 0.0);
 
   m_rotationR = frc::SmartDashboard::GetNumber("Right Climber Rotation Point", 0.0);
   m_rotationL = frc::SmartDashboard::GetNumber("Left Climber Rotation Point", 0.0);
@@ -471,5 +463,10 @@ void Climber::TestL() {
 
 void Climber::TestR() {
   std::cout << "Right Rotation Point: " << m_rotationR << "\n";
+  std::cout << "right p: " << m_rightClimberRotateCoeff.kP << "\n";
   RotateRight(m_rotationR);
+}
+
+void Climber::RotateRThrottle(double throttle) {
+  m_rightClimberRotationNeo.Set(throttle); 
 }

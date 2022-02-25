@@ -23,10 +23,11 @@ void Robot::RobotInit() {
   m_odometry = new frc::DifferentialDriveOdometry(frc::Rotation2d(0_deg));
   
 
-  InitializePIDControllers(); 
+  //InitializePIDControllers(); 
   //InitializeDashboard();
 
 //Test
+m_climber.ClimberPIDInit();
   m_climber.TestDashInit();
   m_take.TestDashInit();
 
@@ -147,17 +148,17 @@ void Robot::TeleopInit() {
    InitializePIDControllers();
   ReadDashboard();
   */
-
- InitializePIDControllers();
-  m_climber.TestReadDash(); 
+  
   m_take.TakeDashRead();
+  m_climber.TestReadDash(); 
 }
 
 void Robot::TeleopPeriodic() {
   // Intake
-  m_take.Run(m_stick.GetLeftBumperPressed(), m_alliance);
+  //m_take.Run(m_stick.GetLeftBumperPressed(), m_alliance);
 
   m_climber.GetEncoderValues();
+  m_take.ReadEncoders();
   
   double a = .375/.4495;
   double b = .0745/.4495;
@@ -165,8 +166,9 @@ void Robot::TeleopPeriodic() {
   double throttle = -m_stick.GetLeftTriggerAxis() + m_stick.GetRightTriggerAxis();
  
   double throttleExp = a * pow(m_stick.GetLeftTriggerAxis(), 4) + b * pow(m_stick.GetLeftTriggerAxis(), 1.48)-a * pow(m_stick.GetRightTriggerAxis(), 4) + b * pow(m_stick.GetRightTriggerAxis(), 1.48);
-  double turnInput = pow(m_stick.GetLeftX()*m_turnFactor,1.72) - pow(m_stick.GetLeftY()*m_turnFactor,1.72);
-
+  //double turnInput = pow(m_stick.GetLeftX()*m_turnFactor,1.72) - pow(m_stick.GetLeftY()*m_turnFactor,1.72);
+  double turnInput = m_stick.GetLeftX() - m_stick.GetLeftY();
+/*
   // Shooter
   if (m_stick.GetRightBumper()) {
     m_shooter.Fire();
@@ -177,7 +179,8 @@ void Robot::TeleopPeriodic() {
   if (m_stick.GetRightBumperReleased()) {
     m_shooter.Reset();
   }
-
+*/
+m_drive.ArcadeDrive(throttle, turnInput);
 
   //climber testing
   if (m_stick.GetLeftBumper()) {
@@ -189,10 +192,33 @@ else {
 
 if (m_stick.GetRightBumper()) {
   m_climber.TestR();
+  //m_climber.RotateRThrottle(0.5);
 }
 else {
-  m_climber.RotateRight(0.0);
+ m_climber.RotateRight(0.0);
+ // m_climber.RotateRThrottle(0.0);
 }
+
+if (m_stick.GetXButton()) {
+  m_climber.EngageLeft(0.5);
+}
+else if (m_stick.GetYButton()) {
+  m_climber.EngageLeft(-0.5);
+}
+else {
+  m_climber.EngageLeft(0.0);
+}
+
+if (m_stick.GetBButton()) {
+  m_climber.EngageRight(0.5);
+}
+else if (m_stick.GetAButton()) {
+  m_climber.EngageRight(-0.5);
+}
+else {
+  m_climber.EngageRight(0.0);
+}
+
 
 
 }
