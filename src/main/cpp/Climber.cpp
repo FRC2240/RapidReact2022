@@ -364,6 +364,8 @@ void Climber::Run() {
     //Default: hold arms in frame perimeter, ratchet engaged (should be when servo is zeroed?)
     RotateLeft(defaultL);
     RotateRight(defaultR);
+    SetLeftServo(0.0);
+    SetRightServo(0.0);
     break;
     case 1: 
       // Center Left Arm, rotate right arm out of the way (might not be necessary depending on which arm we choose to start w/)
@@ -374,30 +376,42 @@ void Climber::Run() {
     //Ratchet disengages, set soft limits for each case??
       // Extend left arm (could possibly merge w/ case 1), driver then drives up to bar 
       SetLeftServo(0.7);
-      EngageLeft(0.5); 
-
+      if (m_leftExtenderServo.Get() == 0.7) {
+        EngageLeft(0.5); 
+      }
+      
       break;
 
     case 3:
       //Ratchet reengages, Contract left fully
       SetLeftServo(0.0);
+      if (m_leftExtenderServo.Get() == 0.0) {
+        EngageLeft(-0.5);
+      }
       
       break;
 
     case 4:
       // Rotate right arm
+      RotateRight(highR);
       
       break;
 
     case 5:
       // Ratchet disengages, Extend right bar (could possibly merge w/ case 4)
       SetRightServo(0.5);
+      if (m_rightExtenderServo.Get() == 0.5) {
+        EngageRight(0.5);
+      }
       
       break;
 
     case 6: 
       // Ratchet reengages, Retract right bar until it's hooked
       SetRightServo(0.0); 
+      if (m_rightExtenderServo.Get() == 0.0) {
+        EngageRight(-0.5); //different soft limit??
+      }
       
       break;
 
