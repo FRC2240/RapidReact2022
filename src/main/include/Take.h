@@ -9,6 +9,7 @@ class Take
 {
 public:
   Take();
+  void Feed(double feedSpeed);
   void TakePIDInit();
   void TakeDashRead();
   void TakeDashInit();

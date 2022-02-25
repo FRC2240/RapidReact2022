@@ -205,6 +205,8 @@ void Robot::TeleopPeriodic() {
   // Shooter
   if (m_stick.GetRightBumper()) {
     m_shooter.Fire();
+
+
   } else {
     m_drive.ArcadeDrive(throttle, turnInput);
   }
