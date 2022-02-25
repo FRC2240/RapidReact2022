@@ -184,6 +184,7 @@ void Robot::TeleopInit() {
   
   m_take.TakeDashRead();
   m_climber.TestReadDash(); 
+  m_climber.InitializeSoftLimits(); 
 }
 
 void Robot::TeleopPeriodic() {
@@ -211,6 +212,7 @@ void Robot::TeleopPeriodic() {
 m_drive.ArcadeDrive(throttle, turnInput);
 
   //climber testing
+  //fully manual
   if (m_stick.GetLeftBumper()) {
   m_climber.TestL();
 }
@@ -247,8 +249,6 @@ else {
   m_climber.EngageRight(0.0);
 }
 
-
-
 }
 
 // This method is called at the beginning of the disabled state
@@ -265,7 +265,22 @@ void Robot::TestInit() {
 
 // This method is called every 20ms (by default) during testing
 void Robot::TestPeriodic() {
+  m_climber.Run();
+if (m_stick.GetXButtonReleased()) {
+  m_climber.SetPhase(1);
+}
 
+if (m_stick.GetYButtonReleased()) {
+  m_climber.SetPhase(2);
+}
+
+if (m_stick.GetBButtonReleased()) {
+  m_climber.SetPhase(3);
+}
+
+if (m_stick.GetAButtonReleased()) {
+  m_climber.SetPhase(4);
+}
 
 }
 
