@@ -102,4 +102,7 @@ private:
   IntakeState m_state = Off;
 
   int m_ejectTimer = 0;
+
+  // testing rotation PIDs
+  double m_rotationPosition; 
 };
