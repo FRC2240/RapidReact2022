@@ -19,6 +19,7 @@
  *   setPointL - double representing the point to move towards
  */
 void Climber::ExtendALowerL(double setPointL) {
+  
   m_climbExtendPointL = setPointL;
   m_leftClimberExtender.Set(ControlMode::MotionMagic, m_climbExtendPointL*2048.0);
 }
@@ -42,7 +43,7 @@ void Climber::ExtendALowerR(double setPointR) {
  */
 void Climber::RotateLeft(double rotatePointL){
   m_rotateSetpointL = rotatePointL;
- m_leftClimberRotatePIDController.SetReference(m_rotateSetpointL, rev::CANSparkMax::ControlType::kPosition);
+ m_leftClimberRotatePIDController.SetReference(m_rotateSetpointL, rev::CANSparkMax::ControlType::kSmartMotion);
 }
 
 /**
@@ -53,7 +54,7 @@ void Climber::RotateLeft(double rotatePointL){
  */
 void Climber::RotateRight(double rotatePointR){
   m_rotateSetpointR = rotatePointR;
-  m_rightClimberRotatePIDController.SetReference(m_rotateSetpointR, rev::CANSparkMax::ControlType::kPosition);
+  m_rightClimberRotatePIDController.SetReference(m_rotateSetpointR, rev::CANSparkMax::ControlType::kSmartMotion);
 }
 
 void Climber::EngageLeft(double throttle) {
@@ -198,6 +199,18 @@ void Climber::ClimberPIDInit(){
   m_leftClimberRotatePIDController.SetIZone(m_leftClimberRotateCoeff.kIz);
   m_leftClimberRotatePIDController.SetFF(m_leftClimberRotateCoeff.kFF);
   m_leftClimberRotatePIDController.SetOutputRange(m_leftClimberRotateCoeff.kMinOutput, m_leftClimberRotateCoeff.kMaxOutput);
+
+  // Smart Motion for Rotation
+  m_rightClimberRotatePIDController.SetSmartMotionMaxVelocity(kRMaxVel); 
+  m_rightClimberRotatePIDController.SetSmartMotionMinOutputVelocity(kRMinVel);
+  m_rightClimberRotatePIDController.SetSmartMotionMaxAccel(kRMaxAcc);
+  m_rightClimberRotatePIDController.SetSmartMotionAllowedClosedLoopError(kRAllErr);
+
+  m_leftClimberRotatePIDController.SetSmartMotionMaxVelocity(kLMaxVel); 
+  m_leftClimberRotatePIDController.SetSmartMotionMinOutputVelocity(kLMinVel);
+  m_leftClimberRotatePIDController.SetSmartMotionMaxAccel(kLMaxAcc);
+  m_leftClimberRotatePIDController.SetSmartMotionAllowedClosedLoopError(kLAllErr);
+
 
   // Set to factory default hardware to prevent unexpected behavior
   m_leftClimberExtender.ConfigFactoryDefault();
@@ -414,6 +427,18 @@ void Climber::InitializeEncoders() {
   m_rightClimberEncoder.SetPosition(0.0);
 }
 
+void Climber::InitializeSoftLimits() {
+  m_leftClimberExtender.ConfigForwardSoftLimitEnable(true);
+  m_leftClimberExtender.ConfigReverseSoftLimitEnable(true);
+  m_leftClimberExtender.ConfigForwardSoftLimitThreshold(240000.0); 
+  m_leftClimberExtender.ConfigReverseSoftLimitEnable(0.0);
+
+  m_rightClimberExtender.ConfigForwardSoftLimitEnable(true);
+  m_rightClimberExtender.ConfigReverseSoftLimitEnable(true);
+  m_rightClimberExtender.ConfigForwardSoftLimitThreshold(240000.0); 
+  m_rightClimberExtender.ConfigReverseSoftLimitEnable(0.0);
+}
+
 void Climber::TestDashInit() {
   // PID Constants for Left Climber Rotation
   frc::SmartDashboard::PutNumber("Left Climber Rotate P Gain", m_leftClimberRotateCoeff.kP);
@@ -428,6 +453,17 @@ void Climber::TestDashInit() {
   frc::SmartDashboard::PutNumber("Right Climber Rotate D Gain", m_rightClimberRotateCoeff.kD);
   frc::SmartDashboard::PutNumber("Right Climber Rotate Max Output", m_rightClimberRotateCoeff.kMaxOutput);
   frc::SmartDashboard::PutNumber("Right Climber Rotate Min Output", m_rightClimberRotateCoeff.kMinOutput);
+
+  // Smart Motion
+  frc::SmartDashboard::PutNumber("SM: Left Climber Max Velocity", m_leftClimberRotatePIDController.GetSmartMotionMaxVelocity());
+  frc::SmartDashboard::PutNumber("SM: Left Climber Min Velocity", m_leftClimberRotatePIDController.GetSmartMotionMinOutputVelocity());
+  frc::SmartDashboard::PutNumber("SM: Left Climber Max Accel", m_leftClimberRotatePIDController.GetSmartMotionMaxAccel());
+  frc::SmartDashboard::PutNumber("SM: Left Climber Error Allowed", m_leftClimberRotatePIDController.GetSmartMotionAllowedClosedLoopError());
+
+  frc::SmartDashboard::PutNumber("SM: Right Climber Max Velocity", m_rightClimberRotatePIDController.GetSmartMotionMaxVelocity());
+  frc::SmartDashboard::PutNumber("SM: Right Climber Min Velocity", m_rightClimberRotatePIDController.GetSmartMotionMinOutputVelocity());
+  frc::SmartDashboard::PutNumber("SM: Right Climber Max Accel", m_rightClimberRotatePIDController.GetSmartMotionMaxAccel());
+  frc::SmartDashboard::PutNumber("SM: Right Climber Error Allowed", m_rightClimberRotatePIDController.GetSmartMotionAllowedClosedLoopError());
 
   // Rotation Positions
   frc::SmartDashboard::PutNumber("Right Climber Rotation Point", m_rotationR);
@@ -451,6 +487,17 @@ void Climber::TestReadDash() {
   m_leftClimberRotateCoeff.kMinOutput = frc::SmartDashboard::GetNumber("Left Climber Rotate Min Output", 0.0);
   m_leftClimberRotateCoeff.kMaxOutput = frc::SmartDashboard::GetNumber("Left Climber Rotate Max Output", 0.0);
 
+  // Smart Motion
+  kLMaxVel = frc::SmartDashboard::GetNumber("SM: Left Climber Max Velocity", m_leftClimberRotatePIDController.GetSmartMotionMaxVelocity());
+  kLMinVel = frc::SmartDashboard::GetNumber("SM: Left Climber Min Velocity", m_leftClimberRotatePIDController.GetSmartMotionMinOutputVelocity());
+  kLMaxAcc = frc::SmartDashboard::GetNumber("SM: Left Climber Max Accel", m_leftClimberRotatePIDController.GetSmartMotionMaxAccel());
+  kLAllErr = frc::SmartDashboard::GetNumber("SM: Left Climber Error Allowed", m_leftClimberRotatePIDController.GetSmartMotionAllowedClosedLoopError());
+
+  kRMaxVel = frc::SmartDashboard::GetNumber("SM: Right Climber Max Velocity", m_rightClimberRotatePIDController.GetSmartMotionMaxVelocity());
+  kRMinVel = frc::SmartDashboard::GetNumber("SM: Right Climber Min Velocity", m_rightClimberRotatePIDController.GetSmartMotionMinOutputVelocity());
+  kRMaxAcc = frc::SmartDashboard::GetNumber("SM: Right Climber Max Accel", m_rightClimberRotatePIDController.GetSmartMotionMaxAccel());
+  kRAllErr = frc::SmartDashboard::GetNumber("SM: Right Climber Error Allowed", m_rightClimberRotatePIDController.GetSmartMotionAllowedClosedLoopError());
+
   m_rotationR = frc::SmartDashboard::GetNumber("Right Climber Rotation Point", 0.0);
   m_rotationL = frc::SmartDashboard::GetNumber("Left Climber Rotation Point", 0.0);
 
@@ -469,4 +516,9 @@ void Climber::TestR() {
 
 void Climber::RotateRThrottle(double throttle) {
   m_rightClimberRotationNeo.Set(throttle); 
+}
+
+//automatically sets climber to a certain stage (e.g. case 1, 2, 3)
+void Climber::SetPhase(int phase) {
+  m_phase = phase; 
 }

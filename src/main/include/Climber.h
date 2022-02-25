@@ -29,13 +29,18 @@ public:
 
   void GetEncoderValues();
   void InitializeEncoders();
+  void InitializeSoftLimits();
 
+//Everything for testing
   void TestDashInit();
   void TestReadDash();
   void TestL();
   void TestR();
 
+  void SetPhase(int phase);
+
   void RotateRThrottle(double throttle);
+  
 
 private:
   bool CanIProgress(); 
@@ -75,7 +80,9 @@ private:
   //Neos
   pidCoeff m_leftClimberRotateCoeff{0.025, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
   pidCoeff m_rightClimberRotateCoeff{0.025, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
-
+  // Smart Motion
+  double kLMaxVel = 4500, kLMinVel = 0, kLMaxAcc = 2500, kLAllErr = 0; 
+  double kRMaxVel = 4500, kRMinVel = 0, kRMaxAcc = 2500, kRAllErr = 0; 
 
   //splish splash, your opinion is trash
 
