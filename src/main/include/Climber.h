@@ -105,7 +105,7 @@ private:
   int m_phase = 0;
 
   //rotation positions
-  double defaultL, defaultR, centerL; 
+  double defaultL, defaultR, centerL, highR; 
 
   //extension soft limits
   double kMaxLeft, kMinLeft, kMaxRight, kMinRight; 
