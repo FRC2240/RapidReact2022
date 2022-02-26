@@ -1,7 +1,11 @@
 #include "Take.h"
 #include "log.h"
 #include <iostream>
+
+
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableInstance.h>
 
 Take::Take() {
     m_rotateIntakePIDController.SetP(m_rotateIntakeCoeff.kP);
@@ -29,6 +33,23 @@ Take::Take() {
   m_waitingRoomPIDController.SetIZone(m_waitingRoomCoeff.kIz);
   m_waitingRoomPIDController.SetFF(m_waitingRoomCoeff.kFF);
   m_waitingRoomPIDController.SetOutputRange(m_waitingRoomCoeff.kMinOutput, m_waitingRoomCoeff.kMaxOutput);
+
+  frc::Shuffleboard::GetTab("Drive Core")
+    .Add("Uptake Ball Color", false)
+    .WithWidget("Toggle Button")
+    .GetEntry();
+  frc::Shuffleboard::GetTab("Drive Core")
+    .Add("Room Ball Color", false)
+    .WithWidget("Toggle Button")
+    .GetEntry();
+  frc::Shuffleboard::GetTab("Drive Core")
+    .Add("Uptake Ball Exists", false)
+    .WithWidget("Toggle Button")
+    .GetEntry();
+  frc::Shuffleboard::GetTab("Drive Core")
+    .Add("Room Ball Exists", false)
+    .WithWidget("Toggle Button")
+    .GetEntry();
 }
 
 void Take::Feed(double feedSpeed) {
@@ -146,6 +167,61 @@ void Take::ReadSensors() {
 
   std::cout << "Uptake: " << m_uptakeState << "Wa: " << m_waitingRoomState << std::endl;
 
+  //Shuffleboard
+
+  // Does it exist?
+  if (m_uptakeState == nullBall){
+  frc::Shuffleboard::GetTab("Drive Core")
+    .Add("Uptake Ball exists", false)
+    .WithWidget("Toggle Button")
+    .GetEntry();
+  }
+  else {
+    frc::Shuffleboard::GetTab("Drive Core")
+      .Add("Uptake Ball exists", true)
+      .WithWidget("Toggle Button")
+      .GetEntry();
+  }
+  if (m_waitingRoomState == nullBall) {
+    frc::Shuffleboard::GetTab("Drive Core")
+      .Add("Room Ball exists", false)
+      .WithWidget("Toggle Button")
+      .GetEntry();
+  }
+  else {
+    frc::Shuffleboard::GetTab("Drive Core")
+      .Add("Room Ball exists", true)
+      .WithWidget("Toggle Button")
+      .GetEntry();
+  }
+
+  // What color is the uptake?
+  if (m_uptakeState == blueBall){
+    frc::Shuffleboard::GetTab("Drive Core")
+      .Add("Uptake Ball color", true)
+      .WithWidget("Toggle Button")
+      .GetEntry();
+  }
+  if (m_uptakeState == redBall){
+    frc::Shuffleboard::GetTab("Drive Core")
+      .Add("Uptake Ball color", false)
+      .WithWidget("Toggle Button")
+      .GetEntry();
+  }
+
+  // What color is the room?
+  if (m_waitingRoomState == blueBall) {
+    frc::Shuffleboard::GetTab("Drive Core")
+      .Add("Room Ball Color", true)
+      .WithWidget("Toggle Button")
+      .GetEntry();
+  }
+  if (m_waitingRoomState == redBall) {
+    frc::Shuffleboard::GetTab("Drive Core")
+      .Add("Room Ball Color", false)
+      .WithWidget("Toggle Button")
+      .GetEntry();
+  }
   count = 0;
 }
 
