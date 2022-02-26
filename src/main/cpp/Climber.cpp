@@ -194,6 +194,7 @@ void Climber::ClimberPIDInit(){
 
   //Initialize right climber rotation PID Controller
   m_rightClimberRotatePIDController.SetP(m_rightClimberRotateCoeff.kP);
+  std::cout << "right kP: " << m_rightClimberRotateCoeff.kP << "\n";
   m_rightClimberRotatePIDController.SetI(m_rightClimberRotateCoeff.kI);
   m_rightClimberRotatePIDController.SetD(m_rightClimberRotateCoeff.kD);
   m_rightClimberRotatePIDController.SetIZone(m_rightClimberRotateCoeff.kIz);
@@ -202,6 +203,7 @@ void Climber::ClimberPIDInit(){
 
   // Initialize left climber rotation PID Controller
   m_leftClimberRotatePIDController.SetP(m_leftClimberRotateCoeff.kP);
+  std::cout << "left kP: " << m_leftClimberRotateCoeff.kP << "\n";
   m_leftClimberRotatePIDController.SetI(m_leftClimberRotateCoeff.kI);
   m_leftClimberRotatePIDController.SetD(m_leftClimberRotateCoeff.kD);
   m_leftClimberRotatePIDController.SetIZone(m_leftClimberRotateCoeff.kIz);
@@ -305,43 +307,52 @@ bool Climber::CanIProgress() {
   // Evaluation logic based on current phase
   switch(m_phase) {
     case 0:
+    return true;
       break;
     
-    case 1:
-      //return m_leftClimberExtender.GetSelectedSensorPosition() == phaseOneLift; 
+    case 1: 
+      //return abs(m_rightClimberEncoder.GetPosition()) <= (centerR + 2) && abs(m_rightClimberEncoder.GetPosition()) >= (centerR - 2);  
+      return true;
       break;
 
     case 2:
-     // return m_leftClimberExtender.GetSelectedSensorPosition() == phaseTwoRetract;
+      //return m_rightExtenderServo.Get() == 0.7 && m_rightClimberExtender.GetSelectedSensorPosition() == kMaxRight; 
+      return true;
       break;
 
     case 3:
-      //return m_rightClimberEncoder.GetPosition() == phaseThreeRotate;
+      //return m_rightExtenderServo.Get() == 0.0 && m_rightClimberExtender.GetSelectedSensorPosition() == kMinRight;
+      return true;
       break;
 
     case 4:
-     // return m_leftClimberExtender.GetSelectedSensorPosition() == phaseFourRetract;
+     //return abs(m_leftClimberEncoder.GetPosition()) <= (highL + 2) && abs(m_leftClimberEncoder.GetPosition()) >= (highL - 2);
+     return true;
       break;
 
     case 5:
-     // return m_rightClimberExtender.GetSelectedSensorPosition() == phaseFiveExtend;
+     return true;
       break;
 
     case 6:
-     // return m_rightClimberExtender.GetSelectedSensorPosition() == phaseSixRetract;
+
+     return true;
       break;
 
     case 7:
      // return m_rightClimberExtender.GetSelectedSensorPosition() == phaseSevenRetract 
       //  && m_leftClimberExtender.GetSelectedSensorPosition() == phaseSevenExtend;
+      return true;
       break;
 
     case 8:
     //  return m_leftClimberEncoder.GetPosition() == phaseEightRotate;
+    return true;
       break;
 
     case 9:
      // return m_leftClimberExtender.GetSelectedSensorPosition() == phaseNineRetract;
+     return true;
       break;
   }
 }
@@ -361,56 +372,67 @@ void Climber::Kill() {
 void Climber::Run() {
   switch(m_phase) {
     case 0:
-    //Default: hold arms in frame perimeter, ratchet engaged (should be when servo is zeroed?)
-    RotateLeft(defaultL);
-    RotateRight(defaultR);
+    //Default: all motors off, ratchets engaged (should be when servo is zeroed?)
     SetLeftServo(0.0);
     SetRightServo(0.0);
+    EngageLeft(0.0);
+    EngageRight(0.0);
+    RotateRThrottle(0.0);
+    RotateLThrottle(0.0);
     break;
     case 1: 
       // Center Left Arm, rotate right arm out of the way (might not be necessary depending on which arm we choose to start w/)
-      RotateLeft(centerL);
+      RotateRight(centerR);
       break;
 
     case 2:
     //Ratchet disengages, set soft limits for each case??
       // Extend left arm (could possibly merge w/ case 1), driver then drives up to bar 
-      SetLeftServo(0.7);
-      if (m_leftExtenderServo.Get() == 0.7) {
-        EngageLeft(0.5); 
+      SetRightServo(0.7);
+      if (m_rightExtenderServo.Get() == 0.7) {
+        EngageRight(0.5); 
       }
       
       break;
 
     case 3:
-      //Ratchet reengages, Contract left fully
-      SetLeftServo(0.0);
-      if (m_leftExtenderServo.Get() == 0.0) {
-        EngageLeft(-0.5);
+      //Ratchet reengages, Contract right fully
+      SetRightServo(0.0);
+      if (m_rightExtenderServo.Get() == 0.0) {
+        EngageRight(-0.5);
       }
       
       break;
 
     case 4:
-      // Rotate right arm
-      RotateRight(highR);
+      // Rotate left arm
+     // RotateLeft(highL);
+
+     //TESTING ONLY
+     SetLeftServo(0.7);
+     RotateLThrottle(0.0);
+     RotateRThrottle(0.0);
+     EngageLeft(0.0);
+     EngageRight(0.0);
       
       break;
 
     case 5:
       // Ratchet disengages, Extend right bar (could possibly merge w/ case 4)
-      SetRightServo(0.5);
-      if (m_rightExtenderServo.Get() == 0.5) {
-        EngageRight(0.5);
+      SetLeftServo(0.7);
+      if (m_leftExtenderServo.Get() == 0.7) {
+        EngageLeft(0.5);
       }
       
       break;
 
     case 6: 
-      // Ratchet reengages, Retract right bar until it's hooked
-      SetRightServo(0.0); 
-      if (m_rightExtenderServo.Get() == 0.0) {
-        EngageRight(-0.5); //different soft limit??
+      // Left reengages, Retract right bar until it's hooked; Right ratchet disengages so that right bar can extend in tandem w/ left's retraction
+      SetLeftServo(0.0); 
+      SetRightServo(0.7);
+      if (m_leftExtenderServo.Get() == 0.0 && m_rightExtenderServo.Get() == 0.7) {
+        EngageLeft(-0.25); //different soft limit??
+        EngageRight(0.5);
       }
       
       break;
@@ -457,13 +479,13 @@ void Climber::InitializeEncoders() {
 void Climber::InitializeSoftLimits() {
   m_leftClimberExtender.ConfigForwardSoftLimitEnable(true);
   m_leftClimberExtender.ConfigReverseSoftLimitEnable(true);
-  m_leftClimberExtender.ConfigForwardSoftLimitThreshold(240000.0); 
-  m_leftClimberExtender.ConfigReverseSoftLimitEnable(0.0);
+  m_leftClimberExtender.ConfigForwardSoftLimitThreshold(kMaxLeft); 
+  m_leftClimberExtender.ConfigReverseSoftLimitEnable(kMinLeft);
 
   m_rightClimberExtender.ConfigForwardSoftLimitEnable(true);
   m_rightClimberExtender.ConfigReverseSoftLimitEnable(true);
-  m_rightClimberExtender.ConfigForwardSoftLimitThreshold(240000.0); 
-  m_rightClimberExtender.ConfigReverseSoftLimitEnable(0.0);
+  m_rightClimberExtender.ConfigForwardSoftLimitThreshold(kMaxRight); 
+  m_rightClimberExtender.ConfigReverseSoftLimitEnable(kMinRight);
 }
 
 void Climber::TestDashInit() {
@@ -545,9 +567,17 @@ void Climber::RotateRThrottle(double throttle) {
   m_rightClimberRotationNeo.Set(throttle); 
 }
 
+void Climber::RotateLThrottle(double throttle) {
+  m_leftClimberRotationNeo.Set(throttle); 
+}
+
 //automatically sets climber to a certain stage (e.g. case 1, 2, 3)
 void Climber::SetPhase(int phase) {
   m_phase = phase; 
+}
+
+int Climber::GetPhase() {
+  return m_phase;
 }
 
 void Climber::SetLeftServo(double position) {
