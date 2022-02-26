@@ -380,52 +380,43 @@ void Climber::Run() {
     case 2:
     //Ratchet disengages, set soft limits for each case??
       // Extend left arm (could possibly merge w/ case 1), driver then drives up to bar 
-      SetRightServo(0.7);
-      if (m_rightExtenderServo.Get() == 0.7) {
+      SetRightServo(0.4);
+      /*
+      if (m_rightExtenderServo.Get() == 0.4) {
         EngageRight(0.5); 
       }
-      
+      else {
+        EngageRight(0.0);
+      }
+      */
       break;
 
     case 3:
+      EngageRight(0.5);
+      /*
       //Ratchet reengages, Contract right fully
       SetRightServo(0.0);
       if (m_rightExtenderServo.Get() == 0.0) {
         EngageRight(-0.5);
       }
-      
+      else {
+        EngageRight(0.0);
+      }
+      */
       break;
 
     case 4:
-      // Rotate left arm
-     // RotateLeft(highL);
-
-     //TESTING ONLY
-     SetLeftServo(0.7);
-     RotateLThrottle(0.0);
-     RotateRThrottle(0.0);
-     EngageLeft(0.0);
-     EngageRight(0.0);
+      SetRightServo(0.0);
       
       break;
 
     case 5:
-      // Ratchet disengages, Extend right bar (could possibly merge w/ case 4)
-      SetLeftServo(0.7);
-      if (m_leftExtenderServo.Get() == 0.7) {
-        EngageLeft(0.5);
-      }
+      // Left Ratchet Reengages, Right Ratchet Disengages, Left Begins Retracting as Right Extends (both rotation PIDs shut off?)
+      EngageRight(-0.5); 
       
       break;
 
     case 6: 
-      // Left reengages, Retract right bar until it's hooked; Right ratchet disengages so that right bar can extend in tandem w/ left's retraction
-      SetLeftServo(0.0); 
-      SetRightServo(0.7);
-      if (m_leftExtenderServo.Get() == 0.0 && m_rightExtenderServo.Get() == 0.7) {
-        EngageLeft(-0.25); //different soft limit??
-        EngageRight(0.5);
-      }
       
       break;
 
