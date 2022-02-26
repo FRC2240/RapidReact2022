@@ -27,7 +27,7 @@ void Robot::RobotInit() {
   //InitializeDashboard();
 
 //Test
-  m_climber.ClimberPIDInit();
+m_climber.ClimberPIDInit();
   m_climber.TestDashInit();
   
   m_take.TestDashInit();
@@ -35,6 +35,7 @@ void Robot::RobotInit() {
 
   m_climber.InitializeEncoders();
   m_take.InitializeEncoders(); 
+  m_climber.InitializeSoftLimits();
   
 
   // Setup Autonomous options
@@ -154,6 +155,7 @@ void Robot::TeleopInit() {
   
   m_take.TakeDashRead();
   m_climber.TestReadDash(); 
+  m_climber.ClimberPIDInit();
   m_climber.InitializeSoftLimits(); 
 }
 
@@ -163,6 +165,7 @@ void Robot::TeleopPeriodic() {
 
   m_climber.GetEncoderValues();
   m_take.ReadEncoders();
+  m_climber.Run();
   
   double a = .375/.4495;
   double b = .0745/.4495;
@@ -184,33 +187,41 @@ void Robot::TeleopPeriodic() {
     m_shooter.Reset();
   }
 */
-m_drive.ArcadeDrive(throttle, turnInput);
+//m_drive.ArcadeDrive(throttle, turnInput);
 
 // Intake PIDs troubleshooting
+/*
 if (m_stick.GetYButton()) {
   m_take.TestRotation();
 }
 else {
   m_take.SetIntakePosition(0.0); 
 }
+*/
 
-  //climber testing
-  //fully manual
-  if (m_stick_climb.GetLeftBumper()) {
-  m_climber.TestL();
-}
-else {
-  m_climber.RotateLeft(0.0);
-}
+  //climber testing, JOYSTICK 1
+  //fully manual 
+  if (m_climber.GetPhase() == 4 || m_climber.GetPhase() == 0) { 
+    if (m_stick_climb.GetLeftBumper()) {
+      m_climber.RotateRThrottle(0.5);
+      }
+    else if (m_stick_climb.GetLeftTriggerAxis()) {
+      m_climber.RotateRThrottle(-0.5);
+      }
+    else {
+      m_climber.RotateLeft(0.0);
+      }
 
-if (m_stick_climb.GetRightBumper()) {
-  m_climber.TestR();
-  //m_climber.RotateRThrottle(0.5);
-}
-else {
- m_climber.RotateRight(0.0);
+   if (m_stick_climb.GetRightBumper()) {
+    m_climber.RotateRThrottle(0.5);
+      }
+   else if (m_stick_climb.GetRightTriggerAxis()) {
+    m_climber.RotateRThrottle(-0.5);
+      }
+   else {
+    m_climber.RotateRight(0.0);
  // m_climber.RotateRThrottle(0.0);
-}
+    }
 
 if (m_stick_climb.GetYButton()) {
   m_climber.EngageLeft(0.5);
@@ -257,7 +268,37 @@ if (m_stick_climb.GetRightStickButtonReleased()) {
     std::cout << "Right Servo Disengaged\n";
   }
 }
+  }
+// JOYSTICK 0 
+else { 
+if (m_stick.GetXButtonReleased()) {
+  m_climber.SetPhase(1);
+}
 
+if (m_stick.GetYButtonReleased()) {
+  m_climber.SetPhase(2);
+}
+
+if (m_stick.GetAButtonReleased()) {
+  m_climber.SetPhase(3);
+}
+
+if (m_stick.GetBButtonReleased()) {
+  m_climber.SetPhase(4);
+}
+/*
+if (m_stick.GetLeftBumperReleased()) {
+  m_climber.SetPhase(5);
+}
+
+if (m_stick.GetRightBumperReleased()) {
+  m_climber.SetPhase(6);
+}
+*/
+if (m_stick.GetLeftTriggerAxis()) {
+  m_climber.SetPhase(0);
+}
+}
 
 }
 
@@ -270,11 +311,12 @@ void Robot::DisabledPeriodic() {}
 
 // This method is called at the beginning of the testing state
 void Robot::TestInit() {
-  
+  m_climber.SetPhase(0); 
 }
 
 // This method is called every 20ms (by default) during testing
 void Robot::TestPeriodic() {
+  m_climber.GetEncoderValues(); 
   m_climber.Run();
 if (m_stick.GetXButtonReleased()) {
   m_climber.SetPhase(1);
@@ -284,12 +326,24 @@ if (m_stick.GetYButtonReleased()) {
   m_climber.SetPhase(2);
 }
 
-if (m_stick.GetBButtonReleased()) {
+if (m_stick.GetAButtonReleased()) {
   m_climber.SetPhase(3);
 }
 
-if (m_stick.GetAButtonReleased()) {
+if (m_stick.GetBButtonReleased()) {
   m_climber.SetPhase(4);
+}
+
+if (m_stick.GetLeftBumperReleased()) {
+  m_climber.SetPhase(5);
+}
+
+if (m_stick.GetRightBumperReleased()) {
+  m_climber.SetPhase(6);
+}
+
+if (m_stick.GetLeftTriggerAxis()) {
+  m_climber.SetPhase(0);
 }
 
 }

@@ -41,8 +41,10 @@ public:
   void TestR();
 
   void SetPhase(int phase);
+  int GetPhase(); 
 
   void RotateRThrottle(double throttle);
+  void RotateLThrottle(double throttle);
   
 
 private:
@@ -81,11 +83,11 @@ private:
   rev::SparkMaxRelativeEncoder m_leftClimberEncoder = m_leftClimberRotationNeo.GetEncoder(); 
 
   //Neos
-  pidCoeff m_leftClimberRotateCoeff{0.025, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
-  pidCoeff m_rightClimberRotateCoeff{0.025, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
+  pidCoeff m_leftClimberRotateCoeff{0.0003, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0}; // negative to go to center
+  pidCoeff m_rightClimberRotateCoeff{0.0003, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
   // Smart Motion
-  double kLMaxVel = 4500, kLMinVel = 0, kLMaxAcc = 2500, kLAllErr = 0; 
-  double kRMaxVel = 4500, kRMinVel = 0, kRMaxAcc = 2500, kRAllErr = 0; 
+  double kLMaxVel = 6000, kLMinVel = 0, kLMaxAcc = 4000, kLAllErr = 2; 
+  double kRMaxVel = 6000, kRMinVel = 0, kRMaxAcc = 4000, kRAllErr = 2; 
 
   //splish splash, your opinion is trash
 
@@ -105,10 +107,10 @@ private:
   int m_phase = 0;
 
   //rotation positions
-  double defaultL, defaultR, centerL, highR; 
+  double centerL = -27, centerR = -36, highL; 
 
   //extension soft limits
-  double kMaxLeft, kMinLeft, kMaxRight, kMinRight; 
+  double kMaxLeft = 200000.0, kMinLeft = 3000.0, kMaxRight = 200000.0, kMinRight = 3000.0; 
 
 
   //testing
