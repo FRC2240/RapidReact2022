@@ -10,6 +10,12 @@
 
 // TODO: Add a kill button
 
+// Initialization
+Climber::Climber() {
+  // ClimberDashInit();
+  ClimberPIDInit();
+}
+
 // NOTE: This class is missing a constructor method
 
 /**
@@ -184,6 +190,8 @@ void Climber::ClimberDashRead(){
 /**
  * Method to initialize PID controllers for the climber
  */
+
+//To be replaced with constructor
 void Climber::ClimberPIDInit(){
 
   //Initialize right climber rotation PID Controller

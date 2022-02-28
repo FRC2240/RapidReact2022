@@ -5,9 +5,19 @@
 #include "rev/CANSparkMax.h"
 #include "rev/ColorSensorV3.h"
 
+#include <frc/shuffleboard/Shuffleboard.h>
+#include <frc/shuffleboard/ShuffleboardWidget.h>
+#include <frc/shuffleboard/ShuffleboardValue.h>
+#include <frc/shuffleboard/ShuffleboardTab.h>
+
+#include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableInstance.h>
+
 class Take
 {
 public:
+  Take();
+  void Feed(double feedSpeed);
   void TakePIDInit();
   void TakeDashRead();
   void TakeDashInit();
@@ -48,6 +58,7 @@ public:
 
 private:
 
+
   // Determine the ball color from Color Sensor value
   BallColor Color(frc::Color);
 
@@ -65,8 +76,26 @@ private:
 
   bool intakeRunning = false;
 
+  // Shuffleboard  Shuffleboard::Shuffleboard m_shuffleboard; // Shuffleboard
   frc::DriverStation::Alliance m_alliance;
 
+  // Shuffleboard
+  /*std::shared_ptr<nt::NetworkTable> m_shuffleboardDriveCore = nt::NetworkTableInstance::GetDefault().GetTable("limelight-brute");
+  NetworkTableEntry uptakeBallBool = Shuffleboard.getTab("Drive Core")
+
+    .add("Uptake Ball Color", false)
+
+    .withWidget("Toggle Button")
+
+    .getEntry();
+  NetworkTableEntry waitingBallBool = Shuffleboard.getTab("Drive Core")
+
+    .add("Waiting Room Ball Color", false)
+
+    .withWidget("Toggle Button")
+
+    .getEntry();
+  */
   // Motors
   rev::CANSparkMax m_rotateIntakeMotor{rotateIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_spinIntakeMotor{spinIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};

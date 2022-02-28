@@ -1,7 +1,61 @@
 #include "Take.h"
 #include "log.h"
 #include <iostream>
+
+
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableInstance.h>
+
+Take::Take() {
+    m_rotateIntakePIDController.SetP(m_rotateIntakeCoeff.kP);
+  m_rotateIntakePIDController.SetI(m_rotateIntakeCoeff.kI);
+  m_rotateIntakePIDController.SetD(m_rotateIntakeCoeff.kD);
+  m_rotateIntakePIDController.SetIZone(m_rotateIntakeCoeff.kIz);
+  m_rotateIntakePIDController.SetFF(m_rotateIntakeCoeff.kFF);
+  m_rotateIntakePIDController.SetOutputRange(m_rotateIntakeCoeff.kMinOutput, m_rotateIntakeCoeff.kMaxOutput);
+
+  m_rotateIntakePIDController.SetSmartMotionMaxVelocity(kMaxVel);
+  m_rotateIntakePIDController.SetSmartMotionMinOutputVelocity(kMinVel);
+  m_rotateIntakePIDController.SetSmartMotionMaxAccel(kMaxAcc);
+  m_rotateIntakePIDController.SetSmartMotionAllowedClosedLoopError(kAllErr);
+
+  m_uptakePIDController.SetP(m_uptakeCoeff.kP);
+  m_uptakePIDController.SetI(m_uptakeCoeff.kI);
+  m_uptakePIDController.SetD(m_uptakeCoeff.kD);
+  m_uptakePIDController.SetIZone(m_uptakeCoeff.kIz);
+  m_uptakePIDController.SetFF(m_uptakeCoeff.kFF);
+  m_uptakePIDController.SetOutputRange(m_uptakeCoeff.kMinOutput, m_uptakeCoeff.kMaxOutput);
+
+  m_waitingRoomPIDController.SetP(m_waitingRoomCoeff.kP);
+  m_waitingRoomPIDController.SetI(m_waitingRoomCoeff.kI);
+  m_waitingRoomPIDController.SetD(m_waitingRoomCoeff.kD);
+  m_waitingRoomPIDController.SetIZone(m_waitingRoomCoeff.kIz);
+  m_waitingRoomPIDController.SetFF(m_waitingRoomCoeff.kFF);
+  m_waitingRoomPIDController.SetOutputRange(m_waitingRoomCoeff.kMinOutput, m_waitingRoomCoeff.kMaxOutput);
+
+  frc::Shuffleboard::GetTab("Drive Core")
+    .Add("Uptake Ball Color", false)
+    .WithWidget("Toggle Button")
+    .GetEntry();
+  frc::Shuffleboard::GetTab("Drive Core")
+    .Add("Room Ball Color", false)
+    .WithWidget("Toggle Button")
+    .GetEntry();
+  frc::Shuffleboard::GetTab("Drive Core")
+    .Add("Uptake Ball Exists", false)
+    .WithWidget("Toggle Button")
+    .GetEntry();
+  frc::Shuffleboard::GetTab("Drive Core")
+    .Add("Room Ball Exists", false)
+    .WithWidget("Toggle Button")
+    .GetEntry();
+}
+
+void Take::Feed(double feedSpeed) {
+  m_waitingRoomMotor.Set(feedSpeed);
+  m_uptakeMotor.Set(feedSpeed);
+}
 
 
 void Take::Run(bool toggle, frc::DriverStation::Alliance alliance)
@@ -25,6 +79,30 @@ void Take::Run(bool toggle, frc::DriverStation::Alliance alliance)
   // Driver input?
   if (toggle && currentState == Off) {
     m_state = Intaking;
+  }
+
+  // Wrong ball in waiting room
+  if ((m_waitingRoomState == blueBall &&
+       alliance == frc::DriverStation::Alliance::kRed)
+      ||
+      (m_waitingRoomState == redBall &&
+       alliance == frc::DriverStation::Alliance::kBlue)
+      ) {
+    // And the ball is wrong
+    if ((m_uptakeState ==  blueBall &&
+        alliance == frc::DriverStation::Alliance::kRed)
+      ||
+        (m_uptakeState == redBall &&
+       alliance == frc::DriverStation::Alliance::kBlue)
+        ) {}
+
+    // And the ball is right
+    if ((m_uptakeState ==  blueBall &&
+         alliance == frc::DriverStation::Alliance::kBlue)
+        ||
+        (m_uptakeState == redBall &&
+         alliance == frc::DriverStation::Alliance::kRed)
+        ) {}
   }
 
   // Full?
@@ -89,6 +167,61 @@ void Take::ReadSensors() {
 
   //std::cout << "Uptake: " << m_uptakeState << "Wa: " << m_waitingRoomState << std::endl;
 
+  //Shuffleboard
+
+  // Does it exist?
+  if (m_uptakeState == nullBall){
+  frc::Shuffleboard::GetTab("Drive Core")
+    .Add("Uptake Ball exists", false)
+    .WithWidget("Toggle Button")
+    .GetEntry();
+  }
+  else {
+    frc::Shuffleboard::GetTab("Drive Core")
+      .Add("Uptake Ball exists", true)
+      .WithWidget("Toggle Button")
+      .GetEntry();
+  }
+  if (m_waitingRoomState == nullBall) {
+    frc::Shuffleboard::GetTab("Drive Core")
+      .Add("Room Ball exists", false)
+      .WithWidget("Toggle Button")
+      .GetEntry();
+  }
+  else {
+    frc::Shuffleboard::GetTab("Drive Core")
+      .Add("Room Ball exists", true)
+      .WithWidget("Toggle Button")
+      .GetEntry();
+  }
+
+  // What color is the uptake?
+  if (m_uptakeState == blueBall){
+    frc::Shuffleboard::GetTab("Drive Core")
+      .Add("Uptake Ball color", true)
+      .WithWidget("Toggle Button")
+      .GetEntry();
+  }
+  if (m_uptakeState == redBall){
+    frc::Shuffleboard::GetTab("Drive Core")
+      .Add("Uptake Ball color", false)
+      .WithWidget("Toggle Button")
+      .GetEntry();
+  }
+
+  // What color is the room?
+  if (m_waitingRoomState == blueBall) {
+    frc::Shuffleboard::GetTab("Drive Core")
+      .Add("Room Ball Color", true)
+      .WithWidget("Toggle Button")
+      .GetEntry();
+  }
+  if (m_waitingRoomState == redBall) {
+    frc::Shuffleboard::GetTab("Drive Core")
+      .Add("Room Ball Color", false)
+      .WithWidget("Toggle Button")
+      .GetEntry();
+  }
   count = 0;
 }
 
@@ -143,6 +276,7 @@ bool Take::WrongColor(BallColor ball, frc::DriverStation::Alliance alliance)
   return false;
 }
 
+// To be replaced with constructor
 void Take::TakePIDInit()
 {
   m_rotateIntakePIDController.SetP(m_rotateIntakeCoeff.kP);

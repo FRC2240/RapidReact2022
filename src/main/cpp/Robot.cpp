@@ -180,6 +180,8 @@ void Robot::TeleopPeriodic() {
   // Shooter
   if (m_stick.GetRightBumper()) {
     m_shooter.Fire();
+
+
   } else {
     //m_drive.ArcadeDrive(throttleExp, turnInput);
     m_drive.ArcadeDrive(throttle, turnInput);
@@ -350,9 +352,9 @@ if (m_stick_climb.GetBButtonReleased()) {
 
 // Method for initializing PID Controller
 void Robot::InitializePIDControllers() {
-  m_climber.ClimberPIDInit();
-  m_take.TakePIDInit();
-  m_shooter.InitializePIDControllers();
+  //  m_climber.ClimberPIDInit();
+  //  m_take.TakePIDInit();
+  //  m_shooter.InitializePIDControllers();
 
 }
 
