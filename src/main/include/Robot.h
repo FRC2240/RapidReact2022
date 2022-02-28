@@ -172,4 +172,6 @@ frc::DriverStation::Alliance m_alliance = frc::DriverStation::Alliance::kInvalid
 
 //servo toggle
 bool m_leftServoEngaged = true, m_rightServoEngaged = true; 
+
+double leftDisengaged = 0.7, rightDisengaged = 0.6;
 };

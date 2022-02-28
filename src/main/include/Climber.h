@@ -8,6 +8,7 @@
 
 #include <frc/controller/PIDController.h>
 #include "frc/Servo.h"
+#include <frc/Timer.h>
 
 
 class Climber {
@@ -107,14 +108,19 @@ private:
   int m_phase = 0;
 
   //rotation positions
-  double centerL = -27, centerR = -36, highL; 
+  double centerL = -29.0, centerR = -36.0, highL = -49.0, highR = -20.0; 
 
   //extension soft limits
-  double kMaxLeft = 200000.0, kMinLeft = 3000.0, kMaxRight = 200000.0, kMinRight = 3000.0; 
+  double kMaxLeft = 200000.0, kMinLeft = 2000.0, kMaxRight = 410000.0, kMinRight = 3000.0; 
+
+  //engaged servo positions
+  double leftDisengaged = 0.7, rightDisengaged = 0.6; 
 
 
   //testing
   double m_rotationR, m_rotationL;
+
+  frc::Timer m_climbTimer; 
   
 };
 

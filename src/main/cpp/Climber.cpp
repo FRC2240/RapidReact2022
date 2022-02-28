@@ -60,10 +60,12 @@ void Climber::RotateRight(double rotatePointR){
 void Climber::EngageLeft(double throttle) {
   //could set overall (max) soft limits here? Also, should do throttle?? Or do velocity PIDs??
   m_leftClimberExtender.Set(throttle);
+  //std::cout << "Left Encoder Position: " << m_leftClimberExtender.GetSelectedSensorPosition() << "\n";
 }
 
 void Climber::EngageRight(double throttle) {
   m_rightClimberExtender.Set(throttle);
+  //std::cout << "Right Encoder Position: " << m_rightClimberExtender.GetSelectedSensorPosition() << "\n";
 }
 
 /**
@@ -374,13 +376,14 @@ void Climber::Run() {
     break;
     case 1: 
       // Center Left Arm, rotate right arm out of the way (might not be necessary depending on which arm we choose to start w/)
-      RotateRight(centerR);
+      RotateLeft(centerL);
       break;
 
     case 2:
     //Ratchet disengages, set soft limits for each case??
       // Extend left arm (could possibly merge w/ case 1), driver then drives up to bar 
-      SetRightServo(0.4);
+      SetLeftServo(leftDisengaged);
+      
       /*
       if (m_rightExtenderServo.Get() == 0.4) {
         EngageRight(0.5); 
@@ -392,7 +395,7 @@ void Climber::Run() {
       break;
 
     case 3:
-      EngageRight(0.5);
+      EngageLeft(0.5);
       /*
       //Ratchet reengages, Contract right fully
       SetRightServo(0.0);
@@ -406,39 +409,45 @@ void Climber::Run() {
       break;
 
     case 4:
-      SetRightServo(0.0);
+      SetLeftServo(0.0);
       
       break;
 
     case 5:
-      // Left Ratchet Reengages, Right Ratchet Disengages, Left Begins Retracting as Right Extends (both rotation PIDs shut off?)
-      EngageRight(-0.5); 
+      // Left contracts
+      EngageLeft(-0.5);
       
       break;
 
     case 6: 
+    // Disengage Right ratchet
+      EngageLeft(0.0);
+      SetRightServo(rightDisengaged);
       
       break;
 
     case 7: 
-      // Disengage left ratchet, Retract right and extend left until left is unhooked
+    // Extend right to wherever
+      EngageRight(0.5);
 
-      /*
-      ExtendALowerR(phaseSevenRetract);
-      ExtendALowerL(phaseSevenExtend);
-      */
       break;
 
     case 8: 
-    //Currently unsure if cases 8 and 9 are necessary/what we want to do with them
-      // Rotate left
-     // RotateLeft(phaseEightRotate);
+    // Engage Right Ratchet
+      SetRightServo(0.0);
+      RotateLeft(highL);
+    
       break;
 
     case 9: 
-      // Retract left until it's hooked
-     // ExtendALowerL(phaseNineRetract);
+      //rotate right
+      RotateRight(highR);
       break;
+    
+    case 10: 
+    // Contract right
+      EngageRight(-0.5);
+    break;
   }
 
   
@@ -446,10 +455,18 @@ void Climber::Run() {
 
 void Climber::GetEncoderValues() {
   // Puts Encoder Values
-  frc::SmartDashboard::PutNumber("Left Climber Rotation Position: ", m_leftClimberEncoder.GetPosition());
-  frc::SmartDashboard::PutNumber("Right Climber Rotation Position: ", m_rightClimberEncoder.GetPosition());
-  frc::SmartDashboard::PutNumber("Left Climber Extension Position: ", m_leftClimberExtender.GetSelectedSensorPosition());
-  frc::SmartDashboard::PutNumber("Right Climber Extension Position: ", m_rightClimberExtender.GetSelectedSensorPosition());
+  frc::SmartDashboard::PutNumber("Current Left Climber Rotation Position: ", m_leftClimberEncoder.GetPosition());
+  frc::SmartDashboard::PutNumber("Current Right Climber Rotation Position: ", m_rightClimberEncoder.GetPosition());
+  frc::SmartDashboard::PutNumber("Current Left Climber Extension Position: ", m_leftClimberExtender.GetSelectedSensorPosition());
+  frc::SmartDashboard::PutNumber("Current Right Climber Extension Position: ", m_rightClimberExtender.GetSelectedSensorPosition());
+/*
+  std::cout << "Left Extension Position: " << m_leftClimberExtender.GetSelectedSensorPosition() << "\n";
+  std::cout << "Left Rotation Position: " << m_leftClimberEncoder.GetPosition() << "\n";
+  std::cout << "Right Extension Position: " << m_rightClimberExtender.GetSelectedSensorPosition() << "\n";
+  std::cout << "Right Rotation Position: " << m_rightClimberEncoder.GetPosition() << "\n";
+  */
+ std::cout << "Left Rotation Position: " << m_leftClimberEncoder.GetPosition() << "\n";
+ std::cout << "Right Rotation Position: " << m_rightClimberEncoder.GetPosition() << "\n";
   }
 
 void Climber::InitializeEncoders() {
@@ -460,15 +477,19 @@ void Climber::InitializeEncoders() {
 }
 
 void Climber::InitializeSoftLimits() {
+  m_leftClimberExtender.SetInverted(true);
+  
   m_leftClimberExtender.ConfigForwardSoftLimitEnable(true);
   m_leftClimberExtender.ConfigReverseSoftLimitEnable(true);
   m_leftClimberExtender.ConfigForwardSoftLimitThreshold(kMaxLeft); 
   m_leftClimberExtender.ConfigReverseSoftLimitEnable(kMinLeft);
+  
 
   m_rightClimberExtender.ConfigForwardSoftLimitEnable(true);
   m_rightClimberExtender.ConfigReverseSoftLimitEnable(true);
   m_rightClimberExtender.ConfigForwardSoftLimitThreshold(kMaxRight); 
   m_rightClimberExtender.ConfigReverseSoftLimitEnable(kMinRight);
+  
 }
 
 void Climber::TestDashInit() {
@@ -536,13 +557,13 @@ void Climber::TestReadDash() {
 }
 
 void Climber::TestL() {
-  std::cout << "Left Rotation Point: " << m_rotationL << "\n";
+  //std::cout << "Left Rotation Point: " << m_rotationL << "\n";
   RotateLeft(m_rotationL);
 }
 
 void Climber::TestR() {
-  std::cout << "Right Rotation Point: " << m_rotationR << "\n";
-  std::cout << "right p: " << m_rightClimberRotateCoeff.kP << "\n";
+  //std::cout << "Right Rotation Point: " << m_rotationR << "\n";
+  //std::cout << "right p: " << m_rightClimberRotateCoeff.kP << "\n";
   RotateRight(m_rotationR);
 }
 
