@@ -23,8 +23,20 @@ void Robot::RobotInit() {
   m_odometry = new frc::DifferentialDriveOdometry(frc::Rotation2d(0_deg));
   
 
-  InitializePIDControllers(); 
-  InitializeDashboard();
+  //InitializePIDControllers(); 
+  //InitializeDashboard();
+
+//Test
+m_climber.ClimberPIDInit();
+  m_climber.TestDashInit();
+  /*
+  m_take.TestDashInit();
+  m_take.TakePIDInit();
+*/
+  m_climber.InitializeEncoders();
+  m_take.InitializeEncoders(); 
+  m_climber.InitializeSoftLimits();
+  
 
   // Setup Autonomous options
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
@@ -136,137 +148,137 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {
 
   m_alliance = frc::DriverStation::GetAlliance();
+  /*
    InitializePIDControllers();
   ReadDashboard();
+  */
+  
+  //m_take.TakeDashRead();
+  m_climber.TestReadDash(); 
+  m_climber.ClimberPIDInit();
+  m_climber.InitializeSoftLimits(); 
+  //m_climber.SetPhase(0); 
 }
 
 void Robot::TeleopPeriodic() {
   // Intake
-  m_take.Run(m_stick.GetLeftBumperPressed(), m_alliance);
+  //m_take.Run(m_stick.GetLeftBumperPressed(), m_alliance);
+
+  m_climber.GetEncoderValues();
+  
+  //m_take.ReadEncoders();
   
   double a = .375/.4495;
   double b = .0745/.4495;
   //Read controller input
-  //double throttle = m_stick.GetLeftTriggerAxis() - m_stick.GetRightTriggerAxis();
+  double throttle = -m_stick.GetLeftTriggerAxis() + m_stick.GetRightTriggerAxis();
  
   double throttleExp = a * pow(m_stick.GetLeftTriggerAxis(), 4) + b * pow(m_stick.GetLeftTriggerAxis(), 1.48)-a * pow(m_stick.GetRightTriggerAxis(), 4) + b * pow(m_stick.GetRightTriggerAxis(), 1.48);
-  double turnInput = pow(m_stick.GetLeftX()*m_turnFactor,1.72) - pow(m_stick.GetLeftY()*m_turnFactor,1.72);
-
+  //double turnInput = pow(m_stick.GetLeftX()*m_turnFactor,1.72) - pow(m_stick.GetLeftY()*m_turnFactor,1.72);
+  double turnInput = m_stick.GetLeftX() - m_stick.GetLeftY();
+/*
   // Shooter
   if (m_stick.GetRightBumper()) {
     m_shooter.Fire();
 
 
   } else {
-    m_drive.ArcadeDrive(throttleExp, turnInput);
+    //m_drive.ArcadeDrive(throttleExp, turnInput);
+    m_drive.ArcadeDrive(throttle, turnInput);
   }
   if (m_stick.GetRightBumperReleased()) {
     m_shooter.Reset();
   }
-
-
-  //climber
-/*
-  //move to next phase if button pressed (button subject to change)
-
-  if (m_stick_climb.GetAButtonReleased()) { 
-    m_climber.Progress();
-  }
-
-  //kill button (button subject to change)
-  if (m_stick_climb.GetBButtonPressed()) {
-    m_climber.Kill();
-  }
-
-  m_climber.Run(); //constantly running, initially set to zero but changes whenever progress is called
 */
+//m_drive.ArcadeDrive(throttle, turnInput);
 
+// Intake PIDs troubleshooting
+/*
+if (m_stick.GetYButton()) {
+  m_take.TestRotation();
+}
+else {
+  m_take.SetIntakePosition(0.0); 
+}
+*/
+ //climber testing, JOYSTICK 1
+  //fully manual 
+if (m_stick_climb.GetLeftBumper()) {
+      m_climber.TestL();
+}
+      /*
+      m_climber.RotateLThrottle(0.5);
+      }
+    else if (m_stick_climb.GetLeftTriggerAxis()) {
+      m_climber.RotateLThrottle(-0.5);
+      }
+      */
+    else {
+     m_climber.RotateLThrottle(0.0);
+      //m_climber.RotateLeft(0.0);
+      }
+
+   if (m_stick_climb.GetRightBumper()) {
+      m_climber.TestR(); 
+   }
+      /*
+      m_climber.RotateRThrottle(0.5);
+      }
+   else if (m_stick_climb.GetRightTriggerAxis()) {
+    m_climber.RotateRThrottle(-0.5);
+      }
+      */
+   else {
+    //m_climber.RotateRight(0.0);
+   m_climber.RotateRThrottle(0.0);
+    }
+
+if (m_stick_climb.GetYButton()) {
+  m_climber.EngageLeft(0.5);
   
- /*
-  if (throttleExp > 1) {
-    throttleExp = 1;
-  } else if (throttleExp < -1) {
-    throttleExp = -1;
-  }*/
-  //Looks like Ethan wants exponents...
-   
-  //TODO: climber controls
+}
+else if (m_stick_climb.GetXButton()) {
+  m_climber.EngageLeft(-0.5);
+}
+else {
+  m_climber.EngageLeft(0.0);
+}
 
-
-
-//Better Uptake
-/*
-  if (m_take.ManipulateBall() == m_take.rightEmpty) {} // Hold in waiting room, no shooter action needed
-  if (m_take.ManipulateBall() == m_take.rightFull) {} // Hold in uptake, no shooter action needed
-  // The above lines are precautionary
-
-  // Call arcade drive function with calculated values
-  m_drive.ArcadeDrive(throttleExp, turnInput);
-
-
-  // TODO: climber controls
-
-  // Semi-Autonomous Uptake Control
-  // Get ManipulateBall status
-  int intakeStatus = m_take.ManipulateBall();
-
-  // TODO: Replace this with a switch statement
-  // If uptake has the right ball and shooter is empty
-  if (intakeStatus == m_take.rightEmpty) {
-    // Hold in waiting room, no shooter action needed
-  } 
-  // If uptake has the right ball and shooter is full
-  else if (m_take.ManipulateBall() == m_take.rightFull) {
-    // Hold in uptake, no shooter action needed
-  } 
-  // If uptake has the wrong ball and shooter is empty
-  else if (m_take.ManipulateBall() == m_take.wrongEmpty) {
-    // Eject the ball
+if (m_stick_climb.GetBButton()) {
+  m_climber.EngageRight(0.5);
+}
+else if (m_stick_climb.GetAButton()) {
+  m_climber.EngageRight(-0.5);
+}
+else {
+  m_climber.EngageRight(0.0);
+}
+// engage/disengage servo
+if (m_stick_climb.GetLeftStickButtonReleased()) {
+  if (!m_leftServoEngaged) {
+    m_climber.SetLeftServo(0.0);
+    m_leftServoEngaged = true;
+    std::cout << "Left Servo Engaged\n";
   }
+  else {
+    m_climber.SetLeftServo(leftDisengaged);
+    m_leftServoEngaged = false;
+    std::cout << "Left Servo Disengaged\n";
+  }
+}
 
-  if (m_take.ManipulateBall() == m_take.wrongFull) {} // Reverse uptake, done internally 
-*/
-  /*
- //uptake
- if (m_stick.GetAButtonPressed()) {
-   if (uptakeBool == true) {
-     //stop uptake
-     m_take.ReturnIntake();
-     uptakeBool = false;
-   }
-   if (uptakeBool == false) {
-     //Start uptake
-     m_take.DeployIntake();
-     uptakeBool = true;
-   }
- }
-  */
-
-//Possibly uneeded
- /*
- if (m_stick.GetStartButton()){
-   if (shootMan){
-     shootMan = false;
-     std::cout << "[MSG]: Shooter is in manual mode \n";
-   }
-   if (!shootMan){
-     shootMan = true;
-     std::cout << "[MSG]: Shooter is in automatic mode \n";
-   }
- }
-
-
- if (m_stick.GetLeftBumperPressed()) {
-   m_shooter.Fire();
- }
- */
-
-  // If the uptake has the wrong ball and shooter is full
-  /*
-  if (m_take.ManipulateBall() == m_take.wrongFull) {
-    // Reverse the intake
-  }  
-  */
+if (m_stick_climb.GetRightStickButtonReleased()) {
+  if (!m_rightServoEngaged) {
+    m_climber.SetRightServo(0.0);
+    m_rightServoEngaged = true;
+    std::cout << "Right Servo Engaged\n";
+  }
+  else {
+    m_climber.SetRightServo(rightDisengaged);
+    m_rightServoEngaged = false;
+    std::cout << "Right Servo Disengaged\n";
+  }
+}
 
 }
 
@@ -278,10 +290,64 @@ void Robot::DisabledPeriodic() {}
 
 
 // This method is called at the beginning of the testing state
-void Robot::TestInit() {}
+void Robot::TestInit() {
+}
 
 // This method is called every 20ms (by default) during testing
-void Robot::TestPeriodic() {}
+void Robot::TestPeriodic() {
+  m_climber.GetEncoderValues(); 
+  m_climber.Run();
+// JOYSTICK 0 
+
+if (m_stick.GetXButtonReleased()) {
+  m_climber.SetPhase(1);
+}
+
+if (m_stick.GetYButtonReleased()) {
+  m_climber.SetPhase(2);
+}
+
+if (m_stick.GetBButtonReleased()) {
+  m_climber.SetPhase(3);
+}
+
+if (m_stick.GetAButtonReleased()) {
+  m_climber.SetPhase(4);
+}
+
+if (m_stick.GetLeftBumperReleased()) {
+  m_climber.SetPhase(5);
+}
+
+if (m_stick.GetRightBumperReleased()) {
+  m_climber.SetPhase(6);
+}
+
+if (m_stick.GetLeftTriggerAxis()) {
+  m_climber.SetPhase(7);
+}
+
+if (m_stick.GetRightTriggerAxis()) {
+  m_climber.SetPhase(8);
+}
+
+if (m_stick.GetLeftStickButton()) {
+  m_climber.SetPhase(9);
+}
+
+if (m_stick.GetRightStickButtonReleased()) {
+  m_climber.SetPhase(10); 
+}
+
+// Joystick 1 -- shuts off motors
+if (m_stick_climb.GetXButtonReleased()) {
+  m_climber.EngageLeft(0.0);
+}
+
+if (m_stick_climb.GetBButtonReleased()) {
+  m_climber.EngageRight(0.0);
+}
+}
 
 
 // Method for initializing PID Controller

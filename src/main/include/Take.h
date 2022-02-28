@@ -23,9 +23,12 @@ public:
   void TakeDashInit();
   void ColorsInit();
   void SetColor();
+  void Feed(double speed);
 
 
   void Run(bool toggle, frc::DriverStation::Alliance alliance);
+  void InitializeEncoders();
+  void ReadEncoders();
 
   // For testing, not operation
 
@@ -34,6 +37,11 @@ public:
 
   void DeployIntake();
   void ReturnIntake();
+
+  void TestDashInit();
+  void TestDashRead();
+  void SetIntakePosition(double position);
+  void TestRotation();
 
   enum BallColor
   {
@@ -126,4 +134,7 @@ private:
   IntakeState m_state = Off;
 
   int m_ejectTimer = 0;
+
+  // testing rotation PIDs
+  double m_rotationPosition; 
 };
