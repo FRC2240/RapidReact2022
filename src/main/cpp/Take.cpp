@@ -4,34 +4,10 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 Take::Take() {
-    m_rotateIntakePIDController.SetP(m_rotateIntakeCoeff.kP);
-  m_rotateIntakePIDController.SetI(m_rotateIntakeCoeff.kI);
-  m_rotateIntakePIDController.SetD(m_rotateIntakeCoeff.kD);
-  m_rotateIntakePIDController.SetIZone(m_rotateIntakeCoeff.kIz);
-  m_rotateIntakePIDController.SetFF(m_rotateIntakeCoeff.kFF);
-  m_rotateIntakePIDController.SetOutputRange(m_rotateIntakeCoeff.kMinOutput, m_rotateIntakeCoeff.kMaxOutput);
-
-  m_rotateIntakePIDController.SetSmartMotionMaxVelocity(kMaxVel);
-  m_rotateIntakePIDController.SetSmartMotionMinOutputVelocity(kMinVel);
-  m_rotateIntakePIDController.SetSmartMotionMaxAccel(kMaxAcc);
-  m_rotateIntakePIDController.SetSmartMotionAllowedClosedLoopError(kAllErr);
-
-  m_uptakePIDController.SetP(m_uptakeCoeff.kP);
-  m_uptakePIDController.SetI(m_uptakeCoeff.kI);
-  m_uptakePIDController.SetD(m_uptakeCoeff.kD);
-  m_uptakePIDController.SetIZone(m_uptakeCoeff.kIz);
-  m_uptakePIDController.SetFF(m_uptakeCoeff.kFF);
-  m_uptakePIDController.SetOutputRange(m_uptakeCoeff.kMinOutput, m_uptakeCoeff.kMaxOutput);
-
-  m_waitingRoomPIDController.SetP(m_waitingRoomCoeff.kP);
-  m_waitingRoomPIDController.SetI(m_waitingRoomCoeff.kI);
-  m_waitingRoomPIDController.SetD(m_waitingRoomCoeff.kD);
-  m_waitingRoomPIDController.SetIZone(m_waitingRoomCoeff.kIz);
-  m_waitingRoomPIDController.SetFF(m_waitingRoomCoeff.kFF);
-  m_waitingRoomPIDController.SetOutputRange(m_waitingRoomCoeff.kMinOutput, m_waitingRoomCoeff.kMaxOutput);
+  TakePIDInit();
 }
 
-void Take::Run(bool toggle, frc::DriverStation::Alliance alliance)
+void Take::Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance)
 {
   // Events that will affect state:
   // - Driver input
@@ -98,6 +74,12 @@ void Take::Run(bool toggle, frc::DriverStation::Alliance alliance)
     }
   }
 
+  // Shooting? Disable intake
+  if (shooting) {
+    m_state = Off;
+    m_ejectTimer = 0;
+  }
+
   // Intake ON or OFF (manual toggle or auto-stop because we're full)
   if (m_state != currentState)
   {
@@ -137,8 +119,6 @@ void Take::ReadSensors() {
   // Determine colors
   m_uptakeState      = Color(uptake);
   m_waitingRoomState = Color(waiting);
-
-  std::cout << "Uptake: " << m_uptakeState << "Wa: " << m_waitingRoomState << std::endl;
 
   count = 0;
 }

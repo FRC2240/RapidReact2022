@@ -16,7 +16,7 @@ public:
   void SetColor();
 
 
-  void Run(bool toggle, frc::DriverStation::Alliance alliance);
+  void Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance);
 
   // For testing, not operation
 
@@ -82,7 +82,7 @@ private:
     double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
   };
 
-  double kMaxVel = 4000, kMinVel = 0, kMaxAcc = 2500, kAllErr = 0;
+  double kMaxVel = 4000, kMinVel = 0, kMaxAcc = 2500, kAllErr = 0.2;
   pidCoeff m_rotateIntakeCoeff{3.0e-4, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
   pidCoeff m_uptakeCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
