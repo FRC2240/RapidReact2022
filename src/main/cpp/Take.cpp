@@ -36,26 +36,22 @@ Take::Take() {
 
   frc::Shuffleboard::GetTab("Drive Core")
     .Add("Uptake Ball Color", false)
-    .WithWidget("Toggle Button")
+    .WithWidget("Boolean Box")
     .GetEntry();
   frc::Shuffleboard::GetTab("Drive Core")
     .Add("Room Ball Color", false)
-    .WithWidget("Toggle Button")
+    .WithWidget("Boolean Box")
     .GetEntry();
   frc::Shuffleboard::GetTab("Drive Core")
     .Add("Uptake Ball Exists", false)
-    .WithWidget("Toggle Button")
+    .WithWidget("Boolean Box")
     .GetEntry();
   frc::Shuffleboard::GetTab("Drive Core")
     .Add("Room Ball Exists", false)
-    .WithWidget("Toggle Button")
+    .WithWidget("Boolean Box")
     .GetEntry();
 }
 
-void Take::Feed(double feedSpeed) {
-  m_waitingRoomMotor.Set(feedSpeed);
-  m_uptakeMotor.Set(feedSpeed);
-}
 
 
 void Take::Run(bool toggle, frc::DriverStation::Alliance alliance)
@@ -173,25 +169,25 @@ void Take::ReadSensors() {
   if (m_uptakeState == nullBall){
   frc::Shuffleboard::GetTab("Drive Core")
     .Add("Uptake Ball exists", false)
-    .WithWidget("Toggle Button")
+    .WithWidget("Boolean Box")
     .GetEntry();
   }
   else {
     frc::Shuffleboard::GetTab("Drive Core")
       .Add("Uptake Ball exists", true)
-      .WithWidget("Toggle Button")
+      .WithWidget("Boolean Box")
       .GetEntry();
   }
   if (m_waitingRoomState == nullBall) {
     frc::Shuffleboard::GetTab("Drive Core")
       .Add("Room Ball exists", false)
-      .WithWidget("Toggle Button")
+      .WithWidget("Boolean Box")
       .GetEntry();
   }
   else {
     frc::Shuffleboard::GetTab("Drive Core")
       .Add("Room Ball exists", true)
-      .WithWidget("Toggle Button")
+      .WithWidget("Boolean Box")
       .GetEntry();
   }
 
@@ -199,13 +195,13 @@ void Take::ReadSensors() {
   if (m_uptakeState == blueBall){
     frc::Shuffleboard::GetTab("Drive Core")
       .Add("Uptake Ball color", true)
-      .WithWidget("Toggle Button")
+      .WithWidget("Boolean Box")
       .GetEntry();
   }
   if (m_uptakeState == redBall){
     frc::Shuffleboard::GetTab("Drive Core")
       .Add("Uptake Ball color", false)
-      .WithWidget("Toggle Button")
+      .WithWidget("Boolean Box")
       .GetEntry();
   }
 
@@ -213,13 +209,13 @@ void Take::ReadSensors() {
   if (m_waitingRoomState == blueBall) {
     frc::Shuffleboard::GetTab("Drive Core")
       .Add("Room Ball Color", true)
-      .WithWidget("Toggle Button")
+      .WithWidget("Boolean Box")
       .GetEntry();
   }
   if (m_waitingRoomState == redBall) {
     frc::Shuffleboard::GetTab("Drive Core")
       .Add("Room Ball Color", false)
-      .WithWidget("Toggle Button")
+      .WithWidget("Boolean Box")
       .GetEntry();
   }
   count = 0;
