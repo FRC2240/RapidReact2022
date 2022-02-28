@@ -8,11 +8,14 @@
 
 #include <frc/controller/PIDController.h>
 #include "frc/Servo.h"
+
 #include <frc/Timer.h>
+
 
 
 class Climber {
 public:
+  Climber();
   //ClimberSubsystem();
   void ClimberPIDInit();
   void ClimberDashRead();
@@ -55,6 +58,10 @@ private:
   frc::Servo m_leftExtenderServo {1};
 
   frc::SendableChooser<std::string> m_chooser;
+
+  frc::Servo m_rightExtenderServo {0};
+  frc::Servo m_leftExtenderServo {1};
+
 
 
   // Stolen from Robot.h
