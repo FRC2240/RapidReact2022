@@ -376,12 +376,13 @@ void Climber::Run() {
     break;
     case 1: 
       // Center Left Arm, rotate right arm out of the way (might not be necessary depending on which arm we choose to start w/)
-      RotateLeft(centerL);
+      RotateRight(-30.0);
       break;
 
     case 2:
     //Ratchet disengages, set soft limits for each case??
       // Extend left arm (could possibly merge w/ case 1), driver then drives up to bar 
+      RotateLeft(centerL);
       SetLeftServo(leftDisengaged);
       
       /*
@@ -423,6 +424,7 @@ void Climber::Run() {
     // Disengage Right ratchet
       EngageLeft(0.0);
       SetRightServo(rightDisengaged);
+      //RotateRight(highR/2); 
       
       break;
 
@@ -435,18 +437,24 @@ void Climber::Run() {
     case 8: 
     // Engage Right Ratchet
       SetRightServo(0.0);
-      RotateLeft(highL);
-    
+      //RotateLeft(highL);
+      /*
+      RotateRThrottle(0.0);
+      RotateLThrottle(0.0);
+      */
       break;
 
     case 9: 
+    /* no longer need to rotate?
       //rotate right
       RotateRight(highR);
+      */
+     // Contract right
+      EngageRight(-0.5);
       break;
     
     case 10: 
-    // Contract right
-      EngageRight(-0.5);
+    EngageRight(0.0);
     break;
   }
 

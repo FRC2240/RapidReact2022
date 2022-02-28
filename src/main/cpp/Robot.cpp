@@ -202,36 +202,37 @@ else {
  //climber testing, JOYSTICK 1
   //fully manual 
 if (m_stick_climb.GetLeftBumper()) {
-      m_climber.TestL();
-}
-      /*
+      //m_climber.TestL();
+//}
+      
       m_climber.RotateLThrottle(0.5);
       }
     else if (m_stick_climb.GetLeftTriggerAxis()) {
       m_climber.RotateLThrottle(-0.5);
       }
-      */
+    
     else {
      m_climber.RotateLThrottle(0.0);
       //m_climber.RotateLeft(0.0);
       }
 
    if (m_stick_climb.GetRightBumper()) {
-      m_climber.TestR(); 
-   }
-      /*
+      //m_climber.TestR(); 
+  // }
+      
       m_climber.RotateRThrottle(0.5);
       }
    else if (m_stick_climb.GetRightTriggerAxis()) {
     m_climber.RotateRThrottle(-0.5);
       }
-      */
+      
    else {
     //m_climber.RotateRight(0.0);
    m_climber.RotateRThrottle(0.0);
     }
 
 if (m_stick_climb.GetYButton()) {
+
   m_climber.EngageLeft(0.5);
   
 }
