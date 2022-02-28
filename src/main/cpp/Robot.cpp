@@ -29,10 +29,10 @@ void Robot::RobotInit() {
 //Test
 m_climber.ClimberPIDInit();
   m_climber.TestDashInit();
-  
+  /*
   m_take.TestDashInit();
   m_take.TakePIDInit();
-
+*/
   m_climber.InitializeEncoders();
   m_take.InitializeEncoders(); 
   m_climber.InitializeSoftLimits();
@@ -186,16 +186,18 @@ void Robot::TeleopInit() {
   ReadDashboard();
   */
   
-  m_take.TakeDashRead();
+  //m_take.TakeDashRead();
   m_climber.TestReadDash(); 
   m_climber.ClimberPIDInit();
   m_climber.InitializeSoftLimits(); 
-  m_climber.SetPhase(0); 
+  //m_climber.SetPhase(0); 
 }
 
 void Robot::TeleopPeriodic() {
   // Intake
   m_take.Run(m_stick.GetLeftBumperPressed(), m_stick.GetRightBumper(), m_alliance);
+  
+  //m_take.ReadEncoders();
   
   double a = .375/.4495;
   double b = .0745/.4495;
@@ -228,112 +230,44 @@ else {
   m_take.SetIntakePosition(0.0); 
 }
 */
-// JOYSTICK 0 
-
-if (m_stick.GetXButtonReleased()) {
-  m_climber.SetPhase(1);
-}
-
-if (m_stick.GetYButtonReleased()) {
-  m_climber.SetPhase(2);
-}
-
-if (m_stick.GetAButtonReleased()) {
-  m_climber.SetPhase(3);
-}
-
-if (m_stick.GetBButtonReleased()) {
-  m_climber.SetPhase(4);
-}
-
-if (m_stick.GetLeftBumperReleased()) {
-  m_climber.SetPhase(5);
-}
-
-if (m_stick.GetRightBumperReleased()) {
-  m_climber.SetPhase(6);
-}
-
-if (m_stick.GetLeftTriggerAxis()) {
-  m_climber.SetPhase(0);
-}
-
-
-  //climber testing, JOYSTICK 1
+ //climber testing, JOYSTICK 1
   //fully manual 
-
-}
-
-// This method is called at the beginning of the disabled state
-void Robot::DisabledInit() {}
-
-// This method is called every 20ms (by default) during disabled
-void Robot::DisabledPeriodic() {}
-
-
-// This method is called at the beginning of the testing state
-void Robot::TestInit() {
-}
-
-// This method is called every 20ms (by default) during testing
-void Robot::TestPeriodic() {
-  m_climber.GetEncoderValues(); 
-  /*
-  m_climber.Run();
-if (m_stick.GetXButtonReleased()) {
-  m_climber.SetPhase(1);
-}
-
-if (m_stick.GetYButtonReleased()) {
-  m_climber.SetPhase(2);
-}
-
-if (m_stick.GetAButtonReleased()) {
-  m_climber.SetPhase(3);
-}
-
-if (m_stick.GetBButtonReleased()) {
-  m_climber.SetPhase(4);
-}
-
-if (m_stick.GetLeftBumperReleased()) {
-  m_climber.SetPhase(5);
-}
-
-if (m_stick.GetRightBumperReleased()) {
-  m_climber.SetPhase(6);
-}
-
-if (m_stick.GetLeftTriggerAxis()) {
-  m_climber.SetPhase(0);
-}
-*/
 if (m_stick_climb.GetLeftBumper()) {
+      m_climber.TestL();
+}
+      /*
       m_climber.RotateLThrottle(0.5);
       }
     else if (m_stick_climb.GetLeftTriggerAxis()) {
       m_climber.RotateLThrottle(-0.5);
       }
+      */
     else {
-      m_climber.RotateLThrottle(0.0);
+     m_climber.RotateLThrottle(0.0);
+      //m_climber.RotateLeft(0.0);
       }
 
    if (m_stick_climb.GetRightBumper()) {
-    m_climber.RotateRThrottle(0.5);
+      m_climber.TestR(); 
+   }
+      /*
+      m_climber.RotateRThrottle(0.5);
       }
    else if (m_stick_climb.GetRightTriggerAxis()) {
     m_climber.RotateRThrottle(-0.5);
       }
+      */
    else {
     //m_climber.RotateRight(0.0);
-    m_climber.RotateRThrottle(0.0);
+   m_climber.RotateRThrottle(0.0);
     }
 
 if (m_stick_climb.GetYButton()) {
-  m_climber.EngageLeft(-0.5);
+  m_climber.EngageLeft(0.5);
+  
 }
 else if (m_stick_climb.GetXButton()) {
-  m_climber.EngageLeft(0.5);
+  m_climber.EngageLeft(-0.5);
 }
 else {
   m_climber.EngageLeft(0.0);
@@ -356,7 +290,7 @@ if (m_stick_climb.GetLeftStickButtonReleased()) {
     std::cout << "Left Servo Engaged\n";
   }
   else {
-    m_climber.SetLeftServo(0.7);
+    m_climber.SetLeftServo(leftDisengaged);
     m_leftServoEngaged = false;
     std::cout << "Left Servo Disengaged\n";
   }
@@ -369,10 +303,78 @@ if (m_stick_climb.GetRightStickButtonReleased()) {
     std::cout << "Right Servo Engaged\n";
   }
   else {
-    m_climber.SetRightServo(0.4);
+    m_climber.SetRightServo(rightDisengaged);
     m_rightServoEngaged = false;
     std::cout << "Right Servo Disengaged\n";
   }
+}
+
+}
+
+// This method is called at the beginning of the disabled state
+void Robot::DisabledInit() {}
+
+// This method is called every 20ms (by default) during disabled
+void Robot::DisabledPeriodic() {}
+
+
+// This method is called at the beginning of the testing state
+void Robot::TestInit() {
+}
+
+// This method is called every 20ms (by default) during testing
+void Robot::TestPeriodic() {
+  m_climber.GetEncoderValues(); 
+  m_climber.Run();
+// JOYSTICK 0 
+
+if (m_stick.GetXButtonReleased()) {
+  m_climber.SetPhase(1);
+}
+
+if (m_stick.GetYButtonReleased()) {
+  m_climber.SetPhase(2);
+}
+
+if (m_stick.GetBButtonReleased()) {
+  m_climber.SetPhase(3);
+}
+
+if (m_stick.GetAButtonReleased()) {
+  m_climber.SetPhase(4);
+}
+
+if (m_stick.GetLeftBumperReleased()) {
+  m_climber.SetPhase(5);
+}
+
+if (m_stick.GetRightBumperReleased()) {
+  m_climber.SetPhase(6);
+}
+
+if (m_stick.GetLeftTriggerAxis()) {
+  m_climber.SetPhase(7);
+}
+
+if (m_stick.GetRightTriggerAxis()) {
+  m_climber.SetPhase(8);
+}
+
+if (m_stick.GetLeftStickButton()) {
+  m_climber.SetPhase(9);
+}
+
+if (m_stick.GetRightStickButtonReleased()) {
+  m_climber.SetPhase(10); 
+}
+
+// Joystick 1 -- shuts off motors
+if (m_stick_climb.GetXButtonReleased()) {
+  m_climber.EngageLeft(0.0);
+}
+
+if (m_stick_climb.GetBButtonReleased()) {
+  m_climber.EngageRight(0.0);
 }
 }
 
