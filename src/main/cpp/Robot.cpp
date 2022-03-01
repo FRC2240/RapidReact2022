@@ -29,13 +29,12 @@ void Robot::RobotInit() {
   // Setup Autonomous options
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
-  m_chooser.AddOption(kThreeBallBlue, kThreeBallBlue);
-  m_chooser.AddOption(kTwoBallBlue, kTwoBallBlue);
-  m_chooser.AddOption(kThreeBallRed, kThreeBallRed);
-  m_chooser.AddOption(kTwoBallRed, kTwoBallRed);
-  m_chooser.AddOption(kFiveBallRed, kFiveBallRed);
-  m_chooser.AddOption(kFiveBallBlue, kFiveBallBlue);
-
+  m_chooser.AddOption(kThreeBallFirst, kThreeBallFirst);
+  m_chooser.AddOption(kThreeBallSecond, kThreeBallSecond);
+  m_chooser.AddOption(kThreeBallThird, kThreeBallThird);
+  m_chooser.AddOption(kTwoBallFirst, kTwoBallFirst);
+  m_chooser.AddOption(kTwoBallSecond, kTwoBallSecond);
+  
   // Add Autonomous options to dashboard
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
   
@@ -90,41 +89,36 @@ void Robot::AutonomousInit() {
   fmt::print("Auto selected: {}\n", m_autoSelected);
 
   // TODO: Make the following a switch statement
-  if (m_autoSelected == kThreeBallBlue) {
+  if (m_autoSelected == kThreeBallFirst) {
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/ThreeBallBlue.wpilib.json";
+    deployDirectory = deployDirectory / "Paths" / "Patheaver/Paths/ThreeBallFirst.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
 
-  if (m_autoSelected == kTwoBallBlue) {
+  if (m_autoSelected == kThreeBallSecond) {
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/TwoBallBlue.wpilib.json";
+    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/ThreeBallSecond.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
 
-  if (m_autoSelected == kThreeBallRed) { 
+  if (m_autoSelected == kThreeBallThird) { 
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/ThreeBallRed.wpilib.json";
+    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/ThreeBallThird.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
 
-  if (m_autoSelected == kTwoBallRed) {
+  if (m_autoSelected == kTwoBallFirst) {
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/TwoBallRed.wpilib.json";
+    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/TwoBallFirst.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
 
-  if (m_autoSelected == kFiveBallRed) {
+  if (m_autoSelected == kTwoBallSecond) {
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/FiveBallRed.wpilib.json";
+    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/TwoBallSecond.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
 
-  if (m_autoSelected == kFiveBallBlue) {
-    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/FiveBallBlue.wpilib.json";
-    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-  }
 }
 
 /**
@@ -139,9 +133,6 @@ void Robot::AutonomousPeriodic() {
   } else {
     // Default Auto goes here
   }
-
-  // Follow the defined path for autonomous
-  autoFollowPath();
   // Iteration one
   /*
    autoTimer.Start();
