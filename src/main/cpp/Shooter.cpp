@@ -17,7 +17,7 @@ Shooter::Shooter(frc::DifferentialDrive* d, frc::XboxController* s, Take* t)
       m_take(t)
 {
   // QUESTION: These are being manually called in Robot.cpp, but they are also being called on class instantiation
-  // Why is it being repeated? 
+  // Why is it being repeated?
   // Initialize Dashboard and PID Controllers
   InitializeDashboard();
   InitializePIDControllers();
@@ -32,14 +32,14 @@ void Shooter::Reset()
 {
   m_table->PutNumber("ledMode", 1); // lights off
   m_shootingMotorAlpha.Set(0.0);    // motors off
-  //m_take->Feed(0.0);                // feed off
+  m_take->Feed(0.0);                // feed off
 }
 
 
 /**
  * Method for Limelight Tracking. Returns true/false depending on if
  * the target for shooting is in frame
- * 
+ *
  * returns:
  *   boolean for target in frame
  */
@@ -56,25 +56,25 @@ bool Shooter::LimelightTracking()
   double tx = m_table->GetNumber("tx", 0.0);
   double tv = m_table->GetNumber("tv", 0.0);
 
-  //std::cout << "tx: " << tx << "; tv: " << tv << "\n";
+  //// // std::cout << "tx: " << tx << "; tv: " << tv << "\n";
 
   double limelightTurnCmd = 0.0;
 
 
   if (tv > 0.0)
   {
-    std::cout << "Limelight Tracking, tx: " << tx << "\n";
+    // // std::cout << "Limelight Tracking, tx: " << tx << "\n";
     // Proportional steering
     limelightTurnCmd = (tx /*+ m_txOFFSET*/) * STEER_K;
     limelightTurnCmd = std::clamp(limelightTurnCmd, -MAX_STEER, MAX_STEER);
     if (fabs(tx) < 3.0)
     {
-      std::cout << "Shoot true \n";
+      // // std::cout << "Shoot true \n";
       shoot = true;
     }
   }
 
-  //std::cout << "Trying to turn: " << limelightTurnCmd << "\n"; 
+  //// // std::cout << "Trying to turn: " << limelightTurnCmd << "\n";
   // Turn the robot to the target
   m_drive->ArcadeDrive(0.0, limelightTurnCmd);
   return shoot;
@@ -85,13 +85,18 @@ bool Shooter::LimelightTracking()
  */
 double Shooter::CalculateRPM(double d)
 {
-  return 2924 + (-9.04 * d) + (0.0447 * pow(d, 2)); //new equation
+  double rpmSpeed = 2924 + (-9.04 * d) + (0.0447 * pow(d, 2)); //new equation
+  std::cout << "Desired RPM: " << rpmSpeed << "\n";
+  
+  return rpmSpeed;
+
 }
 
 
 
 void Shooter::Fire()
 {
+  
   m_table->PutNumber("ledMode", 3); // lights on
 
   // Is target locked?
@@ -99,13 +104,13 @@ void Shooter::Fire()
   {
     // Calculate distance to target from Limelight data
     double ty = m_table->GetNumber("ty", 0.0);
-    std::cout << "ty: " << ty <<"\n";
+    // // std::cout << "ty: " << ty <<"\n";
     //double distance = kRadiusOfTarget + ((kHeightOfTarget - kHeightLimelight) / tan((kLimelightAngle + ty) * (3.141592653 / 180)));
 
-    double distance = -2.39 * ty + (0.139 * pow(ty, 2)) + 105; 
+    double distance = -2.39 * ty + (0.139 * pow(ty, 2)) + 105;
 
     double rpm = CalculateRPM(distance);
-    std::cout << "distance: " << distance << "\n";
+    // // // std::cout << "distance: " << distance << "\n";
 
     // Override for test/calibration?
     if (fabs(m_overrideRPM) > 1.0)
@@ -116,18 +121,21 @@ void Shooter::Fire()
 
     if ((distance < 250) && (distance > 70))
     {
-      std::cout << "RPM: " << rpm << "\n"; 
+      // // // std::cout << "RPM: " << rpm << "\n"; 
       m_shootingMotorAlpha.Set(ControlMode::Velocity, -rpm * (2048.0 / 600.0));
     }
-    // std::cout << "distance = " << distance
+    // // // // std::cout << "distance = " << distance
     //           << " want = " << rpm << " got = " << m_shootingMotorAlpha.GetSelectedSensorVelocity() << std::endl;
 
     // Enable feed if we're at 98% of desired shooter speed
-    if (fabs(m_shootingMotorAlpha.GetSelectedSensorVelocity()) > fabs(rpm * 0.97))
+    std::cout << "Current RPM: " << m_shootingMotorAlpha.GetSelectedSensorVelocity() << "\n";
+    if (fabs(m_shootingMotorAlpha.GetSelectedSensorVelocity()* (600.0/2048.0)) > fabs(rpm * 0.99))
     {
-      //m_take->Feed(1.0);
+      std::cout << "Shooting... \n";
+      m_take->Feed(1.0);
+
     } else {
-      //m_take->Feed(0.0);
+      m_take->Feed(0.0);
     }
   }
 }

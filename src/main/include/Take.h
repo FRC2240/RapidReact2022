@@ -14,6 +14,7 @@ public:
   void TakeDashInit();
   void ColorsInit();
   void SetColor();
+  void Feed(double feedSpeed);
 
 
   void Run(bool toggle, frc::DriverStation::Alliance alliance);
@@ -82,7 +83,7 @@ private:
     double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
   };
 
-  double kMaxVel = 4000, kMinVel = 0, kMaxAcc = 2500, kAllErr = 0;
+  double kMaxVel = 4000, kMinVel = 0, kMaxAcc = 2500, kAllErr = 0.2;
   pidCoeff m_rotateIntakeCoeff{3.0e-4, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
   pidCoeff m_uptakeCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
