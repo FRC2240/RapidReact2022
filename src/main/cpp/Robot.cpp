@@ -128,6 +128,31 @@ void Robot::AutonomousPeriodic() {
 
   // Follow the defined path for autonomous
   autoFollowPath();
+  // Iteration one
+  /*
+   autoTimer.Start();
+   if (autoTimer.Get() <= units::time::second_t(4)) {
+     m_shooter.Fire();
+   }
+   if (autoTimer.Get() > units::time::second_t(4) && autoTimer.Get() <= units::time::second_t(5)) {
+     m_drive.ArcadeDrive(0.5,0);
+   }
+  */
+
+  // Iteration two
+ 
+  // autoTimer.Start();
+  
+  // if (autoTimer.Get() <= units::time::second_t(5)) {
+  //   m_drive.ArcadeDrive(0.5, 0);
+  // }
+  // if  (autoTimer.Get() > units::time::second_t(5) && autoTimer.Get() <= units::time::second_t(9)) {
+  //   m_shooter.Fire();;
+  // }
+  // if  (autoTimer.Get() > units::time::second_t(9) && autoTimer.Get() <= units::time::second_t(12)) {
+  //   m_shooter.Fire();
+  // }
+  
 }
 
 /**
