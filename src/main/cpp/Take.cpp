@@ -31,7 +31,7 @@ Take::Take() {
   m_waitingRoomPIDController.SetOutputRange(m_waitingRoomCoeff.kMinOutput, m_waitingRoomCoeff.kMaxOutput);
 }
 
-int Take::Feed(double feedSpeed) {
+void Take::Feed(double feedSpeed) {
   m_waitingRoomMotor.Set(feedSpeed);
   m_uptakeMotor.Set(feedSpeed);
 }
@@ -163,7 +163,7 @@ void Take::UptakeStop()
 
 void Take::DeployIntake()
 {
-  m_rotateIntakePIDController.SetReference(10.17, rev::CANSparkMax::ControlType::kSmartMotion);
+  m_rotateIntakePIDController.SetReference(10.1, rev::CANSparkMax::ControlType::kSmartMotion);
 }
 
 void Take::ReturnIntake()
