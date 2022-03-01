@@ -33,6 +33,8 @@ void Robot::RobotInit() {
   m_chooser.AddOption(kTwoBallBlue, kTwoBallBlue);
   m_chooser.AddOption(kThreeBallRed, kThreeBallRed);
   m_chooser.AddOption(kTwoBallRed, kTwoBallRed);
+  m_chooser.AddOption(kFiveBallRed, kFiveBallRed);
+  m_chooser.AddOption(kFiveBallBlue, kFiveBallBlue);
 
   // Add Autonomous options to dashboard
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
@@ -111,6 +113,18 @@ void Robot::AutonomousInit() {
     deployDirectory = deployDirectory / "autos" / "Patheaver/autos/TwoBallRed.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
+
+  if (m_autoSelected == kFiveBallRed) {
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/FiveBallRed.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+
+  if (m_autoSelected == kFiveBallBlue) {
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/FiveBallBlue.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
 }
 
 /**
@@ -128,6 +142,31 @@ void Robot::AutonomousPeriodic() {
 
   // Follow the defined path for autonomous
   autoFollowPath();
+  // Iteration one
+  /*
+   autoTimer.Start();
+   if (autoTimer.Get() <= units::time::second_t(4)) {
+     m_shooter.Fire();
+   }
+   if (autoTimer.Get() > units::time::second_t(4) && autoTimer.Get() <= units::time::second_t(5)) {
+     m_drive.ArcadeDrive(0.5,0);
+   }
+  */
+
+  // Iteration two
+ 
+  // autoTimer.Start();
+  
+  // if (autoTimer.Get() <= units::time::second_t(5)) {
+  //   m_drive.ArcadeDrive(0.5, 0);
+  // }
+  // if  (autoTimer.Get() > units::time::second_t(5) && autoTimer.Get() <= units::time::second_t(9)) {
+  //   m_shooter.Fire();;
+  // }
+  // if  (autoTimer.Get() > units::time::second_t(9) && autoTimer.Get() <= units::time::second_t(12)) {
+  //   m_shooter.Fire();
+  // }
+  
 }
 
 /**
@@ -147,16 +186,16 @@ void Robot::TeleopPeriodic() {
   double a = .375/.4495;
   double b = .0745/.4495;
   //Read controller input
-  //double throttle = m_stick.GetLeftTriggerAxis() - m_stick.GetRightTriggerAxis();
+  double throttle = -m_stick.GetLeftTriggerAxis() + m_stick.GetRightTriggerAxis();
  
   double throttleExp = a * pow(m_stick.GetLeftTriggerAxis(), 4) + b * pow(m_stick.GetLeftTriggerAxis(), 1.48)-a * pow(m_stick.GetRightTriggerAxis(), 4) + b * pow(m_stick.GetRightTriggerAxis(), 1.48);
-  double turnInput = pow(m_stick.GetLeftX()*m_turnFactor,1.72) - pow(m_stick.GetLeftY()*m_turnFactor,1.72);
-
+  // double turnInput = pow(m_stick.GetLeftX()*m_turnFactor,1.72) - pow(m_stick.GetLeftY()*m_turnFactor,1.72);
+  double turnInput = m_stick.GetLeftX() - m_stick.GetLeftY();
   // Shooter
   if (m_stick.GetRightBumper()) {
     m_shooter.Fire();
   } else {
-    m_drive.ArcadeDrive(throttleExp, turnInput);
+    m_drive.ArcadeDrive(throttle, turnInput);
   }
   if (m_stick.GetRightBumperReleased()) {
     m_shooter.Reset();

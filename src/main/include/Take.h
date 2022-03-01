@@ -14,6 +14,7 @@ public:
   void TakeDashInit();
   void ColorsInit();
   void SetColor();
+  void Feed(double feedSpeed);
 
 
   void Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance);

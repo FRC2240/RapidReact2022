@@ -84,6 +84,8 @@ class Robot : public frc::TimedRobot {
   const std::string kTwoBallBlue = "TwoBallBlue";
   const std::string kThreeBallRed = "ThreeBallRed";
   const std::string kTwoBallRed = "TwoBallRed";
+  const std::string kFiveBallRed = "FiveBallRed";
+  const std::string kFiveBallBlue = "FiveBallBlue";
   std::string m_autoSelected;
 
   frc::RamseteController controller1;
