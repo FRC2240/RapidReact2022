@@ -8,15 +8,13 @@ Take::Take() {
 }
 
 
-void Take::Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance);
 
 void Take::Feed(double feedSpeed) {
   m_waitingRoomMotor.Set(feedSpeed);
   m_uptakeMotor.Set(-feedSpeed);
 }
 
-
-{
+void Take::Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance) {
   // Events that will affect state:
   // - Driver input
   // - Uptake/Waiting Room become full
