@@ -80,12 +80,11 @@ class Robot : public frc::TimedRobot {
   frc::SendableChooser<std::string> m_chooser;
   const std::string kAutoNameDefault = "Default";
   const std::string kAutoNameCustom = "My Auto";
-  const std::string kThreeBallBlue = "ThreeBallBlue";
-  const std::string kTwoBallBlue = "TwoBallBlue";
-  const std::string kThreeBallRed = "ThreeBallRed";
-  const std::string kTwoBallRed = "TwoBallRed";
-  const std::string kFiveBallRed = "FiveBallRed";
-  const std::string kFiveBallBlue = "FiveBallBlue";
+  const std::string kThreeBallFirst = "ThreeBallFirst";
+  const std::string kThreeBallSecond = "ThreeBallSecond";
+  const std::string kThreeBallThird = "ThreeBallThird";
+  const std::string kTwoBallFirst = "TwoBallFirst";
+  const std::string kTwoBallSecond = "TwoBallSecond";
   std::string m_autoSelected;
 
   frc::RamseteController controller1;
