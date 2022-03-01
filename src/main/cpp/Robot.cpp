@@ -33,6 +33,8 @@ void Robot::RobotInit() {
   m_chooser.AddOption(kTwoBallBlue, kTwoBallBlue);
   m_chooser.AddOption(kThreeBallRed, kThreeBallRed);
   m_chooser.AddOption(kTwoBallRed, kTwoBallRed);
+  m_chooser.AddOption(kFiveBallRed, kFiveBallRed);
+  m_chooser.AddOption(kFiveBallBlue, kFiveBallBlue);
 
   // Add Autonomous options to dashboard
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
@@ -109,6 +111,18 @@ void Robot::AutonomousInit() {
   if (m_autoSelected == kTwoBallRed) {
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
     deployDirectory = deployDirectory / "autos" / "Patheaver/autos/TwoBallRed.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+
+  if (m_autoSelected == kFiveBallRed) {
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/FiveBallRed.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+
+  if (m_autoSelected == kFiveBallBlue) {
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/FiveBallBlue.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
 }
