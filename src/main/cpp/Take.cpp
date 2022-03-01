@@ -8,7 +8,7 @@ Take::Take() {
 }
 
 
-void Take::Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance)
+void Take::Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance);
 
 void Take::Feed(double feedSpeed) {
   m_waitingRoomMotor.Set(feedSpeed);
