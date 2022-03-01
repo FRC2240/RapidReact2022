@@ -181,7 +181,7 @@ void Robot::TeleopInit() {
 
 void Robot::TeleopPeriodic() {
   // Intake
-  m_take.Run(m_stick.GetLeftBumperPressed(), m_alliance);
+  m_take.Run(m_stick.GetLeftBumperPressed(), m_stick.GetRightBumper(), m_alliance);
   
   double a = .375/.4495;
   double b = .0745/.4495;

@@ -17,7 +17,7 @@ public:
   void Feed(double feedSpeed);
 
 
-  void Run(bool toggle, frc::DriverStation::Alliance alliance);
+  void Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance);
 
   // For testing, not operation
 
