@@ -16,14 +16,13 @@
 class Take
 {
 public:
-  Take();
-  void Feed(double feedSpeed);
+  Take(); 
+  void Feed(double speed);
   void TakePIDInit();
   void TakeDashRead();
   void TakeDashInit();
   void ColorsInit();
   void SetColor();
-  void Feed(double speed);
 
 
   void Run(bool toggle, frc::DriverStation::Alliance alliance);

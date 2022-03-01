@@ -28,11 +28,11 @@ void Robot::RobotInit() {
 
 //Test
 m_climber.ClimberPIDInit();
-  m_climber.TestDashInit();
-  /*
+  //m_climber.TestDashInit();
+  
   m_take.TestDashInit();
   m_take.TakePIDInit();
-*/
+
   m_climber.InitializeEncoders();
   m_take.InitializeEncoders(); 
   m_climber.InitializeSoftLimits();
@@ -153,27 +153,32 @@ void Robot::TeleopInit() {
   ReadDashboard();
   */
   
-  //m_take.TakeDashRead();
+  m_take.TakeDashRead();
+  m_take.TakePIDInit();
+  /*
   m_climber.TestReadDash(); 
   m_climber.ClimberPIDInit();
+  */
   m_climber.InitializeSoftLimits(); 
+
   //m_climber.SetPhase(0); 
 }
 
 void Robot::TeleopPeriodic() {
   // Intake
-  //m_take.Run(m_stick.GetLeftBumperPressed(), m_alliance);
+  m_take.Run(m_stick.GetLeftBumperPressed(), m_alliance);
 
   m_climber.GetEncoderValues();
   
-  //m_take.ReadEncoders();
-  
+  m_take.ReadEncoders();
+  /*
   double a = .375/.4495;
   double b = .0745/.4495;
+  */
   //Read controller input
   double throttle = -m_stick.GetLeftTriggerAxis() + m_stick.GetRightTriggerAxis();
  
-  double throttleExp = a * pow(m_stick.GetLeftTriggerAxis(), 4) + b * pow(m_stick.GetLeftTriggerAxis(), 1.48)-a * pow(m_stick.GetRightTriggerAxis(), 4) + b * pow(m_stick.GetRightTriggerAxis(), 1.48);
+  //double throttleExp = a * pow(m_stick.GetLeftTriggerAxis(), 4) + b * pow(m_stick.GetLeftTriggerAxis(), 1.48)-a * pow(m_stick.GetRightTriggerAxis(), 4) + b * pow(m_stick.GetRightTriggerAxis(), 1.48);
   //double turnInput = pow(m_stick.GetLeftX()*m_turnFactor,1.72) - pow(m_stick.GetLeftY()*m_turnFactor,1.72);
   double turnInput = m_stick.GetLeftX() - m_stick.GetLeftY();
 /*
@@ -190,7 +195,7 @@ void Robot::TeleopPeriodic() {
     m_shooter.Reset();
   }
 */
-//m_drive.ArcadeDrive(throttle, turnInput);
+m_drive.ArcadeDrive(throttle, turnInput);
 
 // Intake PIDs troubleshooting
 /*

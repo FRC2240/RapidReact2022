@@ -52,11 +52,6 @@ Take::Take() {
     .GetEntry();
 }
 
-void Take::Feed(double feedSpeed) {
-  m_waitingRoomMotor.Set(feedSpeed);
-  m_uptakeMotor.Set(feedSpeed);
-}
-
 
 void Take::Run(bool toggle, frc::DriverStation::Alliance alliance)
 {
@@ -244,7 +239,7 @@ void Take::UptakeStop()
 
 void Take::DeployIntake()
 {
-  m_rotateIntakePIDController.SetReference(10.17, rev::CANSparkMax::ControlType::kSmartMotion);
+  m_rotateIntakePIDController.SetReference(10.10, rev::CANSparkMax::ControlType::kSmartMotion);
 }
 
 void Take::ReturnIntake()

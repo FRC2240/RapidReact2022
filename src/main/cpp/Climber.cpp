@@ -481,8 +481,7 @@ void Climber::GetEncoderValues() {
   std::cout << "Right Extension Position: " << m_rightClimberExtender.GetSelectedSensorPosition() << "\n";
   std::cout << "Right Rotation Position: " << m_rightClimberEncoder.GetPosition() << "\n";
   */
- std::cout << "Left Rotation Position: " << m_leftClimberEncoder.GetPosition() << "\n";
- std::cout << "Right Rotation Position: " << m_rightClimberEncoder.GetPosition() << "\n";
+ 
   }
 
 void Climber::InitializeEncoders() {

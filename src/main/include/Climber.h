@@ -59,9 +59,6 @@ private:
 
   frc::SendableChooser<std::string> m_chooser;
 
-  frc::Servo m_rightExtenderServo {0};
-  frc::Servo m_leftExtenderServo {1};
-
 
 
   // Stolen from Robot.h
