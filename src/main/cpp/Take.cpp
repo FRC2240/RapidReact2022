@@ -33,7 +33,7 @@ Take::Take() {
 
 void Take::Feed(double feedSpeed) {
   m_waitingRoomMotor.Set(feedSpeed);
-  m_uptakeMotor.Set(feedSpeed);
+  m_uptakeMotor.Set(-feedSpeed);
 }
 
 
@@ -144,7 +144,7 @@ void Take::ReadSensors() {
   m_uptakeState      = Color(uptake);
   m_waitingRoomState = Color(waiting);
 
-  std::cout << "Uptake: " << m_uptakeState << "Wa: " << m_waitingRoomState << std::endl;
+  // // std::cout << "Uptake: " << m_uptakeState << "Wa: " << m_waitingRoomState << std::endl;
 
   count = 0;
 }
@@ -253,11 +253,11 @@ void Take::TakeDashRead()
   // rotate intake
   // read PID coefficients from SmartDashboard
   p = frc::SmartDashboard::GetNumber("Rotate Intake P Gain", 0);
-  std::cout << "Read Dashboard rotate intake p gain: " << p << "\n";
+  // // std::cout << "Read Dashboard rotate intake p gain: " << p << "\n";
   i = frc::SmartDashboard::GetNumber("Rotate Intake I Gain", 0);
-  std::cout << "Read Dashboard rotate intake i gain: " << i << "\n";
+  // // std::cout << "Read Dashboard rotate intake i gain: " << i << "\n";
   d = frc::SmartDashboard::GetNumber("Rotate Intake D Gain", 0);
-  std::cout << "Read Dashboard rotate intake d gain: " << d << "\n";
+  // // std::cout << "Read Dashboard rotate intake d gain: " << d << "\n";
   min = frc::SmartDashboard::GetNumber("Rotate Intake Min Output", 0);
   max = frc::SmartDashboard::GetNumber("Rotate Intake Max Output", 0);
 
@@ -285,11 +285,11 @@ void Take::TakeDashRead()
   }
 
   p = frc::SmartDashboard::GetNumber("Uptake P Gain", 0);
-  std::cout << "Read Dashboard uptake p gain: " << p << "\n";
+  // // std::cout << "Read Dashboard uptake p gain: " << p << "\n";
   i = frc::SmartDashboard::GetNumber("Uptake I Gain", 0);
-  std::cout << "Read Dashboard uptake i gain: " << i << "\n";
+  // // std::cout << "Read Dashboard uptake i gain: " << i << "\n";
   d = frc::SmartDashboard::GetNumber("Uptake D Gain", 0);
-  std::cout << "Read Dashboard uptake d gain: " << d << "\n";
+  // // std::cout << "Read Dashboard uptake d gain: " << d << "\n";
   min = frc::SmartDashboard::GetNumber("Uptake Min Output", 0);
   max = frc::SmartDashboard::GetNumber("Uptake Max Output", 0);
 
@@ -316,11 +316,11 @@ void Take::TakeDashRead()
   }
 
   p = frc::SmartDashboard::GetNumber("Waiting Room P Gain", 0);
-  std::cout << "Read Dashboard waiting room p gain: " << p << "\n";
+  // std::cout << "Read Dashboard waiting room p gain: " << p << "\n";
   i = frc::SmartDashboard::GetNumber("Waiting Room I Gain", 0);
-  std::cout << "Read Dashboard waiting room i gain: " << i << "\n";
+  // std::cout << "Read Dashboard waiting room i gain: " << i << "\n";
   d = frc::SmartDashboard::GetNumber("Waiting Room D Gain", 0);
-  std::cout << "Read Dashboard waiting room d gain: " << d << "\n";
+  // std::cout << "Read Dashboard waiting room d gain: " << d << "\n";
   min = frc::SmartDashboard::GetNumber("Waiting Room Min Output", 0);
   max = frc::SmartDashboard::GetNumber("Waiting Room Max Output", 0);
 
