@@ -384,7 +384,7 @@ void Climber::Run() {
     break;
     case 1: 
       // Center Left Arm, rotate right arm out of the way (might not be necessary depending on which arm we choose to start w/)
-      RotateRight(-30.0);
+      RotateRight(22.0);
       break;
 
     case 2:
