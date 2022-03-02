@@ -8,10 +8,9 @@
 #include <networktables/NetworkTableInstance.h>
 
 Take::Take() {
+  //  InitializeEncoders();
+  TakeDashInit();
   TakePIDInit();
-}
-
-
 
   m_waitingRoomPIDController.SetP(m_waitingRoomCoeff.kP);
   m_waitingRoomPIDController.SetI(m_waitingRoomCoeff.kI);
@@ -37,12 +36,12 @@ Take::Take() {
     .WithWidget("Boolean Box")
     .GetEntry();
 }
-
+/*
 void Take::Feed(double feedSpeed) {
   m_waitingRoomMotor.Set(feedSpeed);
   m_uptakeMotor.Set(-feedSpeed);
 }
-
+*/
 void Take::Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance) {
   // Events that will affect state:
   // - Driver input

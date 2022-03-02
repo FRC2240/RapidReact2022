@@ -23,7 +23,7 @@ public:
   void TakeDashInit();
   void ColorsInit();
   void SetColor();
-  void Feed(double feedSpeed);
+  void Feed(double speed);
 
 
   void Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance);
@@ -54,7 +54,13 @@ public:
 
 private:
 
-
+  void InitializeEncoders();
+  void TestDashInit();
+  void TestDashRead();
+  void SetIntakePosition(double);
+  void TestRotation();
+  void ReadEncoders();
+  
   // Determine the ball color from Color Sensor value
   BallColor Color(frc::Color);
 

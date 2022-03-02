@@ -34,7 +34,7 @@ m_climber.ClimberPIDInit();
   m_take.TakePIDInit();
 */
   m_climber.InitializeEncoders();
-  m_take.InitializeEncoders(); 
+  //  m_take.InitializeEncoders(); 
   m_climber.InitializeSoftLimits();
   
 
@@ -228,7 +228,7 @@ void Robot::TeleopPeriodic() {
   if (m_stick.GetRightBumperReleased()) {
     m_shooter.Reset();
   }
-*/
+
 //m_drive.ArcadeDrive(throttle, turnInput);
 
 // Intake PIDs troubleshooting
