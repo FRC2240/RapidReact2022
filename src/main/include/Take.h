@@ -26,7 +26,13 @@ public:
   void Feed(double speed);
 
 
+<<<<<<< HEAD
   void Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance);
+=======
+  void Run(bool toggle, frc::DriverStation::Alliance alliance);
+  void InitializeEncoders();
+  void ReadEncoders();
+>>>>>>> 1042742b54d32d5ea36ccc6f772b8ec53865a3a7
 
   // For testing, not operation
 
@@ -36,8 +42,15 @@ public:
   void DeployIntake();
   void ReturnIntake();
 
+<<<<<<< HEAD
   void AutoRunIntake(double speed);
   void AutoStopIntake();
+=======
+  void TestDashInit();
+  void TestDashRead();
+  void SetIntakePosition(double position);
+  void TestRotation();
+>>>>>>> 1042742b54d32d5ea36ccc6f772b8ec53865a3a7
 
   enum BallColor
   {
@@ -54,6 +67,7 @@ public:
 
 private:
 
+<<<<<<< HEAD
   void InitializeEncoders();
   void TestDashInit();
   void TestDashRead();
@@ -61,6 +75,9 @@ private:
   void TestRotation();
   void ReadEncoders();
   
+=======
+
+>>>>>>> 1042742b54d32d5ea36ccc6f772b8ec53865a3a7
   // Determine the ball color from Color Sensor value
   BallColor Color(frc::Color);
 

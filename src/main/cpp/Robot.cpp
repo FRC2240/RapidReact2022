@@ -34,7 +34,11 @@ m_climber.ClimberPIDInit();
   m_take.TakePIDInit();
 */
   m_climber.InitializeEncoders();
+<<<<<<< HEAD
   //  m_take.InitializeEncoders(); 
+=======
+  m_take.InitializeEncoders(); 
+>>>>>>> 1042742b54d32d5ea36ccc6f772b8ec53865a3a7
   m_climber.InitializeSoftLimits();
   
 
@@ -205,7 +209,13 @@ void Robot::TeleopInit() {
 
 void Robot::TeleopPeriodic() {
   // Intake
+<<<<<<< HEAD
   m_take.Run(m_stick.GetLeftBumperPressed(), m_stick.GetRightBumper(), m_alliance);
+=======
+  //m_take.Run(m_stick.GetLeftBumperPressed(), m_alliance);
+
+  m_climber.GetEncoderValues();
+>>>>>>> 1042742b54d32d5ea36ccc6f772b8ec53865a3a7
   
   //m_take.ReadEncoders();
   
@@ -215,22 +225,37 @@ void Robot::TeleopPeriodic() {
   double throttle = -m_stick.GetLeftTriggerAxis() + m_stick.GetRightTriggerAxis();
  
   double throttleExp = a * pow(m_stick.GetLeftTriggerAxis(), 4) + b * pow(m_stick.GetLeftTriggerAxis(), 1.48)-a * pow(m_stick.GetRightTriggerAxis(), 4) + b * pow(m_stick.GetRightTriggerAxis(), 1.48);
+<<<<<<< HEAD
   // double turnInput = pow(m_stick.GetLeftX()*m_turnFactor,1.72) - pow(m_stick.GetLeftY()*m_turnFactor,1.72);
   double turnInput = m_stick.GetLeftX() - m_stick.GetLeftY();
+=======
+  //double turnInput = pow(m_stick.GetLeftX()*m_turnFactor,1.72) - pow(m_stick.GetLeftY()*m_turnFactor,1.72);
+  double turnInput = m_stick.GetLeftX() - m_stick.GetLeftY();
+/*
+>>>>>>> 1042742b54d32d5ea36ccc6f772b8ec53865a3a7
   // Shooter
   if (m_stick.GetRightBumper()) {
     m_shooter.Fire();
 
 
   } else {
+<<<<<<< HEAD
+=======
+    //m_drive.ArcadeDrive(throttleExp, turnInput);
+>>>>>>> 1042742b54d32d5ea36ccc6f772b8ec53865a3a7
     m_drive.ArcadeDrive(throttle, turnInput);
   }
   if (m_stick.GetRightBumperReleased()) {
     m_shooter.Reset();
   }
-
+*/
 //m_drive.ArcadeDrive(throttle, turnInput);
 
+<<<<<<< HEAD
+//m_drive.ArcadeDrive(throttle, turnInput);
+
+=======
+>>>>>>> 1042742b54d32d5ea36ccc6f772b8ec53865a3a7
 // Intake PIDs troubleshooting
 /*
 if (m_stick.GetYButton()) {

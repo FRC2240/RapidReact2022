@@ -1,6 +1,14 @@
 #include "Take.h"
 #include "log.h"
 #include <iostream>
+<<<<<<< HEAD
+=======
+
+
+#include <frc/smartdashboard/SmartDashboard.h>
+#include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableInstance.h>
+>>>>>>> 1042742b54d32d5ea36ccc6f772b8ec53865a3a7
 
 
 #include <frc/smartdashboard/SmartDashboard.h>
@@ -35,6 +43,7 @@ Take::Take() {
     .Add("Room Ball Exists", false)
     .WithWidget("Boolean Box")
     .GetEntry();
+<<<<<<< HEAD
 }
 /*
 void Take::Feed(double feedSpeed) {
@@ -43,6 +52,14 @@ void Take::Feed(double feedSpeed) {
 }
 */
 void Take::Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance) {
+=======
+}
+
+
+
+void Take::Run(bool toggle, frc::DriverStation::Alliance alliance)
+{
+>>>>>>> 1042742b54d32d5ea36ccc6f772b8ec53865a3a7
   // Events that will affect state:
   // - Driver input
   // - Uptake/Waiting Room become full
@@ -154,6 +171,7 @@ void Take::ReadSensors() {
   m_uptakeState      = Color(uptake);
   m_waitingRoomState = Color(waiting);
 
+  //std::cout << "Uptake: " << m_uptakeState << "Wa: " << m_waitingRoomState << std::endl;
 
   //Shuffleboard
 
