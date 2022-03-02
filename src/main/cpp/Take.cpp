@@ -156,6 +156,16 @@ void Take::ReturnIntake()
   m_rotateIntakePIDController.SetReference(0.0, rev::CANSparkMax::ControlType::kSmartMotion);
 }
 
+void Take::AutoRunIntake(double speed){
+  m_spinIntakeMotor.Set(speed);
+  m_uptakeMotor.Set(speed);
+}
+
+void Take::AutoStopIntake(){
+  m_spinIntakeMotor.Set(0);
+  m_uptakeMotor.Set(0);
+}
+
 // Measurements from REV Color Sensors:
 // RED  BALL: R (0.40 - 0.54),  G (0.34 - 0.40), B (0.12 - 0.20)
 // BLUE BALL: R (0.14 - 0.20),  G (0.39 - 0.44), B (0.36 - 0.47)

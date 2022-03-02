@@ -27,6 +27,9 @@ public:
   void DeployIntake();
   void ReturnIntake();
 
+  void AutoRunIntake(double speed);
+  void AutoStopIntake();
+
   enum BallColor
   {
     blueBall,
