@@ -446,10 +446,9 @@ void Climber::Run() {
     // Engage Right Ratchet
       SetRightServo(0.0);
       //RotateLeft(highL);
-      /*
       RotateRThrottle(0.0);
       RotateLThrottle(0.0);
-      */
+      
       break;
 
     case 9: 
@@ -475,12 +474,12 @@ void Climber::GetEncoderValues() {
   frc::SmartDashboard::PutNumber("Current Right Climber Rotation Position: ", m_rightClimberEncoder.GetPosition());
   frc::SmartDashboard::PutNumber("Current Left Climber Extension Position: ", m_leftClimberExtender.GetSelectedSensorPosition());
   frc::SmartDashboard::PutNumber("Current Right Climber Extension Position: ", m_rightClimberExtender.GetSelectedSensorPosition());
-/*
-  std::cout << "Left Extension Position: " << m_leftClimberExtender.GetSelectedSensorPosition() << "\n";
+
+  //std::cout << "Left Extension Position: " << m_leftClimberExtender.GetSelectedSensorPosition() << "\n";
   std::cout << "Left Rotation Position: " << m_leftClimberEncoder.GetPosition() << "\n";
-  std::cout << "Right Extension Position: " << m_rightClimberExtender.GetSelectedSensorPosition() << "\n";
+ // std::cout << "Right Extension Position: " << m_rightClimberExtender.GetSelectedSensorPosition() << "\n";
   std::cout << "Right Rotation Position: " << m_rightClimberEncoder.GetPosition() << "\n";
-  */
+  
  
   }
 

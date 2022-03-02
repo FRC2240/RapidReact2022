@@ -180,7 +180,7 @@ void Robot::TeleopPeriodic() {
   double b = .0745/.4495;
   */
   //Read controller input
-  double throttle = -m_stick.GetLeftTriggerAxis() + m_stick.GetRightTriggerAxis();
+  double throttle = -m_stick.GetLeftTriggerAxis() + 0.85 * m_stick.GetRightTriggerAxis(); 
  
   //double throttleExp = a * pow(m_stick.GetLeftTriggerAxis(), 4) + b * pow(m_stick.GetLeftTriggerAxis(), 1.48)-a * pow(m_stick.GetRightTriggerAxis(), 4) + b * pow(m_stick.GetRightTriggerAxis(), 1.48);
   //double turnInput = pow(m_stick.GetLeftX()*m_turnFactor,1.72) - pow(m_stick.GetLeftY()*m_turnFactor,1.72);
@@ -284,6 +284,12 @@ void Robot::TestInit() {
 void Robot::TestPeriodic() {
   m_climber.GetEncoderValues(); 
   m_climber.Run();
+  /*
+  if (m_stick_climb.GetLeftBumperReleased()) {
+    m_climber.Progress();
+    std::cout << "Phase: " << m_climber.GetPhase() << "\n";
+  }
+  */
   
   // JOYSTICK 0 
   if (m_stick.GetXButtonReleased()) {

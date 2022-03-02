@@ -112,7 +112,7 @@ private:
   int m_phase = 0;
 
   //rotation positions
-  double centerL = -29.0, centerR = -36.0, highL = -51.0, highR = -22.0; 
+  double centerL = -26.0, centerR = -36.0, highL = -51.0, highR = -22.0; 
 
   //extension soft limits
   double kMaxLeft = 200000.0, kMinLeft = 2000.0, kMaxRight = 410000.0, kMinRight = 3000.0; 
