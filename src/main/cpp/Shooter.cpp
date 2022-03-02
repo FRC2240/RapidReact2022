@@ -110,7 +110,7 @@ void Shooter::Fire()
     double distance = -2.39 * ty + (0.139 * pow(ty, 2)) + 105;
 
     double rpm = CalculateRPM(distance);
-    // // // std::cout << "distance: " << distance << "\n";
+    std::cout << "distance: " << distance << "; Shooter RPM:" << m_shootingMotorAlpha.GetSelectedSensorVelocity()*(600.0/2048.0) << "\n";
 
     // Override for test/calibration?
     if (fabs(m_overrideRPM) > 1.0)
@@ -128,10 +128,10 @@ void Shooter::Fire()
     //           << " want = " << rpm << " got = " << m_shootingMotorAlpha.GetSelectedSensorVelocity() << std::endl;
 
     // Enable feed if we're at 98% of desired shooter speed
-    std::cout << "Current RPM: " << m_shootingMotorAlpha.GetSelectedSensorVelocity() << "\n";
+    //std::cout << "Current RPM: " << m_shootingMotorAlpha.GetSelectedSensorVelocity() << "\n";
     if (fabs(m_shootingMotorAlpha.GetSelectedSensorVelocity()* (600.0/2048.0)) > fabs(rpm * 0.99))
     {
-      std::cout << "Shooting... \n";
+      //std::cout << "Shooting... \n";
       m_take->Feed(1.0);
 
     } else {
