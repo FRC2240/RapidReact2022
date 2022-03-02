@@ -5,6 +5,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "Climber.h"
 #include "Shooter.h"
@@ -78,20 +79,67 @@ class Robot : public frc::TimedRobot {
 
  private:
   frc::SendableChooser<std::string> m_chooser;
-  const std::string kAutoNameDefault = "Default";
-  const std::string kAutoNameCustom = "My Auto";
-  const std::string kThreeBallFirst = "ThreeBallFirst";
-  const std::string kThreeBallSecond = "ThreeBallSecond";
-  const std::string kThreeBallThird = "ThreeBallThird";
-  const std::string kTwoBallFirst = "TwoBallFirst";
-  const std::string kTwoBallSecond = "TwoBallSecond";
+  const std::string kAutoDefault = "Default";
+  const std::string kTwoBall = "TwoBall";
+  const std::string kThreeBall = "ThreeBall";
   std::string m_autoSelected;
 
   frc::RamseteController controller1;
 
-  void autoFollowPath();
+  bool autoFollowPath();
   void autoDrive(units::meters_per_second_t xSpeed, units::radians_per_second_t rot);
   void setSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds);
+
+  // Robot actions during Autonomous
+  enum autoActions {
+    kIntake,
+    kShoot,
+    kDump,
+    kTwoBallPath1,
+    kTwoBallPath2,
+    kThreeBallPath1,
+    kThreeBallPath2,
+    kThreeBallPath3,
+    kIdle
+  };
+
+  enum autoState {
+    kDriving,
+    kShooting,
+    kDumping,
+    kNothing
+  };
+
+  // Two-Ball Auto Sequence
+  std::list<autoActions> m_twoBallSequence{
+    kIntake,
+    kTwoBallPath1,
+    kShoot,
+    kIntake,
+    kTwoBallPath2,
+    kDump,
+    kIdle
+  };
+
+  // Three-Ball Auto Sequence
+  std::list<autoActions> m_threeBallSequence{
+    kIntake,
+    kThreeBallPath1,
+    kShoot,
+    kIntake,
+    kThreeBallPath2,
+    kShoot,
+    kThreeBallPath3,
+    kIdle
+  };
+
+  std::list<autoActions> m_noSequence{
+    kIdle
+  };
+
+  std::list<autoActions> *m_autoSequence;
+  autoActions m_autoAction;
+  autoState m_autoState;
 
   units::meter_t kTrackWidth = 0.478028_m;  
 
@@ -163,7 +211,7 @@ class Robot : public frc::TimedRobot {
   
 
 //auto timer
-frc::Timer autoTimer;
+frc::Timer m_autoTimer;
 
 frc::Trajectory m_trajectory;
 

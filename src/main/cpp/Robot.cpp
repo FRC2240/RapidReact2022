@@ -27,13 +27,9 @@ void Robot::RobotInit() {
   InitializeDashboard();
 
   // Setup Autonomous options
-  m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
-  m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
-  m_chooser.AddOption(kThreeBallFirst, kThreeBallFirst);
-  m_chooser.AddOption(kThreeBallSecond, kThreeBallSecond);
-  m_chooser.AddOption(kThreeBallThird, kThreeBallThird);
-  m_chooser.AddOption(kTwoBallFirst, kTwoBallFirst);
-  m_chooser.AddOption(kTwoBallSecond, kTwoBallSecond);
+  m_chooser.SetDefaultOption(kAutoDefault, kAutoDefault);
+  m_chooser.AddOption(kTwoBall, kTwoBall);
+  m_chooser.AddOption(kThreeBall, kThreeBall);
   
   // Add Autonomous options to dashboard
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
@@ -82,43 +78,27 @@ void Robot::RobotPeriodic() {}
  */
 void Robot::AutonomousInit() {
 
+  m_alliance = frc::DriverStation::GetAlliance();
+
   // Get choosen autonomous mode
   m_autoSelected = m_chooser.GetSelected();
 
   // Print out the selected autonomous mode
   fmt::print("Auto selected: {}\n", m_autoSelected);
 
-  // TODO: Make the following a switch statement
-  if (m_autoSelected == kThreeBallFirst) {
-    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "Paths" / "Patheaver/Paths/ThreeBallFirst.wpilib.json";
-    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  if (m_autoSelected == kTwoBall) {
+    m_autoSequence = &m_twoBallSequence;
   }
 
-  if (m_autoSelected == kThreeBallSecond) {
-    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/ThreeBallSecond.wpilib.json";
-    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  if (m_autoSelected == kThreeBall) {
+    m_autoSequence = &m_threeBallSequence;
   }
 
-  if (m_autoSelected == kThreeBallThird) { 
-    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/ThreeBallThird.wpilib.json";
-    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  if (m_autoSelected == kAutoDefault) {
+    m_autoSequence = &m_noSequence;
   }
 
-  if (m_autoSelected == kTwoBallFirst) {
-    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/TwoBallFirst.wpilib.json";
-    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-  }
-
-  if (m_autoSelected == kTwoBallSecond) {
-    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/TwoBallSecond.wpilib.json";
-    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-  }
-
+  m_autoAction = m_autoSequence->front();
 }
 
 /**
@@ -127,8 +107,97 @@ void Robot::AutonomousInit() {
  */
 void Robot::AutonomousPeriodic() {
 
+  fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+
+  switch(m_autoAction) {
+    case kIntake:
+      m_take.Run(true, false, m_alliance);
+      m_autoSequence->pop_front();
+      m_autoAction = m_autoSequence->front();
+
+    case kShoot:
+      m_autoTimer.Reset();
+      m_autoTimer.Start();
+      m_autoAction = kIdle;
+      m_autoState = kShooting;
+      break;
+
+    case kDump:
+      m_autoTimer.Reset();
+      m_autoTimer.Start();
+      m_autoAction = kIdle;
+      m_autoState = kDumping;
+      break;
+
+    case kTwoBallPath1:
+      deployDirectory = deployDirectory / "output/TwoBallFirst.wpilib.json";
+      m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+
+      m_autoTimer.Reset();
+      m_autoTimer.Start();
+      m_autoAction = kIdle;
+      m_autoState = kDriving;
+
+      // Reset the drivetrain's odometry to the starting pose of the trajectory
+      m_drive->ResetOdometry(m_trajectory.InitialPose());
+
+      break;
+
+    case kTwoBallPath2:
+      deployDirectory = deployDirectory / "output/TwoBallSecond.wpilib.json";
+      m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+
+      m_autoTimer.Reset();
+      m_autoTimer.Start();
+      m_autoAction = kIdle;
+      m_autoState = kDriving;
+
+      break;
+
+    case kIdle:
+    default:
+      m_autoState = kNothing;
+      break;
+  }
+
+
+  if (m_autoState == kDriving) {
+    bool done = autoFollowPath();
+
+   // Next state
+   if (done) {
+      m_autoSequence->pop_front();
+      m_autoAction = m_autoSequence->front();
+    }
+  }
+
+  if (m_autoState == kShooting) {
+    if (m_autoTimer.Get() < units::time::second_t(4)) {
+      m_shooter.Fire();
+    }
+    else {
+      m_autoSequence->pop_front();
+      m_autoAction = m_autoSequence->front();
+    }
+  }
+
+  if (m_autoState == kDumping) {
+    if (m_autoTimer.Get() < units::time::second_t(3)) {
+      m_shooter.Fire();
+    }
+    else {
+      m_autoSequence->pop_front();
+      m_autoAction = m_autoSequence->front();
+    }
+  }
+
+
+
+
+
+
   // Check if current auto mode is the custom auto mode
-  if (m_autoSelected == kAutoNameCustom) {
+  if (m_autoSelected == kAutoDefault) {
     // Custom Auto goes here
   } else {
     // Default Auto goes here
@@ -362,23 +431,25 @@ void Robot::autoDrive(units::meters_per_second_t xSpeed, units::radians_per_seco
 
 // This method gets called every teleop period and follows the predetermined
 // autonomous paths based on auto state
-void Robot::autoFollowPath(){
+bool Robot::autoFollowPath(){
 
   // QUESTION: Why all the auto types?
 
   // If the robot is still within the trajectory time frame
-  if (autoTimer.Get() < m_trajectory.TotalTime()) {
+  if (m_autoTimer.Get() < m_trajectory.TotalTime()) {
     // Get desired pose
-    auto desiredPose = m_trajectory.Sample(autoTimer.Get());
+    auto desiredPose = m_trajectory.Sample(m_autoTimer.Get());
     // Get desired speeds from current pose vs desired pose
     auto refChassisSpeeds = controller1.Calculate(m_odometry->GetPose(), desiredPose);
     
     // Drive based on desired speeds
     autoDrive(refChassisSpeeds.vx, refChassisSpeeds.omega);
+    return false;
   }
   else {
     // Stop the robot
     autoDrive(0_mps, 0_rad_per_s);
+    return true;
   }
 }
 
