@@ -172,7 +172,7 @@ void Robot::TeleopInit() {
 
 void Robot::TeleopPeriodic() {
   // Intake
-  m_take.Run(m_stick.GetLeftBumperPressed(), m_stick.GetRightBumper(), m_alliance);
+  m_take.Run(m_stick.GetLeftBumperReleased(), m_stick.GetRightBumper(), m_alliance);
   
   double a = .375/.4495;
   double b = .0745/.4495;
@@ -191,110 +191,6 @@ void Robot::TeleopPeriodic() {
   if (m_stick.GetRightBumperReleased()) {
     m_shooter.Reset();
   }
-
-
-  //climber
-/*
-  //move to next phase if button pressed (button subject to change)
-
-  if (m_stick_climb.GetAButtonReleased()) { 
-    m_climber.Progress();
-  }
-
-  //kill button (button subject to change)
-  if (m_stick_climb.GetBButtonPressed()) {
-    m_climber.Kill();
-  }
-
-  m_climber.Run(); //constantly running, initially set to zero but changes whenever progress is called
-*/
-
-  
- /*
-  if (throttleExp > 1) {
-    throttleExp = 1;
-  } else if (throttleExp < -1) {
-    throttleExp = -1;
-  }*/
-  //Looks like Ethan wants exponents...
-   
-  //TODO: climber controls
-
-
-
-//Better Uptake
-/*
-  if (m_take.ManipulateBall() == m_take.rightEmpty) {} // Hold in waiting room, no shooter action needed
-  if (m_take.ManipulateBall() == m_take.rightFull) {} // Hold in uptake, no shooter action needed
-  // The above lines are precautionary
-
-  // Call arcade drive function with calculated values
-  m_drive.ArcadeDrive(throttleExp, turnInput);
-
-
-  // TODO: climber controls
-
-  // Semi-Autonomous Uptake Control
-  // Get ManipulateBall status
-  int intakeStatus = m_take.ManipulateBall();
-
-  // TODO: Replace this with a switch statement
-  // If uptake has the right ball and shooter is empty
-  if (intakeStatus == m_take.rightEmpty) {
-    // Hold in waiting room, no shooter action needed
-  } 
-  // If uptake has the right ball and shooter is full
-  else if (m_take.ManipulateBall() == m_take.rightFull) {
-    // Hold in uptake, no shooter action needed
-  } 
-  // If uptake has the wrong ball and shooter is empty
-  else if (m_take.ManipulateBall() == m_take.wrongEmpty) {
-    // Eject the ball
-  }
-
-  if (m_take.ManipulateBall() == m_take.wrongFull) {} // Reverse uptake, done internally 
-*/
-  /*
- //uptake
- if (m_stick.GetAButtonPressed()) {
-   if (uptakeBool == true) {
-     //stop uptake
-     m_take.ReturnIntake();
-     uptakeBool = false;
-   }
-   if (uptakeBool == false) {
-     //Start uptake
-     m_take.DeployIntake();
-     uptakeBool = true;
-   }
- }
-  */
-
-//Possibly uneeded
- /*
- if (m_stick.GetStartButton()){
-   if (shootMan){
-     shootMan = false;
-     std::cout << "[MSG]: Shooter is in manual mode \n";
-   }
-   if (!shootMan){
-     shootMan = true;
-     std::cout << "[MSG]: Shooter is in automatic mode \n";
-   }
- }
-
-
- if (m_stick.GetLeftBumperPressed()) {
-   m_shooter.Fire();
- }
- */
-
-  // If the uptake has the wrong ball and shooter is full
-  /*
-  if (m_take.ManipulateBall() == m_take.wrongFull) {
-    // Reverse the intake
-  }  
-  */
 
 }
 

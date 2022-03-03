@@ -117,6 +117,7 @@ void Shooter::Fire()
     {
       rpm = m_overrideRPM;
       frc::SmartDashboard::PutNumber("Shooter RPM", m_shootingMotorAlpha.GetSelectedSensorVelocity()*(600.0/2048.0));
+      std::cout << "Desired RPM: " << rpm << "\n";
     }
 
     if ((distance < 250) && (distance > 70))
@@ -129,7 +130,7 @@ void Shooter::Fire()
 
     // Enable feed if we're at 98% of desired shooter speed
     //std::cout << "Current RPM: " << m_shootingMotorAlpha.GetSelectedSensorVelocity() << "\n";
-    if (fabs(m_shootingMotorAlpha.GetSelectedSensorVelocity()* (600.0/2048.0)) > fabs(rpm * 0.99))
+    if (fabs(m_shootingMotorAlpha.GetSelectedSensorVelocity()* (600.0/2048.0)) > fabs(rpm * 0.97))
     {
       //std::cout << "Shooting... \n";
       m_take->Feed(1.0);
