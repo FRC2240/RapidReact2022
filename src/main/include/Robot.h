@@ -142,20 +142,6 @@ class Robot : public frc::TimedRobot {
   autoActions m_autoAction;
   autoState m_autoState;
 
-  units::meter_t kTrackWidth = 0.478028_m;  
-
-  static constexpr auto   kS = 0.27_V;                         
-  static constexpr auto   kV = 1.53 * 1_V * 1_s / 1_m;         
-  static constexpr auto   kA = 0.254 * 1_V * 1_s * 1_s / 1_m; 
-
-  frc::DifferentialDriveOdometry *m_odometry;
-  frc::DifferentialDriveKinematics m_kinematics{kTrackWidth};
-  frc::SimpleMotorFeedforward<units::meters> m_feedforward{kS, kV, kA};
-
-  frc::MotorControllerGroup* m_leftGroup;
-  frc::MotorControllerGroup* m_rightGroup;
-
-
   double m_driveExponent = 1.2;
   double m_turnFactor = 0.5;
   bool manualShootingEnabled;

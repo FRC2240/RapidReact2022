@@ -4,7 +4,6 @@
 
 #include "Robot.h"
 
-
 // Standard C++ Libraries
 #include <iostream>
 #include <math.h>
@@ -19,10 +18,6 @@
  */
 void Robot::RobotInit() {
   
-  // Setup initiate Diff Drive object with an initial heading of zero
-  m_odometry = new frc::DifferentialDriveOdometry(frc::Rotation2d(0_deg));
-  
-
   InitializePIDControllers(); 
   InitializeDashboard();
 
@@ -53,6 +48,8 @@ void Robot::RobotInit() {
 
   m_drive.SetSafetyEnabled(false);
 
+  // Initialize auto driver
+  m_autoDrive = new Drivetrain(&m_leftDrive, &m_rightDrive, &m_frontLeftMotor, &m_frontRightMotor);
 }
 
 /**
@@ -98,6 +95,7 @@ void Robot::AutonomousInit() {
     m_autoSequence = &m_noSequence;
   }
 
+  // First action
   m_autoAction = m_autoSequence->front();
 }
 
@@ -141,7 +139,6 @@ void Robot::AutonomousPeriodic() {
 
       // Reset the drivetrain's odometry to the starting pose of the trajectory
       m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
-
       break;
 
     case kTwoBallPath2:
@@ -153,6 +150,47 @@ void Robot::AutonomousPeriodic() {
       m_autoAction = kIdle;
       m_autoState = kDriving;
 
+      // Reset the drivetrain's odometry to the starting pose of the trajectory
+      //m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
+      break;
+
+    case kThreeBallPath1:
+      deployDirectory = deployDirectory / "output/ThreeBallFirst.wpilib.json";
+      m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+
+      m_autoTimer.Reset();
+      m_autoTimer.Start();
+      m_autoAction = kIdle;
+      m_autoState = kDriving;
+
+      // Reset the drivetrain's odometry to the starting pose of the trajectory
+      m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
+      break;
+      
+    case kThreeBallPath2:
+      deployDirectory = deployDirectory / "output/ThreeBallSecond.wpilib.json";
+      m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+
+      m_autoTimer.Reset();
+      m_autoTimer.Start();
+      m_autoAction = kIdle;
+      m_autoState = kDriving;
+
+      // Reset the drivetrain's odometry to the starting pose of the trajectory
+      //m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
+      break;
+
+    case kThreeBallPath3:
+      deployDirectory = deployDirectory / "output/ThreeBallThird.wpilib.json";
+      m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+
+      m_autoTimer.Reset();
+      m_autoTimer.Start();
+      m_autoAction = kIdle;
+      m_autoState = kDriving;
+
+      // Reset the drivetrain's odometry to the starting pose of the trajectory
+      //m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
       break;
 
     case kIdle:
@@ -177,6 +215,7 @@ void Robot::AutonomousPeriodic() {
       m_shooter.Fire();
     }
     else {
+      m_shooter.Reset();
       m_autoSequence->pop_front();
       m_autoAction = m_autoSequence->front();
     }
@@ -396,29 +435,29 @@ void Robot::ReadDashboard() {
 bool Robot::autoFollowPath()
 {
   // Update odometry
-    m_autoDrive->UpdateOdometry();
+  m_autoDrive->UpdateOdometry();
 
-    if (m_autoTimer.Get() < m_trajectory.TotalTime()) {
-      // Get the desired pose from the trajectory
-      auto desiredPose = m_trajectory.Sample(m_autoTimer.Get());
+  if (m_autoTimer.Get() < m_trajectory.TotalTime()) {
+    // Get the desired pose from the trajectory
+    auto desiredPose = m_trajectory.Sample(m_autoTimer.Get());
 
-      // Get the reference chassis speeds from the Ramsete Controller
-      //std::cout << "x = " << m_drive->GetPose().X() 
-      //          <<  "y = " << m_drive->GetPose().Y() << " rot = " << m_drive->GetPose().Rotation().Degrees() << std::endl;
-      //std::cout << "dx = " << desiredPose.pose.X() 
-      //          << " dy = " << desiredPose.pose.Y() << " drot = " << desiredPose.pose.Rotation().Degrees() << std::endl;
-      
-      auto refChassisSpeeds = m_ramseteController.Calculate(m_autoDrive->GetPose(), desiredPose);
+    // Get the reference chassis speeds from the Ramsete Controller
+    // std::cout << "x = " << m_drive->GetPose().X()
+    //          <<  "y = " << m_drive->GetPose().Y() << " rot = " << m_drive->GetPose().Rotation().Degrees() << std::endl;
+    // std::cout << "dx = " << desiredPose.pose.X()
+    //          << " dy = " << desiredPose.pose.Y() << " drot = " << desiredPose.pose.Rotation().Degrees() << std::endl;
 
-      // Set the linear and angular speeds
-      m_autoDrive->Drive(refChassisSpeeds.vx, refChassisSpeeds.omega);
-      return false;
-    } else {
-      m_autoDrive->Drive(0_mps, 0_rad_per_s);
-      return true;
-    }
+    auto refChassisSpeeds = m_ramseteController.Calculate(m_autoDrive->GetPose(), desiredPose);
+
+    // Set the linear and angular speeds
+    m_autoDrive->Drive(refChassisSpeeds.vx, refChassisSpeeds.omega);
+    return false;
+  }
+  else {
+    m_autoDrive->Drive(0_mps, 0_rad_per_s);
+    return true;
+  }
 }
-
 
 // If we are not running in test mode
 #ifndef RUNNING_FRC_TESTS
