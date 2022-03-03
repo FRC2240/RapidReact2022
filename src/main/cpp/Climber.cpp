@@ -437,17 +437,16 @@ void Climber::Run() {
       break;
 
     case 7: 
-    // Extend right to wherever
-      EngageRight(0.5);
+    // Extend Right
+    EngageRight(0.5);
+    
 
       break;
 
     case 8: 
-    // Engage Right Ratchet
-      SetRightServo(0.0);
-      //RotateLeft(highL);
-      RotateRThrottle(0.0);
-      RotateLThrottle(0.0);
+    // Rotate Right Arm and Bot
+    RotateRight(highR);
+    RotateLeft(highL);
       
       break;
 
@@ -457,11 +456,11 @@ void Climber::Run() {
       RotateRight(highR);
       */
      // Contract right
-      EngageRight(-0.5);
+     SetRightServo(0.0);
       break;
     
     case 10: 
-    EngageRight(0.0);
+    EngageRight(-0.5);
     break;
   }
 
@@ -475,9 +474,9 @@ void Climber::GetEncoderValues() {
   frc::SmartDashboard::PutNumber("Current Left Climber Extension Position: ", m_leftClimberExtender.GetSelectedSensorPosition());
   frc::SmartDashboard::PutNumber("Current Right Climber Extension Position: ", m_rightClimberExtender.GetSelectedSensorPosition());
 
-  //std::cout << "Left Extension Position: " << m_leftClimberExtender.GetSelectedSensorPosition() << "\n";
+  std::cout << "Left Extension Position: " << m_leftClimberExtender.GetSelectedSensorPosition() << "\n";
   std::cout << "Left Rotation Position: " << m_leftClimberEncoder.GetPosition() << "\n";
- // std::cout << "Right Extension Position: " << m_rightClimberExtender.GetSelectedSensorPosition() << "\n";
+  std::cout << "Right Extension Position: " << m_rightClimberExtender.GetSelectedSensorPosition() << "\n";
   std::cout << "Right Rotation Position: " << m_rightClimberEncoder.GetPosition() << "\n";
   
  
@@ -503,6 +502,7 @@ void Climber::InitializeSoftLimits() {
   m_rightClimberExtender.ConfigReverseSoftLimitEnable(true);
   m_rightClimberExtender.ConfigForwardSoftLimitThreshold(kMaxRight); 
   m_rightClimberExtender.ConfigReverseSoftLimitEnable(kMinRight);
+  
   
 }
 

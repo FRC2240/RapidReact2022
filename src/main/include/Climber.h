@@ -112,13 +112,13 @@ private:
   int m_phase = 0;
 
   //rotation positions
-  double centerL = 45, centerR = -36.0, highL = -51.0, highR = -22.0; 
+  double centerL = 41, centerR = -36.0, highL = 45.0, highR = 3.5; 
 
   //extension soft limits
-  double kMaxLeft = 200000.0, kMinLeft = 2000.0, kMaxRight = 410000.0, kMinRight = 3000.0; 
+  double kMaxLeft = 221000.0, kMinLeft = 2000.0, kMaxRight = 377500.0, kMinRight = 3000.0; 
 
   //engaged servo positions
-  double leftDisengaged = 0.7, rightDisengaged = 0.6; 
+  double leftDisengaged = 0.7, rightDisengaged = 0.7; 
 
 
   //testing
