@@ -9,6 +9,7 @@
 
 #include "Climber.h"
 #include "Shooter.h"
+#include "DriveTrain.h"
 //#include "Take.h"
 
 #include "rev/CANSparkMax.h"
@@ -208,14 +209,19 @@ class Robot : public frc::TimedRobot {
 // I don't know what either of theese do
   static const int uptakeMotorDeviceID = 9;
   static const int uptakeIdleMotorDeviceID = 14;
-  
+
+Shooter m_shooter{&m_drive, &m_stick, &m_take};
+
+frc::DriverStation::Alliance m_alliance = frc::DriverStation::Alliance::kInvalid;
 
 //auto timer
 frc::Timer m_autoTimer;
 
 frc::Trajectory m_trajectory;
 
-Shooter m_shooter{&m_drive, &m_stick, &m_take};
+// The Ramsete Controller to follow the trajectory
+frc::RamseteController m_ramseteController;
 
-frc::DriverStation::Alliance m_alliance = frc::DriverStation::Alliance::kInvalid;
+// **** RAMSETE Control **** //
+Drivetrain* m_autoDrive;
 };

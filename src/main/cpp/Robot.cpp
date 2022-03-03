@@ -114,6 +114,7 @@ void Robot::AutonomousPeriodic() {
       m_take.Run(true, false, m_alliance);
       m_autoSequence->pop_front();
       m_autoAction = m_autoSequence->front();
+      break;
 
     case kShoot:
       m_autoTimer.Reset();
@@ -139,7 +140,7 @@ void Robot::AutonomousPeriodic() {
       m_autoState = kDriving;
 
       // Reset the drivetrain's odometry to the starting pose of the trajectory
-      m_drive->ResetOdometry(m_trajectory.InitialPose());
+      m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
 
       break;
 
@@ -191,17 +192,6 @@ void Robot::AutonomousPeriodic() {
     }
   }
 
-
-
-
-
-
-  // Check if current auto mode is the custom auto mode
-  if (m_autoSelected == kAutoDefault) {
-    // Custom Auto goes here
-  } else {
-    // Default Auto goes here
-  }
   // Iteration one
   /*
    autoTimer.Start();
@@ -403,55 +393,32 @@ void Robot::ReadDashboard() {
   m_shooter.ReadDashboard();
 }
 
-// Method for determining speeds during autonomous
-void Robot::setSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds) {
+bool Robot::autoFollowPath()
+{
+  // Update odometry
+    m_autoDrive->UpdateOdometry();
 
-  // QUESTION: Why are these consts? Const in this context means you can't change
-  // it after it has been set, but since these variables are local in scope and
-  // not changed anywheres after that doesn't make much sense
-  const auto leftFeedforward = m_feedforward.Calculate(speeds.left);
-  const auto rightFeedforward = m_feedforward.Calculate(speeds.right);
- 
-  // QUESTION: Same as above
-  const double leftOutput = m_frontRightMotorPIDController.Calculate(m_frontRightMotor.GetActiveTrajectoryVelocity(), speeds.left.to<double>());
-  const double rightOutput = m_frontLeftMotorPIDController.Calculate(m_frontLeftMotor.GetActiveTrajectoryVelocity(), speeds.right.to<double>());
- 
-  // Set the voltages for the left and right drive motor groups
-  m_leftGroup->SetVoltage(units::volt_t{leftOutput} + leftFeedforward);
-  m_rightGroup->SetVoltage(units::volt_t{rightOutput} + rightFeedforward);
- 
+    if (m_autoTimer.Get() < m_trajectory.TotalTime()) {
+      // Get the desired pose from the trajectory
+      auto desiredPose = m_trajectory.Sample(m_autoTimer.Get());
+
+      // Get the reference chassis speeds from the Ramsete Controller
+      //std::cout << "x = " << m_drive->GetPose().X() 
+      //          <<  "y = " << m_drive->GetPose().Y() << " rot = " << m_drive->GetPose().Rotation().Degrees() << std::endl;
+      //std::cout << "dx = " << desiredPose.pose.X() 
+      //          << " dy = " << desiredPose.pose.Y() << " drot = " << desiredPose.pose.Rotation().Degrees() << std::endl;
+      
+      auto refChassisSpeeds = m_ramseteController.Calculate(m_autoDrive->GetPose(), desiredPose);
+
+      // Set the linear and angular speeds
+      m_autoDrive->Drive(refChassisSpeeds.vx, refChassisSpeeds.omega);
+      return false;
+    } else {
+      m_autoDrive->Drive(0_mps, 0_rad_per_s);
+      return true;
+    }
 }
 
-// QUESTION: Why is this a seperate method? Since you are just passing input
-// parameters to a method and nothing else, this is just not needed
-// Unless there is a plan to add more complexity/logic to THIS specfic function
-void Robot::autoDrive(units::meters_per_second_t xSpeed, units::radians_per_second_t rot){
-  setSpeeds(m_kinematics.ToWheelSpeeds({xSpeed, 0_mps, rot}));
-}
-
-// This method gets called every teleop period and follows the predetermined
-// autonomous paths based on auto state
-bool Robot::autoFollowPath(){
-
-  // QUESTION: Why all the auto types?
-
-  // If the robot is still within the trajectory time frame
-  if (m_autoTimer.Get() < m_trajectory.TotalTime()) {
-    // Get desired pose
-    auto desiredPose = m_trajectory.Sample(m_autoTimer.Get());
-    // Get desired speeds from current pose vs desired pose
-    auto refChassisSpeeds = controller1.Calculate(m_odometry->GetPose(), desiredPose);
-    
-    // Drive based on desired speeds
-    autoDrive(refChassisSpeeds.vx, refChassisSpeeds.omega);
-    return false;
-  }
-  else {
-    // Stop the robot
-    autoDrive(0_mps, 0_rad_per_s);
-    return true;
-  }
-}
 
 // If we are not running in test mode
 #ifndef RUNNING_FRC_TESTS
