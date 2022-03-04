@@ -24,7 +24,7 @@ void Robot::RobotInit() {
   
 
   InitializePIDControllers(); 
-  InitializeDashboard();
+  // InitializeDashboard();
 
   // Setup Autonomous options
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
@@ -170,7 +170,7 @@ void Robot::TeleopInit() {
 
   m_alliance = frc::DriverStation::GetAlliance();
    InitializePIDControllers();
-  ReadDashboard();
+  // ReadDashboard();
 }
 
 void Robot::TeleopPeriodic() {
@@ -332,7 +332,7 @@ void Robot::InitializeDashboard() {
 
 // Method for reading the Dashboard
 void Robot::ReadDashboard() {
-  m_climber.ClimberDashRead();
+  // m_climber.ClimberDashRead();
   m_take.TakeDashRead();
   m_shooter.ReadDashboard();
 }
