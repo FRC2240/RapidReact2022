@@ -60,7 +60,7 @@ private:
   void SetIntakePosition(double);
   void TestRotation();
   void ReadEncoders();
-  
+
   // Determine the ball color from Color Sensor value
   BallColor Color(frc::Color);
 
@@ -81,23 +81,39 @@ private:
   // Shuffleboard  Shuffleboard::Shuffleboard m_shuffleboard; // Shuffleboard
   frc::DriverStation::Alliance m_alliance;
 
-  // Shuffleboard
-  /*std::shared_ptr<nt::NetworkTable> m_shuffleboardDriveCore = nt::NetworkTableInstance::GetDefault().GetTable("limelight-brute");
-  NetworkTableEntry uptakeBallBool = Shuffleboard.getTab("Drive Core")
+  /* Shuffleboard */
+  nt::NetworkTableEntry m_roomBallRedBoard = frc::Shuffleboard::GetTab("Drive Core")
 
-    .add("Uptake Ball Color", false)
+    .Add("Room Ball Red", false)
 
-    .withWidget("Toggle Button")
+    .WithWidget("Toggle Button")
 
-    .getEntry();
-  NetworkTableEntry waitingBallBool = Shuffleboard.getTab("Drive Core")
+    .GetEntry();
 
-    .add("Waiting Room Ball Color", false)
+  nt::NetworkTableEntry m_roomBallBlueBoard = frc::Shuffleboard::GetTab("Drive Core")
 
-    .withWidget("Toggle Button")
+    .Add("Room Ball Blue", false)
 
-    .getEntry();
-  */
+    .WithWidget("Boolean Box")
+
+    .GetEntry();
+  nt::NetworkTableEntry m_uptakeBallRedBoard = frc::Shuffleboard::GetTab("Drive Core")
+
+    .Add("Uptake Ball Red", false)
+
+    .WithWidget("Boolean Box")
+
+    .GetEntry();
+  nt::NetworkTableEntry m_uptakeBallBlueBoard = frc::Shuffleboard::GetTab("Drive Core")
+
+    .Add("Uptake Ball Blue", false)
+
+    .WithWidget("Boolean Box")
+
+    .GetEntry();
+
+
+
   // Motors
   rev::CANSparkMax m_rotateIntakeMotor{rotateIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_spinIntakeMotor{spinIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};

@@ -10,6 +10,11 @@
 #include "frc/Servo.h"
 #include <frc/Timer.h>
 
+#include <frc/shuffleboard/Shuffleboard.h>
+#include <frc/shuffleboard/ShuffleboardWidget.h>
+#include <frc/shuffleboard/ShuffleboardValue.h>
+#include <frc/shuffleboard/ShuffleboardTab.h>
+
 
 class Climber {
 public:
@@ -47,7 +52,8 @@ public:
 
   void RotateRThrottle(double throttle);
   void RotateLThrottle(double throttle);
-  
+
+  void Shuffleboard();
 
 private:
   bool CanIProgress(); 
@@ -114,17 +120,31 @@ private:
   double centerL = -29.0, centerR = -36.0, highL = -49.0, highR = -20.0; 
 
   //extension soft limits
-  double kMaxLeft = 200000.0, kMinLeft = 2000.0, kMaxRight = 410000.0, kMinRight = 3000.0; 
+  double kMaxLeft = 200000.0, kMinLeft = 2000.0, kMaxRight = 410000.0, kMinRight = 3000.0;
 
   //engaged servo positions
-  double leftDisengaged = 0.7, rightDisengaged = 0.6; 
+  double leftDisengaged = 0.7, rightDisengaged = 0.6;
 
 
   //testing
   double m_rotationR, m_rotationL;
 
-  frc::Timer m_climbTimer; 
-  
+  frc::Timer m_climbTimer;
+
+  //Shuffleboard
+  nt::NetworkTableEntry m_leftServoShuffleboard =
+    frc::Shuffleboard::GetTab("Drive Core")
+    .Add("Left Servo Engaged", false)
+    .WithWidget("Boolean Box")
+    .GetEntry();
+
+  nt::NetworkTableEntry m_rightServoShuffleboard =
+    frc::Shuffleboard::GetTab("Drive Core")
+    .Add("Right Servo Engaged", true)
+    .WithWidget("Boolean Box")
+    .GetEntry();
+
+
 };
 
 

@@ -190,20 +190,13 @@ void Robot::TeleopInit() {
   m_climber.TestReadDash(); 
   m_climber.ClimberPIDInit();
   m_climber.InitializeSoftLimits(); 
-  //m_climber.SetPhase(0); 
+  //m_climber.SetPhase(0);
+  // TODO: Move to climber and properly configure 
 
-    frc::Shuffleboard::GetTab("Drive Core")
-    .Add("Right Servo Engaged", true)
-    .WithWidget("Boolean Box")
-    .GetEntry();
-
-  frc::Shuffleboard::GetTab("Drive Core")
-  .Add("Left Servo Engaged", true)
-  .WithWidget("Boolean Box")
-  .GetEntry();
 }
 
 void Robot::TeleopPeriodic() {
+  m_climber.Shuffleboard();
   // Intake
   m_take.Run(m_stick.GetLeftBumperPressed(), m_stick.GetRightBumper(), m_alliance);
   
@@ -317,30 +310,6 @@ if (m_stick_climb.GetRightStickButtonReleased()) {
     m_rightServoEngaged = false;
     std::cout << "Right Servo Disengaged\n";
   }
-}
-if (m_leftServoEngaged){
-    frc::Shuffleboard::GetTab("Drive Core")
-    .Add("Left Servo Engaged", true)
-    .WithWidget("Boolean Box")
-    .GetEntry();
-}
-else{
-      frc::Shuffleboard::GetTab("Drive Core")
-    .Add("Left Servo Engaged", false)
-    .WithWidget("Boolean Box")
-    .GetEntry();
-}
-if (m_rightServoEngaged){
-      frc::Shuffleboard::GetTab("Drive Core")
-    .Add("Right Servo Engaged", true)
-    .WithWidget("Boolean Box")
-    .GetEntry();
-}
-else{
-        frc::Shuffleboard::GetTab("Drive Core")
-    .Add("Right Servo Engaged", false)
-    .WithWidget("Boolean Box")
-    .GetEntry();
 }
 
 }

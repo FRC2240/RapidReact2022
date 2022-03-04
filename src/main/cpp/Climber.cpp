@@ -25,7 +25,7 @@ Climber::Climber() {
  *   setPointL - double representing the point to move towards
  */
 void Climber::ExtendALowerL(double setPointL) {
-  
+
   m_climbExtendPointL = setPointL;
   m_leftClimberExtender.Set(ControlMode::MotionMagic, m_climbExtendPointL*2048.0);
 }
@@ -365,6 +365,21 @@ bool Climber::CanIProgress() {
  */
 void Climber::Kill() {
   m_phase = 0;
+}
+
+void Climber::Shuffleboard(){ // I can't think of a better place to do this
+  if (m_leftExtenderServo.Get() == 0.7) { // Disengaged
+    m_leftServoShuffleboard.SetBoolean(false);
+  }
+  else{
+    m_leftServoShuffleboard.SetBoolean(true);
+  }
+  if(m_rightExtenderServo.Get() == 0.7){ //Disengaged
+    m_rightServoShuffleboard.SetBoolean(false);
+  }
+  else{
+    m_rightServoShuffleboard.SetBoolean(true);
+  }
 }
 
 /**

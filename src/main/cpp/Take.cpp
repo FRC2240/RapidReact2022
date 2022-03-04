@@ -158,58 +158,36 @@ void Take::ReadSensors() {
   //Shuffleboard
 
   // Does it exist?
-  if (m_uptakeState == nullBall){
-  frc::Shuffleboard::GetTab("Drive Core")
-    .Add("Uptake Ball exists", false)
-    .WithWidget("Boolean Box")
-    .GetEntry();
+  if (m_uptakeState == blueBall) {
+    m_uptakeBallBlueBoard.SetBoolean(true);
+      }
+  else{
+    m_uptakeBallBlueBoard.SetBoolean(false);
+  }
+  //---
+  if (m_uptakeState == redBall) {
+    m_uptakeBallRedBoard.SetBoolean(true);
   }
   else {
-    frc::Shuffleboard::GetTab("Drive Core")
-      .Add("Uptake Ball exists", true)
-      .WithWidget("Boolean Box")
-      .GetEntry();
+    m_uptakeBallRedBoard.SetBoolean(false);
   }
-  if (m_waitingRoomState == nullBall) {
-    frc::Shuffleboard::GetTab("Drive Core")
-      .Add("Room Ball exists", false)
-      .WithWidget("Boolean Box")
-      .GetEntry();
-  }
-  else {
-    frc::Shuffleboard::GetTab("Drive Core")
-      .Add("Room Ball exists", true)
-      .WithWidget("Boolean Box")
-      .GetEntry();
-  }
-
-  // What color is the uptake?
-  if (m_uptakeState == blueBall){
-    frc::Shuffleboard::GetTab("Drive Core")
-      .Add("Uptake Ball color", true)
-      .WithWidget("Boolean Box")
-      .GetEntry();
-  }
-  if (m_uptakeState == redBall){
-    frc::Shuffleboard::GetTab("Drive Core")
-      .Add("Uptake Ball color", false)
-      .WithWidget("Boolean Box")
-      .GetEntry();
-  }
-
-  // What color is the room?
-  if (m_waitingRoomState == blueBall) {
-    frc::Shuffleboard::GetTab("Drive Core")
-      .Add("Room Ball Color", true)
-      .WithWidget("Boolean Box")
-      .GetEntry();
-  }
+  //---
   if (m_waitingRoomState == redBall) {
-    frc::Shuffleboard::GetTab("Drive Core")
-      .Add("Room Ball Color", false)
-      .WithWidget("Boolean Box")
-      .GetEntry();
+    m_roomBallRedBoard.SetBoolean(true);
+      }
+  else {
+    m_roomBallRedBoard.SetBoolean(false);
+      }
+  //---
+  if (m_waitingRoomState == blueBall) {
+    m_roomBallBlueBoard.SetBoolean(true);
   }
+  else {
+    m_roomBallBlueBoard.SetBoolean(false);
+  }
+
+
+
   count = 0;
 }
 
