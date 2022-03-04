@@ -117,7 +117,7 @@ void Shooter::Fire()
     {
       rpm = m_overrideRPM;
       frc::SmartDashboard::PutNumber("Shooter RPM", m_shootingMotorAlpha.GetSelectedSensorVelocity()*(600.0/2048.0));
-      std::cout << "Overriden RPM: " << rpm << "\n";
+      std::cout << "Desired RPM: " << rpm << "\n";
     }
 
     if ((distance < 250) && (distance > 70))
