@@ -17,13 +17,13 @@ class Shooter {
   void InitializePIDControllers();
   void InitializeDashboard();
   void ReadDashboard();
-
-  
+  void Dump();
 
  private:
 
   double CalculateRPM(double d);
   bool LimelightTracking();
+  void Dump();
 
   frc::DifferentialDrive* m_drive;
   frc::XboxController*    m_stick;

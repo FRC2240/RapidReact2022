@@ -104,6 +104,7 @@ class Robot : public frc::TimedRobot {
     kIdle
   };
 
+  // Robot states during Autonomous
   enum autoState {
     kDriving,
     kShooting,

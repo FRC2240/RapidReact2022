@@ -97,6 +97,7 @@ void Robot::AutonomousInit() {
 
   // First action
   m_autoAction = m_autoSequence->front();
+  m_autoState = kNothing;
 }
 
 /**
@@ -107,14 +108,20 @@ void Robot::AutonomousPeriodic() {
 
   fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
 
+  // Execute action
   switch(m_autoAction) {
     case kIntake:
+      std::cout << "Intake\n";
       m_take.Run(true, false, m_alliance);
       m_autoSequence->pop_front();
       m_autoAction = m_autoSequence->front();
+      std::cout << "new = " << m_autoAction << "\n";
+      m_autoState = kNothing;
       break;
 
     case kShoot:
+      std::cout << "Shoot\n";
+
       m_autoTimer.Reset();
       m_autoTimer.Start();
       m_autoAction = kIdle;
@@ -122,6 +129,8 @@ void Robot::AutonomousPeriodic() {
       break;
 
     case kDump:
+      std::cout << "Dump\n";
+
       m_autoTimer.Reset();
       m_autoTimer.Start();
       m_autoAction = kIdle;
@@ -129,8 +138,13 @@ void Robot::AutonomousPeriodic() {
       break;
 
     case kTwoBallPath1:
+      std::cout << "Two Ball Path 1\n";
+
       deployDirectory = deployDirectory / "output/TwoBallFirst.wpilib.json";
       m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+      std::cout << "dir: " << deployDirectory.string() << std::endl;
+
+      std::cout << "Trajectory time: " << m_trajectory.TotalTime().to<double>() << std::endl;
 
       m_autoTimer.Reset();
       m_autoTimer.Start();
@@ -142,8 +156,12 @@ void Robot::AutonomousPeriodic() {
       break;
 
     case kTwoBallPath2:
+      std::cout << "Two Ball Path 2\n";
+
       deployDirectory = deployDirectory / "output/TwoBallSecond.wpilib.json";
       m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+
+      std::cout << "Trajectory time: " << m_trajectory.TotalTime().to<double>() << std::endl;
 
       m_autoTimer.Reset();
       m_autoTimer.Start();
@@ -155,6 +173,8 @@ void Robot::AutonomousPeriodic() {
       break;
 
     case kThreeBallPath1:
+      std::cout << "Three Ball Path 1\n";
+
       deployDirectory = deployDirectory / "output/ThreeBallFirst.wpilib.json";
       m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
 
@@ -168,6 +188,8 @@ void Robot::AutonomousPeriodic() {
       break;
       
     case kThreeBallPath2:
+      std::cout << "Three Ball Path 2\n";
+
       deployDirectory = deployDirectory / "output/ThreeBallSecond.wpilib.json";
       m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
 
@@ -181,6 +203,8 @@ void Robot::AutonomousPeriodic() {
       break;
 
     case kThreeBallPath3:
+      std::cout << "Three Ball Path 3\n";
+
       deployDirectory = deployDirectory / "output/ThreeBallThird.wpilib.json";
       m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
 
@@ -195,18 +219,21 @@ void Robot::AutonomousPeriodic() {
 
     case kIdle:
     default:
-      m_autoState = kNothing;
+      //std::cout << "Default/Idle\n";
       break;
   }
 
-
+  // Long-lived states...
   if (m_autoState == kDriving) {
+    //std::cout << "driving" << std::endl;
     bool done = autoFollowPath();
 
    // Next state
    if (done) {
+      std::cout << "done driving" << std::endl;
       m_autoSequence->pop_front();
       m_autoAction = m_autoSequence->front();
+      m_autoState = kNothing;
     }
   }
 
@@ -215,19 +242,24 @@ void Robot::AutonomousPeriodic() {
       m_shooter.Fire();
     }
     else {
+      std::cout << "shoot done\n";
       m_shooter.Reset();
       m_autoSequence->pop_front();
       m_autoAction = m_autoSequence->front();
+      m_autoState = kNothing;
     }
   }
 
   if (m_autoState == kDumping) {
     if (m_autoTimer.Get() < units::time::second_t(3)) {
-      m_shooter.Fire();
+      m_shooter.Dump();
     }
     else {
+      std::cout << "dump done\n";
+      m_shooter.Reset();
       m_autoSequence->pop_front();
       m_autoAction = m_autoSequence->front();
+      m_autoState = kNothing;
     }
   }
 
@@ -404,10 +436,17 @@ void Robot::DisabledPeriodic() {}
 
 
 // This method is called at the beginning of the testing state
-void Robot::TestInit() {}
+void Robot::TestInit() {
+  m_frontLeftMotor.SetSelectedSensorPosition(0.0);
+  m_frontRightMotor.SetSelectedSensorPosition(0.0);
+}
 
 // This method is called every 20ms (by default) during testing
-void Robot::TestPeriodic() {}
+void Robot::TestPeriodic() {
+  std::cout << " left: " << m_frontLeftMotor.GetSelectedSensorPosition() << std::endl;
+  std::cout << "right: " << m_frontRightMotor.GetSelectedSensorPosition() << std::endl;
+
+}
 
 
 // Method for initializing PID Controller
@@ -451,10 +490,14 @@ bool Robot::autoFollowPath()
 
     // Set the linear and angular speeds
     m_autoDrive->Drive(refChassisSpeeds.vx, refChassisSpeeds.omega);
+    //std::cout << "did drive" << std::endl;
+
     return false;
   }
   else {
     m_autoDrive->Drive(0_mps, 0_rad_per_s);
+        //std::cout << "done drive" << std::endl;
+
     return true;
   }
 }
