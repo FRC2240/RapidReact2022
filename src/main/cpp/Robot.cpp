@@ -146,17 +146,20 @@ void Robot::AutonomousPeriodic() {
 
   // Iteration two
  
-  // autoTimer.Start();
-  
-  // if (autoTimer.Get() <= units::time::second_t(5)) {
-  //   m_drive.ArcadeDrive(0.5, 0);
-  // }
-  // if  (autoTimer.Get() > units::time::second_t(5) && autoTimer.Get() <= units::time::second_t(9)) {
-  //   m_shooter.Fire();;
-  // }
-  // if  (autoTimer.Get() > units::time::second_t(9) && autoTimer.Get() <= units::time::second_t(12)) {
-  //   m_shooter.Fire();
-  // }
+  autoTimer.Start();
+  if (autoTimer.Get() <= units::time::second_t(1)) {
+    m_take.DeployIntake();
+  }
+  if (autoTimer.Get() > units::time::second_t(1) && autoTimer.Get() <= units::time::second_t(5)) {
+    m_take.AutoRunIntake(1);
+    m_drive.ArcadeDrive(0.5, 0);
+  }
+  if  (autoTimer.Get() > units::time::second_t(5) && autoTimer.Get() <= units::time::second_t(9)) {
+    m_shooter.Fire();;
+  }
+  if  (autoTimer.Get() > units::time::second_t(9) && autoTimer.Get() <= units::time::second_t(12)) {
+    m_shooter.Fire();
+  }
   
 }
 
