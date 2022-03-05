@@ -61,7 +61,6 @@ public:
 
 
 private:
-  bool CanIProgress(); 
 
   frc::Servo m_rightExtenderServo {0};
   frc::Servo m_leftExtenderServo {1};
@@ -118,6 +117,8 @@ private:
   //double m_climbLowerPointR, m_climbLowerPointL = 0.0;
 
   int m_phase = 0;
+  int phase_delay = 0;
+  int phase_delay_redux = 0;
 
   //rotation positions
   double centerL = 41, centerR = -36.0, highL = 45.0, highR = 3.5; 
