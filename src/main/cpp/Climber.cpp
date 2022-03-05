@@ -331,24 +331,13 @@ void Climber::Run() {
       // Center Left Arm, rotate right arm out of the way (might not be necessary depending on which arm we choose to start w/)
       RotateRight(22.0);
       RotateLeft(centerL);
+      SetLeftServo(leftDisengaged);
+      SetRightServo(rightDisengaged);
       phase_delay = 0;
       break;
 
     case 2:
-      //Ratchet disengages, set soft limits for each case??
-      // Extend left arm (could possibly merge w/ case 1), driver then drives up to bar
-      if (phase_delay == 0) {
-        SetLeftServo(leftDisengaged);
-        SetRightServo(rightDisengaged);
-        phase_delay++;
-      }
-      else if (phase_delay > 1){
-        EngageLeft(0.5);
-      }
-      else{
-         phase_delay++;
-      }
-
+      EngageLeft(0.5);
       phase_delay_redux = 0;
 
       break;
@@ -368,7 +357,6 @@ void Climber::Run() {
       else {
         phase_delay_redux++;
       }
-      phase_delay = 0;
       break;
 
     case 4:
@@ -380,27 +368,33 @@ void Climber::Run() {
 
       if (m_rightClimberExtender.GetSelectedSensorPosition() >= kMaxRight)
       {
-        if (m_rightClimberEncoder.GetPosition() == highR && m_leftClimberEncoder.GetPosition() == highL) {
-          if (phase_delay == 0) {
-            SetRightServo(0.0);
-          }
-          else if (phase_delay > 1)
-          {
-            EngageRight(-0.5);
-            if (m_rightClimberExtender.GetSelectedSensorPosition() <= kMinRight) {
-              m_phase++;
-            }
-          }
-          else
-          {
-            phase_delay++;
-          }
+        if (m_rightClimberEncoder.GetPosition() >= highR - 2  && m_rightClimberEncoder.GetPosition() <= highR + 2 &&
+         m_leftClimberEncoder.GetPosition() >= highL - 2 && m_leftClimberEncoder.GetPosition() <= highL + 2) {
+           m_phase++;
         }
       }
-
+      phase_delay = 0;
       break;
 
     case 5:
+      if (phase_delay == 0) {
+        SetRightServo(0.0);
+        phase_delay++;
+      }
+      else if (phase_delay > 1)
+      {
+        EngageRight(-0.5);
+        if (m_rightClimberExtender.GetSelectedSensorPosition() <= kMinRight) {
+          m_phase++;
+        }
+      }
+      else
+      {
+        phase_delay++;
+      }
+      break;
+    
+    case 6:
       EngageRight(0.0);
       break;
     
@@ -491,6 +485,7 @@ void Climber::TestReadDash() {
 
   // Read climber rotation PID constants
   m_rightClimberRotateCoeff.kP  = frc::SmartDashboard::GetNumber("Right Climber Rotate P Gain", 0.0);
+  \
   m_rightClimberRotateCoeff.kI   = frc::SmartDashboard::GetNumber("Right Climber Rotate I Gain", 0.0);
   m_rightClimberRotateCoeff.kD   = frc::SmartDashboard::GetNumber("Right Climber Rotate D Gain", 0.0);
   m_rightClimberRotateCoeff.kMinOutput = frc::SmartDashboard::GetNumber("Right Climber Rotate Min Output", 0.0);
