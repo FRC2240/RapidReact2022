@@ -5,19 +5,34 @@
 #include "rev/CANSparkMax.h"
 #include "rev/ColorSensorV3.h"
 
+#include <frc/shuffleboard/Shuffleboard.h>
+#include <frc/shuffleboard/ShuffleboardWidget.h>
+#include <frc/shuffleboard/ShuffleboardValue.h>
+#include <frc/shuffleboard/ShuffleboardTab.h>
+
+#include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableInstance.h>
+
 class Take
 {
 public:
-  Take();
+
+  Take(); 
+  
   void TakePIDInit();
   void TakeDashRead();
   void TakeDashInit();
   void ColorsInit();
   void SetColor();
-  void Feed(double feedSpeed);
+  void Feed(double speed);
 
+
+
+  void InitializeEncoders();
+  void ReadEncoders();
 
   void Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance);
+
 
   // For testing, not operation
 
@@ -27,8 +42,14 @@ public:
   void DeployIntake();
   void ReturnIntake();
 
+  void TestDashInit();
+  void TestDashRead();
+  void SetIntakePosition(double position);
+  void TestRotation();
+
   void AutoRunIntake(double speed);
   void AutoStopIntake();
+
 
   enum BallColor
   {
@@ -62,7 +83,39 @@ private:
 
   bool intakeRunning = false;
 
+  // Shuffleboard  Shuffleboard::Shuffleboard m_shuffleboard; // Shuffleboard
   frc::DriverStation::Alliance m_alliance;
+
+  /* Shuffleboard */
+  nt::NetworkTableEntry m_roomBallRedBoard = frc::Shuffleboard::GetTab("Drive Core")
+
+    .Add("Room Ball Red", false)
+
+    .WithWidget("Toggle Button")
+
+    .GetEntry();
+
+  nt::NetworkTableEntry m_roomBallBlueBoard = frc::Shuffleboard::GetTab("Drive Core")
+
+    .Add("Room Ball Blue", false)
+
+    .WithWidget("Boolean Box")
+
+    .GetEntry();
+  nt::NetworkTableEntry m_uptakeBallRedBoard = frc::Shuffleboard::GetTab("Drive Core")
+
+    .Add("Uptake Ball Red", false)
+
+    .WithWidget("Boolean Box")
+
+    .GetEntry();
+  nt::NetworkTableEntry m_uptakeBallBlueBoard = frc::Shuffleboard::GetTab("Drive Core")
+
+    .Add("Uptake Ball Blue", false)
+
+    .WithWidget("Boolean Box")
+
+    .GetEntry();
 
   // Motors
   rev::CANSparkMax m_rotateIntakeMotor{rotateIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
@@ -102,4 +155,7 @@ private:
   IntakeState m_state = Off;
 
   int m_ejectTimer = 0;
+
+  // testing rotation PIDs
+  double m_rotationPosition; 
 };

@@ -17,8 +17,8 @@ class Shooter {
   void InitializePIDControllers();
   void InitializeDashboard();
   void ReadDashboard();
-
-  
+  void ManualShoot(); 
+  void Dump();
 
  private:
 
@@ -49,4 +49,6 @@ class Shooter {
   pidCoeff m_shooterCoeff{0.35, 0.000002, 0.0, 0.0, 0.06, 1.0, -1.0};
 
   std::shared_ptr<nt::NetworkTable> m_table = nt::NetworkTableInstance::GetDefault().GetTable("limelight-brute");
+
+
 };

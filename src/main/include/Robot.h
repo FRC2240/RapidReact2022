@@ -5,9 +5,11 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "Climber.h"
 #include "Shooter.h"
+#include "DriveTrain.h"
 //#include "Take.h"
 
 #include "rev/CANSparkMax.h"
@@ -78,34 +80,68 @@ class Robot : public frc::TimedRobot {
 
  private:
   frc::SendableChooser<std::string> m_chooser;
-  const std::string kAutoNameDefault = "Default";
-  const std::string kAutoNameCustom = "My Auto";
-  const std::string kThreeBallFirst = "ThreeBallFirst";
-  const std::string kThreeBallSecond = "ThreeBallSecond";
-  const std::string kThreeBallThird = "ThreeBallThird";
-  const std::string kTwoBallFirst = "TwoBallFirst";
-  const std::string kTwoBallSecond = "TwoBallSecond";
+  const std::string kAutoDefault = "Default";
+  const std::string kTwoBall = "TwoBall";
+  const std::string kThreeBall = "ThreeBall";
   std::string m_autoSelected;
 
   frc::RamseteController controller1;
 
-  void autoFollowPath();
+  bool autoFollowPath();
   void autoDrive(units::meters_per_second_t xSpeed, units::radians_per_second_t rot);
   void setSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds);
 
-  units::meter_t kTrackWidth = 0.478028_m;  
+  // Robot actions during Autonomous
+  enum autoActions {
+    kIntake,
+    kShoot,
+    kDump,
+    kTwoBallPath1,
+    kTwoBallPath2,
+    kThreeBallPath1,
+    kThreeBallPath2,
+    kThreeBallPath3,
+    kIdle
+  };
 
-  static constexpr auto   kS = 0.27_V;                         
-  static constexpr auto   kV = 1.53 * 1_V * 1_s / 1_m;         
-  static constexpr auto   kA = 0.254 * 1_V * 1_s * 1_s / 1_m; 
+  // Robot states during Autonomous
+  enum autoState {
+    kDriving,
+    kShooting,
+    kDumping,
+    kNothing
+  };
 
-  frc::DifferentialDriveOdometry *m_odometry;
-  frc::DifferentialDriveKinematics m_kinematics{kTrackWidth};
-  frc::SimpleMotorFeedforward<units::meters> m_feedforward{kS, kV, kA};
+  // Two-Ball Auto Sequence
+  std::list<autoActions> m_twoBallSequence{
+    kIntake,
+    kTwoBallPath1,
+    kShoot,
+    kIntake,
+    kTwoBallPath2,
+    kDump,
+    kIdle
+  };
 
-  frc::MotorControllerGroup* m_leftGroup;
-  frc::MotorControllerGroup* m_rightGroup;
+  // Three-Ball Auto Sequence
+  std::list<autoActions> m_threeBallSequence{
+    kIntake,
+    kThreeBallPath1,
+    kShoot,
+    kIntake,
+    kThreeBallPath2,
+    kShoot,
+    kThreeBallPath3,
+    kIdle
+  };
 
+  std::list<autoActions> m_noSequence{
+    kIdle
+  };
+
+  std::list<autoActions> *m_autoSequence;
+  autoActions m_autoAction;
+  autoState m_autoState;
 
   double m_driveExponent = 1.2;
   double m_turnFactor = 0.5;
@@ -160,14 +196,25 @@ class Robot : public frc::TimedRobot {
 // I don't know what either of theese do
   static const int uptakeMotorDeviceID = 9;
   static const int uptakeIdleMotorDeviceID = 14;
-  
-
-//auto timer
-frc::Timer autoTimer;
-
-frc::Trajectory m_trajectory;
 
 Shooter m_shooter{&m_drive, &m_stick, &m_take};
 
 frc::DriverStation::Alliance m_alliance = frc::DriverStation::Alliance::kInvalid;
+
+//auto timer
+frc::Timer m_autoTimer;
+
+frc::Trajectory m_trajectory;
+
+// The Ramsete Controller to follow the trajectory
+frc::RamseteController m_ramseteController;
+
+//servo toggle
+bool m_leftServoEngaged = true, m_rightServoEngaged = true; 
+
+
+double leftDisengaged = 0.7, rightDisengaged = 0.7;
+
+// **** RAMSETE Control **** //
+Drivetrain* m_autoDrive;
 };
