@@ -80,10 +80,11 @@ class Robot : public frc::TimedRobot {
   frc::SendableChooser<std::string> m_chooser;
   const std::string kAutoNameDefault = "Default";
   const std::string kAutoNameCustom = "My Auto";
-  const std::string kThreeBallBlue = "ThreeBallBlue";
-  const std::string kTwoBallBlue = "TwoBallBlue";
-  const std::string kThreeBallRed = "ThreeBallRed";
-  const std::string kTwoBallRed = "TwoBallRed";
+  const std::string kThreeBallFirst = "ThreeBallFirst";
+  const std::string kThreeBallSecond = "ThreeBallSecond";
+  const std::string kThreeBallThird = "ThreeBallThird";
+  const std::string kTwoBallFirst = "TwoBallFirst";
+  const std::string kTwoBallSecond = "TwoBallSecond";
   std::string m_autoSelected;
 
   frc::RamseteController controller1;
@@ -172,6 +173,7 @@ frc::DriverStation::Alliance m_alliance = frc::DriverStation::Alliance::kInvalid
 
 //servo toggle
 bool m_leftServoEngaged = true, m_rightServoEngaged = true; 
+
 
 double leftDisengaged = 0.7, rightDisengaged = 0.7;
 };

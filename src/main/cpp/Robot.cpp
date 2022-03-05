@@ -23,15 +23,6 @@ void Robot::RobotInit() {
   m_odometry = new frc::DifferentialDriveOdometry(frc::Rotation2d(0_deg));
   
 
-  //InitializePIDControllers(); 
-  //InitializeDashboard();
-
-//Test
-m_climber.ClimberPIDInit();
-  //m_climber.TestDashInit();
-  
-  m_take.TestDashInit();
-  m_take.TakePIDInit();
 
   m_climber.InitializeEncoders();
   m_take.InitializeEncoders(); 
@@ -39,14 +30,30 @@ m_climber.ClimberPIDInit();
   // Initialize soft limits for climber PID
   m_climber.InitializeSoftLimits();
 
+  InitializePIDControllers(); 
+  // InitializeDashboard();
+
+
+//Test
+m_climber.ClimberPIDInit();
+  m_climber.TestDashInit();
+  /*
+  m_take.TestDashInit();
+  m_take.TakePIDInit();
+*/
+  m_climber.InitializeEncoders();
+  //  m_take.InitializeEncoders(); 
+  m_climber.InitializeSoftLimits();
+  
   // Setup Autonomous options
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
-  m_chooser.AddOption(kThreeBallBlue, kThreeBallBlue);
-  m_chooser.AddOption(kTwoBallBlue, kTwoBallBlue);
-  m_chooser.AddOption(kThreeBallRed, kThreeBallRed);
-  m_chooser.AddOption(kTwoBallRed, kTwoBallRed);
-
+  m_chooser.AddOption(kThreeBallFirst, kThreeBallFirst);
+  m_chooser.AddOption(kThreeBallSecond, kThreeBallSecond);
+  m_chooser.AddOption(kThreeBallThird, kThreeBallThird);
+  m_chooser.AddOption(kTwoBallFirst, kTwoBallFirst);
+  m_chooser.AddOption(kTwoBallSecond, kTwoBallSecond);
+  
   // Add Autonomous options to dashboard
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
   
@@ -105,29 +112,36 @@ void Robot::AutonomousInit() {
   fmt::print("Auto selected: {}\n", m_autoSelected);
 
   // TODO: Make the following a switch statement
-  if (m_autoSelected == kThreeBallBlue) {
+  if (m_autoSelected == kThreeBallFirst) {
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/ThreeBallBlue.wpilib.json";
+    deployDirectory = deployDirectory / "Paths" / "Patheaver/Paths/ThreeBallFirst.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
 
-  if (m_autoSelected == kTwoBallBlue) {
+  if (m_autoSelected == kThreeBallSecond) {
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/TwoBallBlue.wpilib.json";
+    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/ThreeBallSecond.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
 
-  if (m_autoSelected == kThreeBallRed) { 
+  if (m_autoSelected == kThreeBallThird) { 
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/ThreeBallRed.wpilib.json";
+    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/ThreeBallThird.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
 
-  if (m_autoSelected == kTwoBallRed) {
+  if (m_autoSelected == kTwoBallFirst) {
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/TwoBallRed.wpilib.json";
+    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/TwoBallFirst.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
+
+  if (m_autoSelected == kTwoBallSecond) {
+    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/TwoBallSecond.wpilib.json";
+    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  }
+
 }
 
 /**
@@ -142,9 +156,34 @@ void Robot::AutonomousPeriodic() {
   } else {
     // Default Auto goes here
   }
+  // Iteration one
+  /*
+   autoTimer.Start();
+   if (autoTimer.Get() <= units::time::second_t(4)) {
+     m_shooter.Fire();
+   }
+   if (autoTimer.Get() > units::time::second_t(4) && autoTimer.Get() <= units::time::second_t(5)) {
+     m_drive.ArcadeDrive(0.5,0);
+   }
+  */
 
-  // Follow the defined path for autonomous
-  autoFollowPath();
+  // Iteration two
+ 
+  autoTimer.Start();
+  if (autoTimer.Get() <= units::time::second_t(1)) {
+    m_take.DeployIntake();
+  }
+  if (autoTimer.Get() > units::time::second_t(1) && autoTimer.Get() <= units::time::second_t(5)) {
+    m_take.AutoRunIntake(1);
+    m_drive.ArcadeDrive(0.5, 0);
+  }
+  if  (autoTimer.Get() > units::time::second_t(5) && autoTimer.Get() <= units::time::second_t(9)) {
+    m_shooter.Fire();;
+  }
+  if  (autoTimer.Get() > units::time::second_t(9) && autoTimer.Get() <= units::time::second_t(12)) {
+    m_shooter.Fire();
+  }
+  
 }
 
 /**
@@ -153,122 +192,118 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {
 
   m_alliance = frc::DriverStation::GetAlliance();
-  
-  // NOTE: For some reason the call to the method that contained
-  // the initiations that follow were commented out and placed here
-  // instead. This all does the same thing. I cleaned up the calls
-  // and removed the method since I wasn't sure why that was done.
 
-  //m_take.TakeDashRead();
-  m_climber.TestReadDash(); 
   m_climber.ClimberPIDInit();
-  
   m_climber.InitializeSoftLimits(); 
-
   //m_climber.SetPhase(0); 
+
 }
 
 void Robot::TeleopPeriodic() {
-  // Intake
-  m_take.Run(m_stick.GetLeftBumperPressed(), m_alliance);
+  m_climber.Shuffleboard();
 
-  //m_climber.GetEncoderValues();
+  m_take.Run(m_stick.GetLeftBumperPressed(), m_stick.GetRightBumper(), m_alliance);
   
-  m_take.ReadEncoders();
   /*
   double a = .375/.4495;
   double b = .0745/.4495;
   */
   //Read controller input
-  double throttle = -m_stick.GetLeftTriggerAxis() + 0.85 * m_stick.GetRightTriggerAxis(); 
+
+  double throttle = -m_stick.GetLeftTriggerAxis() + m_stick.GetRightTriggerAxis();
  
-  //double throttleExp = a * pow(m_stick.GetLeftTriggerAxis(), 4) + b * pow(m_stick.GetLeftTriggerAxis(), 1.48)-a * pow(m_stick.GetRightTriggerAxis(), 4) + b * pow(m_stick.GetRightTriggerAxis(), 1.48);
-  //double turnInput = pow(m_stick.GetLeftX()*m_turnFactor,1.72) - pow(m_stick.GetLeftY()*m_turnFactor,1.72);
+  double throttleExp = a * pow(m_stick.GetLeftTriggerAxis(), 4) + b * pow(m_stick.GetLeftTriggerAxis(), 1.48)-a * pow(m_stick.GetRightTriggerAxis(), 4) + b * pow(m_stick.GetRightTriggerAxis(), 1.48);
+  // double turnInput = pow(m_stick.GetLeftX()*m_turnFactor,1.72) - pow(m_stick.GetLeftY()*m_turnFactor,1.72);
   double turnInput = m_stick.GetLeftX() - m_stick.GetLeftY();
+  // Shooter
+  if (m_stick.GetRightBumper()) {
+    m_shooter.Fire();
 
-  // NOTE: Removed the code that was commented out here. Look back
-  // in commit history if you need it
-
-  // Climber Testing Code
-  // Fully manual 
-
-  // Rotate Left Climber
-  if (m_stick_climb.GetLeftBumper()) {
-    m_climber.RotateLThrottle(0.5);
-  }
-  else if (m_stick_climb.GetLeftTriggerAxis()) {
-    m_climber.RotateLThrottle(-0.5);
-  }
-  else {
-    m_climber.RotateLThrottle(0.0);
-  }
-
-m_drive.ArcadeDrive(throttle, turnInput);
-
-  // Rotate Right Climber
-  /*
-  if (m_stick_climb.GetRightBumper()) {
-    m_climber.RotateRThrottle(0.5);
-  }
-  else if (m_stick_climb.GetRightTriggerAxis()) {
-    m_climber.RotateRThrottle(-0.5);
-  }
-  else {
-    m_climber.RotateRThrottle(0.0);
-  }
-
-  // Engage Left Climber
-  if (m_stick_climb.GetYButton()) {
-
-    m_climber.EngageLeft(0.5);
+  } else {
+    m_drive.ArcadeDrive(throttle, turnInput);
     
+    if (m_stick.GetRightBumperReleased()) {
+    m_shooter.Reset();
   }
-  else if (m_stick_climb.GetXButton()) {
-    m_climber.EngageLeft(-0.5);
+
+ //climber testing, JOYSTICK 1
+  //fully manual 
+if (m_stick_climb.GetLeftBumper()) {
+      m_climber.TestL();
+}
+      /*
+      m_climber.RotateLThrottle(0.5);
+      }
+    else if (m_stick_climb.GetLeftTriggerAxis()) {
+      m_climber.RotateLThrottle(-0.5);
+      }
+      */
+    else {
+     m_climber.RotateLThrottle(0.0);
+      //m_climber.RotateLeft(0.0);
+      }
+
+   if (m_stick_climb.GetRightBumper()) {
+      m_climber.TestR(); 
+   }
+      /*
+      m_climber.RotateRThrottle(0.5);
+      }
+   else if (m_stick_climb.GetRightTriggerAxis()) {
+    m_climber.RotateRThrottle(-0.5);
+      }
+      */
+   else {
+    //m_climber.RotateRight(0.0);
+   m_climber.RotateRThrottle(0.0);
+    }
+
+if (m_stick_climb.GetYButton()) {
+  m_climber.EngageLeft(0.5);
+  
+}
+else if (m_stick_climb.GetXButton()) {
+  m_climber.EngageLeft(-0.5);
+}
+else {
+  m_climber.EngageLeft(0.0);
+}
+
+if (m_stick_climb.GetBButton()) {
+  m_climber.EngageRight(0.5);
+}
+else if (m_stick_climb.GetAButton()) {
+  m_climber.EngageRight(-0.5);
+}
+else {
+  m_climber.EngageRight(0.0);
+}
+// engage/disengage servo
+if (m_stick_climb.GetLeftStickButtonReleased()) {
+  if (!m_leftServoEngaged) {
+    m_climber.SetLeftServo(0.0);
+    m_leftServoEngaged = true;
+    std::cout << "Left Servo Engaged\n";
   }
   else {
-    m_climber.EngageLeft(0.0);
+    m_climber.SetLeftServo(leftDisengaged);
+    m_leftServoEngaged = false;
+    std::cout << "Left Servo Disengaged\n";
   }
+}
 
-  // Engage Right Climber
-  if (m_stick_climb.GetBButton()) {
-    m_climber.EngageRight(0.5);
-  }
-  else if (m_stick_climb.GetAButton()) {
-    m_climber.EngageRight(-0.5);
+if (m_stick_climb.GetRightStickButtonReleased()) {
+  if (!m_rightServoEngaged) {
+    m_climber.SetRightServo(0.0);
+    m_rightServoEngaged = true;
+    std::cout << "Right Servo Engaged\n";
   }
   else {
-    m_climber.EngageRight(0.0);
+    m_climber.SetRightServo(rightDisengaged);
+    m_rightServoEngaged = false;
+    std::cout << "Right Servo Disengaged\n";
   }
-
-  // Engage/Disengage Left Servo
-  if (m_stick_climb.GetLeftStickButtonReleased()) {
-    if (!m_leftServoEngaged) {
-      m_climber.SetLeftServo(0.0);
-      m_leftServoEngaged = true;
-      std::cout << "Left Servo Engaged\n";
-    }
-    else {
-      m_climber.SetLeftServo(leftDisengaged);
-      m_leftServoEngaged = false;
-      std::cout << "Left Servo Disengaged\n";
-    }
-  }
-
-  // Engage/Disengage Right Servo
-  if (m_stick_climb.GetRightStickButtonReleased()) {
-    if (!m_rightServoEngaged) {
-      m_climber.SetRightServo(0.0);
-      m_rightServoEngaged = true;
-      std::cout << "Right Servo Engaged\n";
-    }
-    else {
-      m_climber.SetRightServo(rightDisengaged);
-      m_rightServoEngaged = false;
-      std::cout << "Right Servo Disengaged\n";
-    }
-  }
-  */
+}
 }
 
 // This method is called at the beginning of the disabled state
@@ -276,6 +311,50 @@ void Robot::DisabledInit() {}
 
 // This method is called every 20ms (by default) during disabled
 void Robot::DisabledPeriodic() {}
+
+
+// This method is called at the beginning of the testing state
+void Robot::TestInit() {
+}
+
+// This method is called every 20ms (by default) during testing
+void Robot::TestPeriodic() {
+  m_climber.GetEncoderValues(); 
+  m_climber.Run();
+// JOYSTICK 0 
+
+if (m_stick.GetXButtonReleased()) {
+  m_climber.SetPhase(1);
+}
+
+if (m_stick.GetYButtonReleased()) {
+  m_climber.SetPhase(2);
+}
+
+if (m_stick.GetBButtonReleased()) {
+  m_climber.SetPhase(3);
+}
+
+if (m_stick.GetAButtonReleased()) {
+  m_climber.SetPhase(4);
+}
+
+if (m_stick.GetLeftBumperReleased()) {
+  m_climber.SetPhase(5);
+
+}
+
+if (m_stick.GetRightBumperReleased()) {
+  m_climber.SetPhase(6);
+}
+
+if (m_stick.GetLeftTriggerAxis()) {
+  m_climber.SetPhase(7);
+}
+
+if (m_stick.GetRightTriggerAxis()) {
+  m_climber.SetPhase(8);
+}
 
 
 // This method is called at the beginning of the testing state
@@ -297,6 +376,7 @@ void Robot::TestPeriodic() {
   if (m_stick_climb.GetXButtonReleased()) {
     m_climber.SetPhase(1);
   }
+
 
   if (m_stick_climb.GetYButtonReleased()) {
     m_climber.SetPhase(2);
@@ -334,6 +414,11 @@ void Robot::TestPeriodic() {
     m_climber.SetPhase(10); 
   }
 
+// Method for reading the Dashboard
+void Robot::ReadDashboard() {
+  // m_climber.ClimberDashRead();
+  m_take.TakeDashRead();
+  m_shooter.ReadDashboard();
 }
 
 // Method for determining speeds during autonomous

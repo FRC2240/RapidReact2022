@@ -2,30 +2,20 @@
 #include "log.h"
 #include <iostream>
 
+#include <frc/smartdashboard/SmartDashboard.h>
+#include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableInstance.h>
+
+
 
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <networktables/NetworkTable.h>
 #include <networktables/NetworkTableInstance.h>
 
 Take::Take() {
-    m_rotateIntakePIDController.SetP(m_rotateIntakeCoeff.kP);
-  m_rotateIntakePIDController.SetI(m_rotateIntakeCoeff.kI);
-  m_rotateIntakePIDController.SetD(m_rotateIntakeCoeff.kD);
-  m_rotateIntakePIDController.SetIZone(m_rotateIntakeCoeff.kIz);
-  m_rotateIntakePIDController.SetFF(m_rotateIntakeCoeff.kFF);
-  m_rotateIntakePIDController.SetOutputRange(m_rotateIntakeCoeff.kMinOutput, m_rotateIntakeCoeff.kMaxOutput);
-
-  m_rotateIntakePIDController.SetSmartMotionMaxVelocity(kMaxVel);
-  m_rotateIntakePIDController.SetSmartMotionMinOutputVelocity(kMinVel);
-  m_rotateIntakePIDController.SetSmartMotionMaxAccel(kMaxAcc);
-  m_rotateIntakePIDController.SetSmartMotionAllowedClosedLoopError(kAllErr);
-
-  m_uptakePIDController.SetP(m_uptakeCoeff.kP);
-  m_uptakePIDController.SetI(m_uptakeCoeff.kI);
-  m_uptakePIDController.SetD(m_uptakeCoeff.kD);
-  m_uptakePIDController.SetIZone(m_uptakeCoeff.kIz);
-  m_uptakePIDController.SetFF(m_uptakeCoeff.kFF);
-  m_uptakePIDController.SetOutputRange(m_uptakeCoeff.kMinOutput, m_uptakeCoeff.kMaxOutput);
+  //  InitializeEncoders();
+  TakeDashInit();
+  TakePIDInit();
 
   m_waitingRoomPIDController.SetP(m_waitingRoomCoeff.kP);
   m_waitingRoomPIDController.SetI(m_waitingRoomCoeff.kI);
@@ -36,25 +26,30 @@ Take::Take() {
 
   frc::Shuffleboard::GetTab("Drive Core")
     .Add("Uptake Ball Color", false)
-    .WithWidget("Toggle Button")
+
+    .WithWidget("Boolean Box")
     .GetEntry();
   frc::Shuffleboard::GetTab("Drive Core")
     .Add("Room Ball Color", false)
-    .WithWidget("Toggle Button")
+    .WithWidget("Boolean Box")
     .GetEntry();
   frc::Shuffleboard::GetTab("Drive Core")
     .Add("Uptake Ball Exists", false)
-    .WithWidget("Toggle Button")
+    .WithWidget("Boolean Box")
     .GetEntry();
   frc::Shuffleboard::GetTab("Drive Core")
     .Add("Room Ball Exists", false)
-    .WithWidget("Toggle Button")
+    .WithWidget("Boolean Box")
     .GetEntry();
 }
+/*
+void Take::Feed(double feedSpeed) {
+  m_waitingRoomMotor.Set(feedSpeed);
+  m_uptakeMotor.Set(-feedSpeed);
 
-
-void Take::Run(bool toggle, frc::DriverStation::Alliance alliance)
-{
+}
+*/
+void Take::Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance) {
   // Events that will affect state:
   // - Driver input
   // - Uptake/Waiting Room become full
@@ -120,6 +115,12 @@ void Take::Run(bool toggle, frc::DriverStation::Alliance alliance)
     }
   }
 
+  // Shooting? Disable intake
+  if (shooting) {
+    m_state = Off;
+    m_ejectTimer = 0;
+  }
+
   // Intake ON or OFF (manual toggle or auto-stop because we're full)
   if (m_state != currentState)
   {
@@ -160,35 +161,38 @@ void Take::ReadSensors() {
   m_uptakeState      = Color(uptake);
   m_waitingRoomState = Color(waiting);
 
-  //std::cout << "Uptake: " << m_uptakeState << "Wa: " << m_waitingRoomState << std::endl;
 
   //Shuffleboard
 
   // Does it exist?
-  if (m_uptakeState == nullBall){
-  frc::Shuffleboard::GetTab("Drive Core")
-    .Add("Uptake Ball exists", false)
-    .WithWidget("Toggle Button")
-    .GetEntry();
+  if (m_uptakeState == blueBall) {
+    m_uptakeBallBlueBoard.SetBoolean(true);
+      }
+  else{
+    m_uptakeBallBlueBoard.SetBoolean(false);
+  }
+  //---
+  if (m_uptakeState == redBall) {
+    m_uptakeBallRedBoard.SetBoolean(true);
   }
   else {
-    frc::Shuffleboard::GetTab("Drive Core")
-      .Add("Uptake Ball exists", true)
-      .WithWidget("Toggle Button")
-      .GetEntry();
+    m_uptakeBallRedBoard.SetBoolean(false);
   }
-  if (m_waitingRoomState == nullBall) {
-    frc::Shuffleboard::GetTab("Drive Core")
-      .Add("Room Ball exists", false)
-      .WithWidget("Toggle Button")
-      .GetEntry();
+  //---
+  if (m_waitingRoomState == redBall) {
+    m_roomBallRedBoard.SetBoolean(true);
+      }
+  else {
+    m_roomBallRedBoard.SetBoolean(false);
+      }
+  //---
+  if (m_waitingRoomState == blueBall) {
+    m_roomBallBlueBoard.SetBoolean(true);
   }
   else {
-    frc::Shuffleboard::GetTab("Drive Core")
-      .Add("Room Ball exists", true)
-      .WithWidget("Toggle Button")
-      .GetEntry();
+    m_roomBallBlueBoard.SetBoolean(false);
   }
+
 
   // What color is the uptake?
   if (m_uptakeState == blueBall){
@@ -239,12 +243,22 @@ void Take::UptakeStop()
 
 void Take::DeployIntake()
 {
-  m_rotateIntakePIDController.SetReference(10.10, rev::CANSparkMax::ControlType::kSmartMotion);
+  m_rotateIntakePIDController.SetReference(10.1, rev::CANSparkMax::ControlType::kSmartMotion);
 }
 
 void Take::ReturnIntake()
 {
   m_rotateIntakePIDController.SetReference(0.0, rev::CANSparkMax::ControlType::kSmartMotion);
+}
+
+void Take::AutoRunIntake(double speed){
+  m_spinIntakeMotor.Set(speed);
+  m_uptakeMotor.Set(speed);
+}
+
+void Take::AutoStopIntake(){
+  m_spinIntakeMotor.Set(0);
+  m_uptakeMotor.Set(0);
 }
 
 // Measurements from REV Color Sensors:
@@ -329,11 +343,11 @@ void Take::TakeDashRead()
   // rotate intake
   // read PID coefficients from SmartDashboard
   p = frc::SmartDashboard::GetNumber("Rotate Intake P Gain", 0);
-  std::cout << "Read Dashboard rotate intake p gain: " << p << "\n";
+  // // std::cout << "Read Dashboard rotate intake p gain: " << p << "\n";
   i = frc::SmartDashboard::GetNumber("Rotate Intake I Gain", 0);
-  std::cout << "Read Dashboard rotate intake i gain: " << i << "\n";
+  // // std::cout << "Read Dashboard rotate intake i gain: " << i << "\n";
   d = frc::SmartDashboard::GetNumber("Rotate Intake D Gain", 0);
-  std::cout << "Read Dashboard rotate intake d gain: " << d << "\n";
+  // // std::cout << "Read Dashboard rotate intake d gain: " << d << "\n";
   min = frc::SmartDashboard::GetNumber("Rotate Intake Min Output", 0);
   max = frc::SmartDashboard::GetNumber("Rotate Intake Max Output", 0);
 
@@ -361,11 +375,11 @@ void Take::TakeDashRead()
   }
 
   p = frc::SmartDashboard::GetNumber("Uptake P Gain", 0);
-  std::cout << "Read Dashboard uptake p gain: " << p << "\n";
+  // // std::cout << "Read Dashboard uptake p gain: " << p << "\n";
   i = frc::SmartDashboard::GetNumber("Uptake I Gain", 0);
-  std::cout << "Read Dashboard uptake i gain: " << i << "\n";
+  // // std::cout << "Read Dashboard uptake i gain: " << i << "\n";
   d = frc::SmartDashboard::GetNumber("Uptake D Gain", 0);
-  std::cout << "Read Dashboard uptake d gain: " << d << "\n";
+  // // std::cout << "Read Dashboard uptake d gain: " << d << "\n";
   min = frc::SmartDashboard::GetNumber("Uptake Min Output", 0);
   max = frc::SmartDashboard::GetNumber("Uptake Max Output", 0);
 
@@ -392,11 +406,11 @@ void Take::TakeDashRead()
   }
 
   p = frc::SmartDashboard::GetNumber("Waiting Room P Gain", 0);
-  std::cout << "Read Dashboard waiting room p gain: " << p << "\n";
+  // std::cout << "Read Dashboard waiting room p gain: " << p << "\n";
   i = frc::SmartDashboard::GetNumber("Waiting Room I Gain", 0);
-  std::cout << "Read Dashboard waiting room i gain: " << i << "\n";
+  // std::cout << "Read Dashboard waiting room i gain: " << i << "\n";
   d = frc::SmartDashboard::GetNumber("Waiting Room D Gain", 0);
-  std::cout << "Read Dashboard waiting room d gain: " << d << "\n";
+  // std::cout << "Read Dashboard waiting room d gain: " << d << "\n";
   min = frc::SmartDashboard::GetNumber("Waiting Room Min Output", 0);
   max = frc::SmartDashboard::GetNumber("Waiting Room Max Output", 0);
 

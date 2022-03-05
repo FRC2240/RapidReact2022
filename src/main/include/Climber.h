@@ -8,6 +8,12 @@
 
 #include <frc/controller/PIDController.h>
 #include "frc/Servo.h"
+#include <frc/Timer.h>
+
+#include <frc/shuffleboard/Shuffleboard.h>
+#include <frc/shuffleboard/ShuffleboardWidget.h>
+#include <frc/shuffleboard/ShuffleboardValue.h>
+#include <frc/shuffleboard/ShuffleboardTab.h>
 
 #include <frc/Timer.h>
 
@@ -49,7 +55,10 @@ public:
 
   void RotateRThrottle(double throttle);
   void RotateLThrottle(double throttle);
-  
+
+
+  void Shuffleboard();
+
 
 private:
   bool CanIProgress(); 
@@ -58,7 +67,6 @@ private:
   frc::Servo m_leftExtenderServo {1};
 
   frc::SendableChooser<std::string> m_chooser;
-
 
 
   // Stolen from Robot.h
@@ -121,11 +129,26 @@ private:
   double leftDisengaged = 0.7, rightDisengaged = 0.7; 
 
 
+
   //testing
   double m_rotationR, m_rotationL;
 
-  frc::Timer m_climbTimer; 
-  
+
+  frc::Timer m_climbTimer;
+
+  //Shuffleboard
+  nt::NetworkTableEntry m_leftServoShuffleboard =
+    frc::Shuffleboard::GetTab("Drive Core")
+    .Add("Left Servo Engaged", false)
+    .WithWidget("Boolean Box")
+    .GetEntry();
+
+  nt::NetworkTableEntry m_rightServoShuffleboard =
+    frc::Shuffleboard::GetTab("Drive Core")
+    .Add("Right Servo Engaged", true)
+    .WithWidget("Boolean Box")
+    .GetEntry();
+
 };
 
 

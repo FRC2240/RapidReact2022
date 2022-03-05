@@ -367,6 +367,21 @@ void Climber::Kill() {
   m_phase = 0;
 }
 
+void Climber::Shuffleboard(){ // I can't think of a better place to do this
+  if (m_leftExtenderServo.Get() == 0.7) { // Disengaged
+    m_leftServoShuffleboard.SetBoolean(false);
+  }
+  else{
+    m_leftServoShuffleboard.SetBoolean(true);
+  }
+  if(m_rightExtenderServo.Get() == 0.7){ //Disengaged
+    m_rightServoShuffleboard.SetBoolean(false);
+  }
+  else{
+    m_rightServoShuffleboard.SetBoolean(true);
+  }
+}
+
 /**
  * Method to be called every period (default 20ms) to run the current state
  * of the state machine.
@@ -384,15 +399,16 @@ void Climber::Run() {
     break;
     case 1: 
       // Center Left Arm, rotate right arm out of the way (might not be necessary depending on which arm we choose to start w/)
+
       RotateRight(22.0);
+
       break;
 
     case 2:
     //Ratchet disengages, set soft limits for each case??
       // Extend left arm (could possibly merge w/ case 1), driver then drives up to bar 
       RotateLeft(centerL);
-      SetLeftServo(leftDisengaged);
-      
+
       /*
       if (m_rightExtenderServo.Get() == 0.4) {
         EngageRight(0.5); 
@@ -432,7 +448,6 @@ void Climber::Run() {
     // Disengage Right ratchet
       EngageLeft(0.0);
       SetRightServo(rightDisengaged);
-      //RotateRight(highR/2); 
       
       break;
 
@@ -440,6 +455,7 @@ void Climber::Run() {
     // Extend Right
     EngageRight(0.5);
     
+
 
       break;
 
@@ -464,7 +480,6 @@ void Climber::Run() {
     break;
   }
 
-  
 }
 
 void Climber::GetEncoderValues() {
@@ -574,6 +589,7 @@ void Climber::TestL() {
   //std::cout << "Left Rotation Point: " << m_rotationL << "\n";
   RotateLeft(m_rotationL);
 }
+
 
 void Climber::TestR() {
   //std::cout << "Right Rotation Point: " << m_rotationR << "\n";
