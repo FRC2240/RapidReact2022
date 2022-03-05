@@ -298,7 +298,7 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {
 
   m_alliance = frc::DriverStation::GetAlliance();
-   InitializePIDControllers();
+  //InitializePIDControllers();
   ReadDashboard();
 }
 
@@ -324,43 +324,41 @@ void Robot::TeleopPeriodic() {
     m_shooter.Reset();
   }
 
-}
-
-if (m_stick_climb.GetBButton()) {
-  m_climber.EngageRight(0.5);
-}
-else if (m_stick_climb.GetAButton()) {
-  m_climber.EngageRight(-0.5);
-}
-else {
-  m_climber.EngageRight(0.0);
-}
-// engage/disengage servo
-if (m_stick_climb.GetLeftStickButtonReleased()) {
-  if (!m_leftServoEngaged) {
-    m_climber.SetLeftServo(0.0);
-    m_leftServoEngaged = true;
-    std::cout << "Left Servo Engaged\n";
+  if (m_stick_climb.GetBButton()) {
+    m_climber.EngageRight(0.5);
+  }
+  else if (m_stick_climb.GetAButton()) {
+    m_climber.EngageRight(-0.5);
   }
   else {
-    m_climber.SetLeftServo(leftDisengaged);
-    m_leftServoEngaged = false;
-    std::cout << "Left Servo Disengaged\n";
+    m_climber.EngageRight(0.0);
   }
-}
+  // engage/disengage servo
+  if (m_stick_climb.GetLeftStickButtonReleased()) {
+    if (!m_leftServoEngaged) {
+      m_climber.SetLeftServo(0.0);
+      m_leftServoEngaged = true;
+      std::cout << "Left Servo Engaged\n";
+    }
+    else {
+      m_climber.SetLeftServo(leftDisengaged);
+      m_leftServoEngaged = false;
+      std::cout << "Left Servo Disengaged\n";
+    }
+  }
 
-if (m_stick_climb.GetRightStickButtonReleased()) {
-  if (!m_rightServoEngaged) {
-    m_climber.SetRightServo(0.0);
-    m_rightServoEngaged = true;
-    std::cout << "Right Servo Engaged\n";
+  if (m_stick_climb.GetRightStickButtonReleased()) {
+    if (!m_rightServoEngaged) {
+      m_climber.SetRightServo(0.0);
+      m_rightServoEngaged = true;
+      std::cout << "Right Servo Engaged\n";
+    }
+    else {
+      m_climber.SetRightServo(rightDisengaged);
+      m_rightServoEngaged = false;
+      std::cout << "Right Servo Disengaged\n";
+    }
   }
-  else {
-    m_climber.SetRightServo(rightDisengaged);
-    m_rightServoEngaged = false;
-    std::cout << "Right Servo Disengaged\n";
-  }
-}
 }
 
 // This method is called at the beginning of the disabled state
