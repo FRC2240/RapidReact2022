@@ -23,8 +23,9 @@ void Robot::RobotInit() {
   m_odometry = new frc::DifferentialDriveOdometry(frc::Rotation2d(0_deg));
   
 
-  //InitializePIDControllers(); 
-  //InitializeDashboard();
+
+  InitializePIDControllers(); 
+  // InitializeDashboard();
 
 //Test
 m_climber.ClimberPIDInit();
@@ -37,7 +38,6 @@ m_climber.ClimberPIDInit();
   //  m_take.InitializeEncoders(); 
   m_climber.InitializeSoftLimits();
   
-
   // Setup Autonomous options
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
@@ -183,7 +183,9 @@ void Robot::TeleopInit() {
   m_alliance = frc::DriverStation::GetAlliance();
   /*
    InitializePIDControllers();
-  ReadDashboard();
+
+    ReadDashboard();
+
   */
   
   //m_take.TakeDashRead();
@@ -399,7 +401,7 @@ void Robot::InitializeDashboard() {
 
 // Method for reading the Dashboard
 void Robot::ReadDashboard() {
-  m_climber.ClimberDashRead();
+  // m_climber.ClimberDashRead();
   m_take.TakeDashRead();
   m_shooter.ReadDashboard();
 }
