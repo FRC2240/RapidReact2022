@@ -18,8 +18,7 @@ class Take
 public:
 
   Take(); 
-  void Feed(double speed);
-
+  
   void TakePIDInit();
   void TakeDashRead();
   void TakeDashInit();
