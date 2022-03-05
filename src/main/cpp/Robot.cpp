@@ -20,7 +20,7 @@
 void Robot::RobotInit() {
   
   // Setup initiate Diff Drive object with an initial heading of zero
-  m_odometry = new frc::DifferentialDriveOdometry(frc::Rotation2d(0_deg));
+  m_autoDrive->m_odometry = new frc::DifferentialDriveOdometry(frc::Rotation2d(0_deg));
   
 
   InitializePIDControllers(); 
@@ -29,11 +29,11 @@ void Robot::RobotInit() {
   // Setup Autonomous options
   m_chooser.SetDefaultOption(kAutoDefault, kAutoDefault);
   //m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
-  m_chooser.AddOption(kThreeBallPath1, kThreeBallPath1);
-  m_chooser.AddOption(kThreeBallPath2, kTwoBallPath2);
-  m_chooser.AddOption(kThreeBallPath3, kThreeBallPath3);
-  m_chooser.AddOption(kTwoBallPath1, kTwoBallPath1);
-  m_chooser.AddOption(kTwoBallPath2, kTwoBallPath2);
+  m_chooser.AddOption(Robot::kThreeBallFirst, Robot::kThreeBallFirst);
+  m_chooser.AddOption(Robot::kThreeBallSecond, Robot::kThreeBallSecond);
+  m_chooser.AddOption(Robot::kThreeBallThird, Robot::kThreeBallThird);
+  m_chooser.AddOption(Robot::kTwoBallFirst, Robot::kTwoBallSecond);
+  m_chooser.AddOption(Robot::kTwoBallSecond, Robot::kTwoBallSecond);
   
   // Add Autonomous options to dashboard
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
@@ -89,31 +89,31 @@ void Robot::AutonomousInit() {
   fmt::print("Auto selected: {}\n", m_autoSelected);
 
   // TODO: Make the following a switch statement
-  if (m_autoSelected == kThreeBallPath1) {
+  if (m_autoSelected == Robot::kThreeBallFirst) {
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
     deployDirectory = deployDirectory / "Paths" / "Patheaver/Paths/ThreeBallFirst.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
 
-  if (m_autoSelected == kThreeBallPath2) {
+  if (m_autoSelected == Robot::kThreeBallSecond) {
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
     deployDirectory = deployDirectory / "autos" / "Patheaver/autos/ThreeBallSecond.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
 
-  if (m_autoSelected == kThreeBallPath3) { 
+  if (m_autoSelected == Robot::kThreeBallThird) { 
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
     deployDirectory = deployDirectory / "autos" / "Patheaver/autos/ThreeBallThird.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
 
-  if (m_autoSelected == kTwoBallPath1) {
+  if (m_autoSelected == Robot::kTwoBallFirst) {
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
     deployDirectory = deployDirectory / "autos" / "Patheaver/autos/TwoBallFirst.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   }
 
-  if (m_autoSelected == kTwoBallPath2) {
+  if (m_autoSelected == Robot::kTwoBallSecond) {
     fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
     deployDirectory = deployDirectory / "autos" / "Patheaver/autos/TwoBallSecond.wpilib.json";
     m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
@@ -146,18 +146,18 @@ void Robot::AutonomousPeriodic() {
 
   // Iteration two
  
-  autoTimer.Start();
-  if (autoTimer.Get() <= units::time::second_t(1)) {
+  Robot::m_autoTimer.Start();
+  if (Robot::m_autoTimer.Get() <= units::time::second_t(1)) {
     m_take.DeployIntake();
   }
-  if (autoTimer.Get() > units::time::second_t(1) && autoTimer.Get() <= units::time::second_t(5)) {
+  if (Robot::m_autoTimer.Get() > units::time::second_t(1) && Robot::m_autoTimer.Get() <= units::time::second_t(5)) {
     m_take.AutoRunIntake(1);
     m_drive.ArcadeDrive(0.5, 0);
   }
-  if  (autoTimer.Get() > units::time::second_t(5) && autoTimer.Get() <= units::time::second_t(9)) {
+  if  (Robot::m_autoTimer.Get() > units::time::second_t(5) && Robot::m_autoTimer.Get() <= units::time::second_t(9)) {
     m_shooter.Fire();
   }
-  if  (autoTimer.Get() > units::time::second_t(9) && autoTimer.Get() <= units::time::second_t(12)) {
+  if  (Robot::m_autoTimer.Get() > units::time::second_t(9) && Robot::m_autoTimer.Get() <= units::time::second_t(12)) {
     m_shooter.Fire();
   }
   
@@ -234,30 +234,11 @@ void Robot::ReadDashboard() {
   m_shooter.ReadDashboard();
 }
 
-// Method for determining speeds during autonomous
-void Robot::setSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds) {
-
-  // QUESTION: Why are these consts? Const in this context means you can't change
-  // it after it has been set, but since these variables are local in scope and
-  // not changed anywheres after that doesn't make much sense
-  const auto leftFeedforward = m_feedforward.Calculate(speeds.left);
-  const auto rightFeedforward = m_feedforward.Calculate(speeds.right);
- 
-  // QUESTION: Same as above
-  const double leftOutput = m_frontRightMotorPIDController.Calculate(m_frontRightMotor.GetActiveTrajectoryVelocity(), speeds.left.to<double>());
-  const double rightOutput = m_frontLeftMotorPIDController.Calculate(m_frontLeftMotor.GetActiveTrajectoryVelocity(), speeds.right.to<double>());
- 
-  // Set the voltages for the left and right drive motor groups
-  m_leftGroup->SetVoltage(units::volt_t{leftOutput} + leftFeedforward);
-  m_rightGroup->SetVoltage(units::volt_t{rightOutput} + rightFeedforward);
- 
-}
-
 // QUESTION: Why is this a seperate method? Since you are just passing input
 // parameters to a method and nothing else, this is just not needed
 // Unless there is a plan to add more complexity/logic to THIS specfic function
-void Robot::autoDrive(units::meters_per_second_t xSpeed, units::radians_per_second_t rot){
-  setSpeeds(m_kinematics.ToWheelSpeeds({xSpeed, 0_mps, rot}));
+void Robot::AutoDrive(units::meters_per_second_t xSpeed, units::radians_per_second_t rot){
+  m_autoDrive->SetSpeeds(m_autoDrive->m_kinematics.ToWheelSpeeds({xSpeed, 0_mps, rot}));
 }
 
 // This method gets called every teleop period and follows the predetermined
@@ -267,18 +248,18 @@ void Robot::autoFollowPath(){
   // QUESTION: Why all the auto types?
 
   // If the robot is still within the trajectory time frame
-  if (autoTimer.Get() < m_trajectory.TotalTime()) {
+  if (m_autoTimer.Get() < m_trajectory.TotalTime()) {
     // Get desired pose
-    auto desiredPose = m_trajectory.Sample(autoTimer.Get());
+    auto desiredPose = m_trajectory.Sample(m_autoTimer.Get());
     // Get desired speeds from current pose vs desired pose
-    auto refChassisSpeeds = controller1.Calculate(m_odometry->GetPose(), desiredPose);
+    auto refChassisSpeeds = m_ramseteController.Calculate(m_autoDrive->m_odometry->GetPose(), desiredPose);
     
     // Drive based on desired speeds
-    autoDrive(refChassisSpeeds.vx, refChassisSpeeds.omega);
+    m_autoDrive->Drive(refChassisSpeeds.vx, refChassisSpeeds.omega);
   }
   else {
     // Stop the robot
-    autoDrive(0_mps, 0_rad_per_s);
+    m_autoDrive->Drive(0_mps, 0_rad_per_s);
   }
 }
 
