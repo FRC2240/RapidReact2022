@@ -30,7 +30,7 @@ void Robot::RobotInit() {
   // Initialize soft limits for climber PID
   m_climber.InitializeSoftLimits();
 
-  InitializePIDControllers(); 
+  // InitializePIDControllers(); 
   // InitializeDashboard();
 
 
@@ -211,9 +211,6 @@ void Robot::TeleopPeriodic() {
   //Read controller input
 
   double throttle = -m_stick.GetLeftTriggerAxis() + m_stick.GetRightTriggerAxis();
- 
-  double throttleExp = a * pow(m_stick.GetLeftTriggerAxis(), 4) + b * pow(m_stick.GetLeftTriggerAxis(), 1.48)-a * pow(m_stick.GetRightTriggerAxis(), 4) + b * pow(m_stick.GetRightTriggerAxis(), 1.48);
-  // double turnInput = pow(m_stick.GetLeftX()*m_turnFactor,1.72) - pow(m_stick.GetLeftY()*m_turnFactor,1.72);
   double turnInput = m_stick.GetLeftX() - m_stick.GetLeftY();
   // Shooter
   if (m_stick.GetRightBumper()) {
@@ -221,8 +218,9 @@ void Robot::TeleopPeriodic() {
 
   } else {
     m_drive.ArcadeDrive(throttle, turnInput);
-    
-    if (m_stick.GetRightBumperReleased()) {
+  }
+
+  if (m_stick.GetRightBumperReleased()) {
     m_shooter.Reset();
   }
 
@@ -304,57 +302,13 @@ if (m_stick_climb.GetRightStickButtonReleased()) {
     std::cout << "Right Servo Disengaged\n";
   }
 }
+}
 
 // This method is called at the beginning of the disabled state
 void Robot::DisabledInit() {}
 
 // This method is called every 20ms (by default) during disabled
 void Robot::DisabledPeriodic() {}
-
-
-// This method is called at the beginning of the testing state
-void Robot::TestInit() {
-}
-
-// This method is called every 20ms (by default) during testing
-void Robot::TestPeriodic() {
-  m_climber.GetEncoderValues(); 
-  m_climber.Run();
-// JOYSTICK 0 
-
-if (m_stick.GetXButtonReleased()) {
-  m_climber.SetPhase(1);
-}
-
-if (m_stick.GetYButtonReleased()) {
-  m_climber.SetPhase(2);
-}
-
-if (m_stick.GetBButtonReleased()) {
-  m_climber.SetPhase(3);
-}
-
-if (m_stick.GetAButtonReleased()) {
-  m_climber.SetPhase(4);
-}
-
-if (m_stick.GetLeftBumperReleased()) {
-  m_climber.SetPhase(5);
-
-}
-
-if (m_stick.GetRightBumperReleased()) {
-  m_climber.SetPhase(6);
-}
-
-if (m_stick.GetLeftTriggerAxis()) {
-  m_climber.SetPhase(7);
-}
-
-if (m_stick.GetRightTriggerAxis()) {
-  m_climber.SetPhase(8);
-}
-
 
 // This method is called at the beginning of the testing state
 void Robot::TestInit() {
@@ -412,6 +366,7 @@ void Robot::TestPeriodic() {
   if (m_stick_climb.GetRightStickButtonReleased()) {
     m_climber.SetPhase(10); 
   }
+}
 
 // Method for reading the Dashboard
 void Robot::ReadDashboard() {
