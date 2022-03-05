@@ -85,8 +85,10 @@ bool Shooter::LimelightTracking()
  */
 double Shooter::CalculateRPM(double d)
 {
-  double rpmSpeed = 2924 + (-9.04 * d) + (0.0447 * pow(d, 2)); //new equation
-  std::cout << "Desired RPM: " << rpmSpeed << "\n";
+  //double rpmSpeed = 2924 + (-9.04 * d) + (0.0447 * pow(d, 2)); //new equation
+
+  double rpmSpeed = 4.67 * d + 2002; 
+  //std::cout << "Desired RPM: " << rpmSpeed << "\n";
   
   return rpmSpeed;
 
