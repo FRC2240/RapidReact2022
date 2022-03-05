@@ -17,11 +17,7 @@
  * Initialization method for Robot. Call Subsystem initialization methods here
  * in addition to setting up dashboard
  */
-void Robot::RobotInit() {
-  
-  // Setup initiate Diff Drive object with an initial heading of zero
-  m_autoDrive->m_odometry = new frc::DifferentialDriveOdometry(frc::Rotation2d(0_deg));
-  
+void Robot::RobotInit() { 
 
   InitializePIDControllers(); 
   InitializeDashboard();
@@ -234,13 +230,6 @@ void Robot::ReadDashboard() {
   m_shooter.ReadDashboard();
 }
 
-// QUESTION: Why is this a seperate method? Since you are just passing input
-// parameters to a method and nothing else, this is just not needed
-// Unless there is a plan to add more complexity/logic to THIS specfic function
-void Robot::AutoDrive(units::meters_per_second_t xSpeed, units::radians_per_second_t rot){
-  m_autoDrive->SetSpeeds(m_autoDrive->m_kinematics.ToWheelSpeeds({xSpeed, 0_mps, rot}));
-}
-
 // This method gets called every teleop period and follows the predetermined
 // autonomous paths based on auto state
 void Robot::autoFollowPath(){
@@ -252,7 +241,7 @@ void Robot::autoFollowPath(){
     // Get desired pose
     auto desiredPose = m_trajectory.Sample(m_autoTimer.Get());
     // Get desired speeds from current pose vs desired pose
-    auto refChassisSpeeds = m_ramseteController.Calculate(m_autoDrive->m_odometry->GetPose(), desiredPose);
+    auto refChassisSpeeds = m_ramseteController.Calculate(m_autoDrive->GetPose(), desiredPose);
     
     // Drive based on desired speeds
     m_autoDrive->Drive(refChassisSpeeds.vx, refChassisSpeeds.omega);

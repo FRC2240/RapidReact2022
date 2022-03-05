@@ -73,6 +73,8 @@ class Drivetrain {
   frc::Pose2d GetPose() const;
   units::angle::degree_t GetRotation();
 
+  private:
+
   static constexpr double kP = 1.791; //0.157; //2.77;                  // measured
   static constexpr auto   kS = 0.628_V; //0.27_V;                         // measured
   static constexpr auto   kV = 1.348 * 1_V * 1_s / 1_m;    // 1.53     // measured
@@ -101,5 +103,4 @@ class Drivetrain {
   // robot!
   frc::SimpleMotorFeedforward<units::meters> m_feedforward{kS, kV, kA};
 
-  private:
 };
