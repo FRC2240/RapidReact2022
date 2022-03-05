@@ -75,12 +75,12 @@ class Drivetrain {
 
   private:
 
-  static constexpr double kP = 1.791; //0.157; //2.77;                  // measured
-  static constexpr auto   kS = 0.628_V; //0.27_V;                         // measured
-  static constexpr auto   kV = 1.348 * 1_V * 1_s / 1_m;    // 1.53     // measured
-  static constexpr auto   kA = 0.167 * 1_V * 1_s * 1_s / 1_m;  // 0.254 // measured
+  static constexpr double kP = 1.685; //0.157; //2.77;                  // measured
+  static constexpr auto   kS = 0.620_V; //0.27_V;                         // measured
+  static constexpr auto   kV = 1.429 * 1_V * 1_s / 1_m;    // 1.53     // measured
+  static constexpr auto   kA = 0.117 * 1_V * 1_s * 1_s / 1_m;  // 0.254 // measured
 
-  units::meter_t kTrackWidth = 1.187_m; //0.657_m;                        // measured    
+  units::meter_t kTrackWidth = 0.593_m; //0.657_m;                        // measured    
   double kDistancePerEncoderRotation = 0.0342; //((3.142*6.25/13.5)*0.0254); //0.0387;     // measured (meters)  
   double kFalconVelocityToRPM = (600.0/2048.0);
   double kFalconVelocitytoMPS = (kFalconVelocityToRPM*kDistancePerEncoderRotation/60.0);

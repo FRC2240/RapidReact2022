@@ -77,19 +77,13 @@ class Robot : public frc::TimedRobot {
   void InitializeDashboard();
   void ReadDashboard();
 
-  void AutoDrive(units::meters_per_second_t xSpeed, units::radians_per_second_t rot);
-  void autoFollowPath();
+  bool autoFollowPath();
 
  private:
   frc::SendableChooser<std::string> m_chooser;
   const std::string kAutoDefault = "Default";
   const std::string kTwoBall = "TwoBall";
   const std::string kThreeBall = "ThreeBall";
-  const std::string kThreeBallFirst = "ThreeBallFirst";
-  const std::string kThreeBallSecond = "ThreeBallSecond";
-  const std::string kThreeBallThird = "ThreeBallThird";
-  const std::string kTwoBallFirst = "TwoBallFirst";
-  const std::string kTwoBallSecond = "TwoBallSecond";
   std::string m_autoSelected;
   
  
