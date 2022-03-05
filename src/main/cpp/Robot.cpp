@@ -378,24 +378,11 @@ void Robot::TestPeriodic() {
   
   // JOYSTICK 0 
   if (m_stick_climb.GetXButtonReleased()) {
-    m_climber.SetPhase(1);
+    m_climber.Progress();
   }
 
-
-  if (m_stick_climb.GetYButtonReleased()) {
-    m_climber.SetPhase(2);
-  }
-
-  if (m_stick_climb.GetBButtonReleased()) {
-    m_climber.SetPhase(3);
-  }
-
-  if (m_stick_climb.GetAButtonReleased()) {
-    m_climber.SetPhase(4);
-  }
-
-  if (m_stick_climb.GetLeftBumperReleased()) {
-    m_climber.SetPhase(5);
+  if (m_stick_climb.GetRightBumperReleased()) {
+    m_climber.SetPhase(0);
   }
 }
 
