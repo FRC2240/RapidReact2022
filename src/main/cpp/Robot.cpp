@@ -172,7 +172,7 @@ void Robot::TeleopPeriodic() {
   // Intake
   m_take.Run(m_stick.GetLeftBumperPressed(), m_alliance);
 
-  m_climber.GetEncoderValues();
+  //m_climber.GetEncoderValues();
   
   m_take.ReadEncoders();
   /*
@@ -206,6 +206,7 @@ void Robot::TeleopPeriodic() {
 m_drive.ArcadeDrive(throttle, turnInput);
 
   // Rotate Right Climber
+  /*
   if (m_stick_climb.GetRightBumper()) {
     m_climber.RotateRThrottle(0.5);
   }
@@ -267,6 +268,7 @@ m_drive.ArcadeDrive(throttle, turnInput);
       std::cout << "Right Servo Disengaged\n";
     }
   }
+  */
 }
 
 // This method is called at the beginning of the disabled state

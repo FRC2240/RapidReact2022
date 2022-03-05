@@ -18,6 +18,8 @@ class Shooter {
   void InitializeDashboard();
   void ReadDashboard();
 
+  void ManualShoot(); 
+
   
 
  private:
