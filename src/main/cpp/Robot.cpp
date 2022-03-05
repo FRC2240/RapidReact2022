@@ -294,54 +294,46 @@ void Robot::TestPeriodic() {
   */
   
   // JOYSTICK 0 
-  if (m_stick.GetXButtonReleased()) {
+  if (m_stick_climb.GetXButtonReleased()) {
     m_climber.SetPhase(1);
   }
 
-  if (m_stick.GetYButtonReleased()) {
+  if (m_stick_climb.GetYButtonReleased()) {
     m_climber.SetPhase(2);
   }
 
-  if (m_stick.GetBButtonReleased()) {
+  if (m_stick_climb.GetBButtonReleased()) {
     m_climber.SetPhase(3);
   }
 
-  if (m_stick.GetAButtonReleased()) {
+  if (m_stick_climb.GetAButtonReleased()) {
     m_climber.SetPhase(4);
   }
 
-  if (m_stick.GetLeftBumperReleased()) {
+  if (m_stick_climb.GetLeftBumperReleased()) {
     m_climber.SetPhase(5);
   }
 
-  if (m_stick.GetRightBumperReleased()) {
+  if (m_stick_climb.GetRightBumperReleased()) {
     m_climber.SetPhase(6);
   }
 
-  if (m_stick.GetLeftTriggerAxis()) {
+  if (m_stick_climb.GetLeftTriggerAxis()) {
     m_climber.SetPhase(7);
   }
 
-  if (m_stick.GetRightTriggerAxis()) {
+  if (m_stick_climb.GetRightTriggerAxis()) {
     m_climber.SetPhase(8);
   }
 
-  if (m_stick.GetLeftStickButton()) {
+  if (m_stick_climb.GetLeftStickButton()) {
     m_climber.SetPhase(9);
   }
 
-  if (m_stick.GetRightStickButtonReleased()) {
+  if (m_stick_climb.GetRightStickButtonReleased()) {
     m_climber.SetPhase(10); 
   }
 
-  // Joystick 1 -- shuts off motors
-  if (m_stick_climb.GetXButtonReleased()) {
-    m_climber.EngageLeft(0.0);
-  }
-
-  if (m_stick_climb.GetBButtonReleased()) {
-    m_climber.EngageRight(0.0);
-  }
 }
 
 // Method for determining speeds during autonomous
