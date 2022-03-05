@@ -377,7 +377,7 @@ void Robot::TestPeriodic() {
   m_climber.Run();
   
   // JOYSTICK 0 
-  if (m_stick_climb.GetXButtonReleased()) {
+  if (m_stick_climb.GetLeftBumperReleased()) {
     m_climber.Progress();
   }
 
