@@ -17,8 +17,10 @@ class Shooter {
   void InitializePIDControllers();
   void InitializeDashboard();
   void ReadDashboard();
+
   void ManualShoot(); 
-  void Dump();
+
+  
 
  private:
 
