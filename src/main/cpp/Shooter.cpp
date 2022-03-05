@@ -85,13 +85,15 @@ bool Shooter::LimelightTracking()
  */
 double Shooter::CalculateRPM(double d)
 {
-
   //return 2924 + (-9.04 * d) + (0.0447 * pow(d, 2)); //new equation
   return 4.67 * d + 2002; 
 //   std::cout << "Desired RPM: " << rpmSpeed << "\n";
 }
 
-
+void Shooter::Dump() {
+  m_shootingMotorAlpha.Set(ControlMode::PercentOutput, -0.3);
+  m_take->Feed(0.5);
+}
 
 void Shooter::Fire()
 {
@@ -127,7 +129,7 @@ void Shooter::Fire()
     //           << " want = " << rpm << " got = " << m_shootingMotorAlpha.GetSelectedSensorVelocity() << std::endl;
 
     // Enable feed if we're at 98% of desired shooter speed
-    std::cout << "Current RPM: " << m_shootingMotorAlpha.GetSelectedSensorVelocity() << "\n";
+    //std::cout << "Current RPM: " << m_shootingMotorAlpha.GetSelectedSensorVelocity() << "\n";
     if (fabs(m_shootingMotorAlpha.GetSelectedSensorVelocity()* (600.0/2048.0)) > fabs(rpm * 0.99))
     {
       std::cout << "Shooting... \n";
