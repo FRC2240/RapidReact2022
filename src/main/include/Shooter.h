@@ -23,7 +23,6 @@ class Shooter {
 
   double CalculateRPM(double d);
   bool LimelightTracking();
-  void Dump();
 
   frc::DifferentialDrive* m_drive;
   frc::XboxController*    m_stick;
