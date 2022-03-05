@@ -9,7 +9,7 @@
 
 #include "Climber.h"
 #include "Shooter.h"
-#include "DriveTrain.h"
+#include "Drivetrain.h"
 //#include "Take.h"
 
 #include "rev/CANSparkMax.h"
@@ -85,12 +85,8 @@ class Robot : public frc::TimedRobot {
   const std::string kThreeBall = "ThreeBall";
   std::string m_autoSelected;
 
-  frc::RamseteController controller1;
-  frc::DifferentialDriveOdometry *m_odometry;
-
   bool autoFollowPath();
-  void autoDrive(units::meters_per_second_t xSpeed, units::radians_per_second_t rot);
-  void setSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds);
+  
  
   // Robot actions during Autonomous
   enum autoActions {
