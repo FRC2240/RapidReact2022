@@ -30,7 +30,7 @@ void Robot::RobotInit() {
   // Initialize soft limits for climber PID
   m_climber.InitializeSoftLimits();
 
-  InitializePIDControllers(); 
+  //Robot::InitializePIDControllers(); 
   // InitializeDashboard();
 
 
@@ -204,10 +204,10 @@ void Robot::TeleopPeriodic() {
 
   m_take.Run(m_stick.GetLeftBumperPressed(), m_stick.GetRightBumper(), m_alliance);
   
-  /*
+  
   double a = .375/.4495;
   double b = .0745/.4495;
-  */
+  
   //Read controller input
 
   double throttle = -m_stick.GetLeftTriggerAxis() + m_stick.GetRightTriggerAxis();
@@ -304,6 +304,8 @@ if (m_stick_climb.GetRightStickButtonReleased()) {
     std::cout << "Right Servo Disengaged\n";
   }
 }
+  }
+  }
 
 // This method is called at the beginning of the disabled state
 void Robot::DisabledInit() {}
@@ -313,8 +315,7 @@ void Robot::DisabledPeriodic() {}
 
 
 // This method is called at the beginning of the testing state
-void Robot::TestInit() {
-}
+
 
 // This method is called every 20ms (by default) during testing
 void Robot::TestPeriodic() {
@@ -354,22 +355,26 @@ if (m_stick.GetLeftTriggerAxis()) {
 if (m_stick.GetRightTriggerAxis()) {
   m_climber.SetPhase(8);
 }
+}
 
 
 // This method is called at the beginning of the testing state
 void Robot::TestInit() {
 }
 
+/* Commented due to duplication. Uncomment if needed */
+
+/*
 // This method is called every 20ms (by default) during testing
 void Robot::TestPeriodic() {
   m_climber.GetEncoderValues(); 
   m_climber.Run();
-  /*
+  
   if (m_stick_climb.GetLeftBumperReleased()) {
     m_climber.Progress();
     std::cout << "Phase: " << m_climber.GetPhase() << "\n";
   }
-  */
+  
   
   // JOYSTICK 0 
   if (m_stick_climb.GetXButtonReleased()) {
@@ -412,7 +417,8 @@ void Robot::TestPeriodic() {
   if (m_stick_climb.GetRightStickButtonReleased()) {
     m_climber.SetPhase(10); 
   }
-
+}
+*/
 // Method for reading the Dashboard
 void Robot::ReadDashboard() {
   // m_climber.ClimberDashRead();
