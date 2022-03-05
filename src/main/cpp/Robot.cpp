@@ -17,18 +17,7 @@
  * Initialization method for Robot. Call Subsystem initialization methods here
  * in addition to setting up dashboard
  */
-void Robot::RobotInit() {
-  
-  // Setup initiate Diff Drive object with an initial heading of zero
-  m_odometry = new frc::DifferentialDriveOdometry(frc::Rotation2d(0_deg));
-  
-
-
-  m_climber.InitializeEncoders();
-  m_take.InitializeEncoders(); 
-
-  // Initialize soft limits for climber PID
-  m_climber.InitializeSoftLimits();
+void Robot::RobotInit() { 
 
   // InitializePIDControllers(); 
   // InitializeDashboard();
@@ -46,13 +35,10 @@ m_climber.ClimberPIDInit();
   m_climber.InitializeSoftLimits();
   
   // Setup Autonomous options
-  m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
-  m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
-  m_chooser.AddOption(kThreeBallFirst, kThreeBallFirst);
-  m_chooser.AddOption(kThreeBallSecond, kThreeBallSecond);
-  m_chooser.AddOption(kThreeBallThird, kThreeBallThird);
-  m_chooser.AddOption(kTwoBallFirst, kTwoBallFirst);
-  m_chooser.AddOption(kTwoBallSecond, kTwoBallSecond);
+  m_chooser.SetDefaultOption(kAutoDefault, kAutoDefault);
+  //m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
+  m_chooser.AddOption(Robot::kTwoBall, Robot::kTwoBall);
+  m_chooser.AddOption(Robot::kThreeBall, Robot::kThreeBall);
   
   // Add Autonomous options to dashboard
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
@@ -63,10 +49,7 @@ m_climber.ClimberPIDInit();
   
   // TODO: Add break ball functionality once available 
 
-  // Enable manual shooting on initialization
   manualShootingEnabled = true;
-
-  // Set wrong ball in system at initialization to false
   wrongBallInSystem = false;
 
   // Setup mid motor pair
@@ -77,9 +60,10 @@ m_climber.ClimberPIDInit();
   m_backRightMotor.Follow(m_frontRightMotor);
   m_backLeftMotor.Follow(m_frontLeftMotor);
 
-  // QUESTION: This is very unsafe. why is this here?
   m_drive.SetSafetyEnabled(false);
 
+  // Initialize auto driver
+  m_autoDrive = new Drivetrain(&m_leftDrive, &m_rightDrive, &m_frontLeftMotor, &m_frontRightMotor);
 }
 
 /**
@@ -111,37 +95,21 @@ void Robot::AutonomousInit() {
   // Print out the selected autonomous mode
   fmt::print("Auto selected: {}\n", m_autoSelected);
 
-  // TODO: Make the following a switch statement
-  if (m_autoSelected == kThreeBallFirst) {
-    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "Paths" / "Patheaver/Paths/ThreeBallFirst.wpilib.json";
-    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  if (m_autoSelected == kTwoBall) {
+    m_autoSequence = &m_twoBallSequence;
   }
 
-  if (m_autoSelected == kThreeBallSecond) {
-    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/ThreeBallSecond.wpilib.json";
-    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  if (m_autoSelected == kThreeBall) {
+    m_autoSequence = &m_threeBallSequence;
   }
 
-  if (m_autoSelected == kThreeBallThird) { 
-    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/ThreeBallThird.wpilib.json";
-    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  if (m_autoSelected == kAutoDefault) {
+    m_autoSequence = &m_noSequence;
   }
 
-  if (m_autoSelected == kTwoBallFirst) {
-    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/TwoBallFirst.wpilib.json";
-    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-  }
-
-  if (m_autoSelected == kTwoBallSecond) {
-    fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-    deployDirectory = deployDirectory / "autos" / "Patheaver/autos/TwoBallSecond.wpilib.json";
-    m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-  }
-
+  // First action
+  m_autoAction = m_autoSequence->front();
+  m_autoState = kNothing;
 }
 
 /**
@@ -150,40 +118,178 @@ void Robot::AutonomousInit() {
  */
 void Robot::AutonomousPeriodic() {
 
-  // Check if current auto mode is the custom auto mode
-  if (m_autoSelected == kAutoNameCustom) {
-    // Custom Auto goes here
-  } else {
-    // Default Auto goes here
-  }
-  // Iteration one
-  /*
-   autoTimer.Start();
-   if (autoTimer.Get() <= units::time::second_t(4)) {
-     m_shooter.Fire();
-   }
-   if (autoTimer.Get() > units::time::second_t(4) && autoTimer.Get() <= units::time::second_t(5)) {
-     m_drive.ArcadeDrive(0.5,0);
-   }
-  */
+  fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
 
+  // Execute action
+  switch(m_autoAction) {
+    case kIntake:
+      std::cout << "Intake\n";
+      m_take.Run(true, false, m_alliance);
+      m_autoSequence->pop_front();
+      m_autoAction = m_autoSequence->front();
+      std::cout << "new = " << m_autoAction << "\n";
+      m_autoState = kNothing;
+      break;
+
+    case kShoot:
+      std::cout << "Shoot\n";
+
+      m_autoTimer.Reset();
+      m_autoTimer.Start();
+      m_autoAction = kIdle;
+      m_autoState = kShooting;
+      break;
+
+    case kDump:
+      std::cout << "Dump\n";
+
+      m_autoTimer.Reset();
+      m_autoTimer.Start();
+      m_autoAction = kIdle;
+      m_autoState = kDumping;
+      break;
+
+    case kTwoBallPath1:
+      std::cout << "Two Ball Path 1\n";
+
+      deployDirectory = deployDirectory / "output/TwoBallFirst.wpilib.json";
+      m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+      std::cout << "dir: " << deployDirectory.string() << std::endl;
+
+      std::cout << "Trajectory time: " << m_trajectory.TotalTime().to<double>() << std::endl;
+
+      m_autoTimer.Reset();
+      m_autoTimer.Start();
+      m_autoAction = kIdle;
+      m_autoState = kDriving;
+
+      // Reset the drivetrain's odometry to the starting pose of the trajectory
+      m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
+      break;
+
+    case kTwoBallPath2:
+      std::cout << "Two Ball Path 2\n";
+
+      deployDirectory = deployDirectory / "output/TwoBallSecond.wpilib.json";
+      m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+
+      std::cout << "Trajectory time: " << m_trajectory.TotalTime().to<double>() << std::endl;
+
+      m_autoTimer.Reset();
+      m_autoTimer.Start();
+      m_autoAction = kIdle;
+      m_autoState = kDriving;
+
+      // Reset the drivetrain's odometry to the starting pose of the trajectory
+      m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
+      break;
+
+    case kThreeBallPath1:
+      std::cout << "Three Ball Path 1\n";
+
+      deployDirectory = deployDirectory / "output/ThreeBallFirst.wpilib.json";
+      m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+
+      m_autoTimer.Reset();
+      m_autoTimer.Start();
+      m_autoAction = kIdle;
+      m_autoState = kDriving;
+
+      // Reset the drivetrain's odometry to the starting pose of the trajectory
+      m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
+      break;
+      
+    case kThreeBallPath2:
+      std::cout << "Three Ball Path 2\n";
+
+      deployDirectory = deployDirectory / "output/ThreeBallSecond.wpilib.json";
+      m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+
+      m_autoTimer.Reset();
+      m_autoTimer.Start();
+      m_autoAction = kIdle;
+      m_autoState = kDriving;
+
+      // Reset the drivetrain's odometry to the starting pose of the trajectory
+      m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
+      break;
+
+    case kThreeBallPath3:
+      std::cout << "Three Ball Path 3\n";
+
+      deployDirectory = deployDirectory / "output/ThreeBallThird.wpilib.json";
+      m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+
+      m_autoTimer.Reset();
+      m_autoTimer.Start();
+      m_autoAction = kIdle;
+      m_autoState = kDriving;
+
+      // Reset the drivetrain's odometry to the starting pose of the trajectory
+      m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
+      break;
+
+    case kIdle:
+    default:
+      //std::cout << "Default/Idle\n";
+      break;
+  }
+
+  // Long-lived states...
+  if (m_autoState == kDriving) {
+    //std::cout << "driving" << std::endl;
+    bool done = autoFollowPath();
+
+   // Next state
+   if (done) {
+      std::cout << "done driving" << std::endl;
+      m_autoSequence->pop_front();
+      m_autoAction = m_autoSequence->front();
+      m_autoState = kNothing;
+    }
+  }
+
+  if (m_autoState == kShooting) {
+    if (m_autoTimer.Get() < units::time::second_t(4)) {
+      m_shooter.Fire();
+    }
+    else {
+      std::cout << "shoot done\n";
+      m_shooter.Reset();
+      m_autoSequence->pop_front();
+      m_autoAction = m_autoSequence->front();
+      m_autoState = kNothing;
+    }
+  }
+
+  if (m_autoState == kDumping) {
+    if (m_autoTimer.Get() < units::time::second_t(3)) {
+      m_shooter.Dump();
+    }
+    else {
+      std::cout << "dump done\n";
+      m_shooter.Reset();
+      m_autoSequence->pop_front();
+      m_autoAction = m_autoSequence->front();
+      m_autoState = kNothing;
+    }
+  }
   // Iteration two
  
-  autoTimer.Start();
-  if (autoTimer.Get() <= units::time::second_t(1)) {
+  /*Robot::m_autoTimer.Start();
+  if (Robot::m_autoTimer.Get() <= units::time::second_t(1)) {
     m_take.DeployIntake();
   }
-  if (autoTimer.Get() > units::time::second_t(1) && autoTimer.Get() <= units::time::second_t(5)) {
+  if (Robot::m_autoTimer.Get() > units::time::second_t(1) && Robot::m_autoTimer.Get() <= units::time::second_t(5)) {
     m_take.AutoRunIntake(1);
     m_drive.ArcadeDrive(0.5, 0);
   }
-  if  (autoTimer.Get() > units::time::second_t(5) && autoTimer.Get() <= units::time::second_t(9)) {
-    m_shooter.Fire();;
-  }
-  if  (autoTimer.Get() > units::time::second_t(9) && autoTimer.Get() <= units::time::second_t(12)) {
+  if  (Robot::m_autoTimer.Get() > units::time::second_t(5) && Robot::m_autoTimer.Get() <= units::time::second_t(9)) {
     m_shooter.Fire();
   }
-  
+  if  (Robot::m_autoTimer.Get() > units::time::second_t(9) && Robot::m_autoTimer.Get() <= units::time::second_t(12)) {
+    m_shooter.Fire();
+  }*/
 }
 
 /**
@@ -192,79 +298,32 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {
 
   m_alliance = frc::DriverStation::GetAlliance();
-
-  m_climber.ClimberPIDInit();
-  m_climber.InitializeSoftLimits(); 
-  //m_climber.SetPhase(0); 
-
+   InitializePIDControllers();
+  ReadDashboard();
 }
 
 void Robot::TeleopPeriodic() {
-  m_climber.Shuffleboard();
-
-  m_take.Run(m_stick.GetLeftBumperPressed(), m_stick.GetRightBumper(), m_alliance);
+  // Intake
+  m_take.Run(m_stick.GetLeftBumperReleased(), m_stick.GetRightBumper(), m_alliance);
   
-  /*
   double a = .375/.4495;
   double b = .0745/.4495;
-  */
   //Read controller input
 
   double throttle = -m_stick.GetLeftTriggerAxis() + m_stick.GetRightTriggerAxis();
+
   double turnInput = m_stick.GetLeftX() - m_stick.GetLeftY();
   // Shooter
   if (m_stick.GetRightBumper()) {
     m_shooter.Fire();
-
   } else {
     m_drive.ArcadeDrive(throttle, turnInput);
   }
-
+  
   if (m_stick.GetRightBumperReleased()) {
     m_shooter.Reset();
   }
 
- //climber testing, JOYSTICK 1
-  //fully manual 
-if (m_stick_climb.GetLeftBumper()) {
-      m_climber.TestL();
-}
-      /*
-      m_climber.RotateLThrottle(0.5);
-      }
-    else if (m_stick_climb.GetLeftTriggerAxis()) {
-      m_climber.RotateLThrottle(-0.5);
-      }
-      */
-    else {
-     m_climber.RotateLThrottle(0.0);
-      //m_climber.RotateLeft(0.0);
-      }
-
-   if (m_stick_climb.GetRightBumper()) {
-      m_climber.TestR(); 
-   }
-      /*
-      m_climber.RotateRThrottle(0.5);
-      }
-   else if (m_stick_climb.GetRightTriggerAxis()) {
-    m_climber.RotateRThrottle(-0.5);
-      }
-      */
-   else {
-    //m_climber.RotateRight(0.0);
-   m_climber.RotateRThrottle(0.0);
-    }
-
-if (m_stick_climb.GetYButton()) {
-  m_climber.EngageLeft(0.5);
-  
-}
-else if (m_stick_climb.GetXButton()) {
-  m_climber.EngageLeft(-0.5);
-}
-else {
-  m_climber.EngageLeft(0.0);
 }
 
 if (m_stick_climb.GetBButton()) {
@@ -370,58 +429,42 @@ void Robot::TestPeriodic() {
 
 // Method for reading the Dashboard
 void Robot::ReadDashboard() {
-  // m_climber.ClimberDashRead();
+  m_climber.ClimberDashRead();
   m_take.TakeDashRead();
   m_shooter.ReadDashboard();
 }
 
-// Method for determining speeds during autonomous
-void Robot::setSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds) {
+bool Robot::autoFollowPath()
+{
+  // Update odometry
+  m_autoDrive->UpdateOdometry();
 
-  // QUESTION: Why are these consts? Const in this context means you can't change
-  // it after it has been set, but since these variables are local in scope and
-  // not changed anywheres after that doesn't make much sense
-  const auto leftFeedforward = m_feedforward.Calculate(speeds.left);
-  const auto rightFeedforward = m_feedforward.Calculate(speeds.right);
- 
-  // QUESTION: Same as above
-  const double leftOutput = m_frontRightMotorPIDController.Calculate(m_frontRightMotor.GetActiveTrajectoryVelocity(), speeds.left.to<double>());
-  const double rightOutput = m_frontLeftMotorPIDController.Calculate(m_frontLeftMotor.GetActiveTrajectoryVelocity(), speeds.right.to<double>());
- 
-  // Set the voltages for the left and right drive motor groups
-  m_leftGroup->SetVoltage(units::volt_t{leftOutput} + leftFeedforward);
-  m_rightGroup->SetVoltage(units::volt_t{rightOutput} + rightFeedforward);
- 
-}
+  if (m_autoTimer.Get() < m_trajectory.TotalTime()) {
+    // Get the desired pose from the trajectory
+    auto desiredPose = m_trajectory.Sample(m_autoTimer.Get());
 
-// QUESTION: Why is this a seperate method? Since you are just passing input
-// parameters to a method and nothing else, this is just not needed
-// Unless there is a plan to add more complexity/logic to THIS specfic function
-void Robot::autoDrive(units::meters_per_second_t xSpeed, units::radians_per_second_t rot){
-  setSpeeds(m_kinematics.ToWheelSpeeds({xSpeed, 0_mps, rot}));
-}
+    // Get the reference chassis speeds from the Ramsete Controller
+    // std::cout << "x = " << m_drive->GetPose().X()
+    //          <<  "y = " << m_drive->GetPose().Y() << " rot = " << m_drive->GetPose().Rotation().Degrees() << std::endl;
+    // std::cout << "dx = " << desiredPose.pose.X()
+    //          << " dy = " << desiredPose.pose.Y() << " drot = " << desiredPose.pose.Rotation().Degrees() << std::endl;
 
-// This method gets called every teleop period and follows the predetermined
-// autonomous paths based on auto state
-void Robot::autoFollowPath(){
+    auto refChassisSpeeds = m_ramseteController.Calculate(m_autoDrive->GetPose(), desiredPose);
 
-  // QUESTION: Why all the auto types?
+    // Set the linear and angular speeds
+    m_autoDrive->Drive(refChassisSpeeds.vx, refChassisSpeeds.omega);
+    //std::cout << "did drive" << std::endl;
 
-  // If the robot is still within the trajectory time frame
-  if (autoTimer.Get() < m_trajectory.TotalTime()) {
-    // Get desired pose
-    auto desiredPose = m_trajectory.Sample(autoTimer.Get());
-    // Get desired speeds from current pose vs desired pose
-    auto refChassisSpeeds = controller1.Calculate(m_odometry->GetPose(), desiredPose);
-    
-    // Drive based on desired speeds
-    autoDrive(refChassisSpeeds.vx, refChassisSpeeds.omega);
+    return false;
   }
   else {
-    // Stop the robot
-    autoDrive(0_mps, 0_rad_per_s);
+    m_autoDrive->Drive(0_mps, 0_rad_per_s);
+        //std::cout << "done drive" << std::endl;
+
+    return true;
   }
 }
+
 
 // If we are not running in test mode
 #ifndef RUNNING_FRC_TESTS

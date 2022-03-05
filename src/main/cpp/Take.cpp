@@ -1,5 +1,5 @@
 #include "Take.h"
-#include "log.h"
+// #include "log.h"
 #include <iostream>
 
 #include <frc/smartdashboard/SmartDashboard.h>
@@ -56,6 +56,7 @@ void Take::Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance
   // - Wrong color detected
   // - Eject complete
   auto currentState = m_state;
+  std::cout << "State: " << currentState << "\n"; 
 
   if (toggle || currentState != Off) {
     ReadSensors();
@@ -121,6 +122,7 @@ void Take::Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance
     m_ejectTimer = 0;
   }
 
+  std::cout << "New State: " << m_state << "\n"; 
   // Intake ON or OFF (manual toggle or auto-stop because we're full)
   if (m_state != currentState)
   {
