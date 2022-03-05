@@ -133,7 +133,6 @@ void Shooter::Fire()
     {
       std::cout << "Shooting... \n";
       m_take->Feed(1.0);
-
     } else {
       m_take->Feed(0.0);
     }

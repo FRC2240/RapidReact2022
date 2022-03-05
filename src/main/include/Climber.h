@@ -8,6 +8,12 @@
 
 #include <frc/controller/PIDController.h>
 #include "frc/Servo.h"
+#include <frc/Timer.h>
+
+#include <frc/shuffleboard/Shuffleboard.h>
+#include <frc/shuffleboard/ShuffleboardWidget.h>
+#include <frc/shuffleboard/ShuffleboardValue.h>
+#include <frc/shuffleboard/ShuffleboardTab.h>
 
 
 class Climber {
@@ -21,18 +27,42 @@ public:
   void ExtendALowerR(double setpointR);
   void RotateLeft(double rotatePointL); // f = forwards, b = backwards. All lowercase
   void RotateRight(double rotatePointR);
+  void EngageLeft(double throttle);
+  void EngageRight(double throttle);
+
+  void SetLeftServo(double position);
+  void SetRightServo(double position);
 
   void Progress();
   void Kill();
   void Run();
 
+  void GetEncoderValues();
+  void InitializeEncoders();
+  void InitializeSoftLimits();
+
+//Everything for testing
+  void TestDashInit();
+  void TestReadDash();
+  void TestL();
+  void TestR();
+
+  void SetPhase(int phase);
+  int GetPhase(); 
+
+  void RotateRThrottle(double throttle);
+  void RotateLThrottle(double throttle);
+
+  void Shuffleboard();
 
 private:
   bool CanIProgress(); 
-  frc::SendableChooser<std::string> m_chooser;
 
   frc::Servo m_rightExtenderServo {0};
   frc::Servo m_leftExtenderServo {1};
+
+  frc::SendableChooser<std::string> m_chooser;
+
 
 
 
@@ -44,8 +74,8 @@ private:
   rev::CANSparkMax m_leftClimberRotationNeo{leftClimberRotationNeoDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 
   // Climber falcons
-  WPI_TalonFX m_leftClimberExtender = {12};
-  WPI_TalonFX m_rightClimberExtender = {13};
+  WPI_TalonFX m_rightClimberExtender = {12}; //pretty sure these were flipped
+  WPI_TalonFX m_leftClimberExtender = {13};
   TalonFXSensorCollection m_leftClimberExtenderEncoder = m_leftClimberExtender.GetSensorCollection();
   TalonFXSensorCollection m_rightClimberExtenderEncoder = m_rightClimberExtender.GetSensorCollection();
 
@@ -63,9 +93,11 @@ private:
   rev::SparkMaxRelativeEncoder m_leftClimberEncoder = m_leftClimberRotationNeo.GetEncoder(); 
 
   //Neos
-  pidCoeff m_leftClimberRotateCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-  pidCoeff m_rightClimberRotateCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-
+  pidCoeff m_leftClimberRotateCoeff{0.0003, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0}; // negative to go to center
+  pidCoeff m_rightClimberRotateCoeff{0.0003, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
+  // Smart Motion
+  double kLMaxVel = 6000, kLMinVel = 0, kLMaxAcc = 4000, kLAllErr = 2; 
+  double kRMaxVel = 6000, kRMinVel = 0, kRMaxAcc = 4000, kRAllErr = 2; 
 
   //splish splash, your opinion is trash
 
@@ -84,11 +116,35 @@ private:
 
   int m_phase = 0;
 
-  //position values
+  //rotation positions
+  double centerL = -29.0, centerR = -36.0, highL = -49.0, highR = -20.0; 
 
-  double phaseOneLift, phaseTwoRetract, phaseThreeRotate, phaseFourRetract, phaseFiveExtend, phaseSixRetract, 
-  phaseSevenRetract, phaseSevenExtend, phaseEightRotate, phaseNineRetract;
-  
+  //extension soft limits
+  double kMaxLeft = 200000.0, kMinLeft = 2000.0, kMaxRight = 410000.0, kMinRight = 3000.0;
+
+  //engaged servo positions
+  double leftDisengaged = 0.7, rightDisengaged = 0.6;
+
+
+  //testing
+  double m_rotationR, m_rotationL;
+
+  frc::Timer m_climbTimer;
+
+  //Shuffleboard
+  nt::NetworkTableEntry m_leftServoShuffleboard =
+    frc::Shuffleboard::GetTab("Drive Core")
+    .Add("Left Servo Engaged", false)
+    .WithWidget("Boolean Box")
+    .GetEntry();
+
+  nt::NetworkTableEntry m_rightServoShuffleboard =
+    frc::Shuffleboard::GetTab("Drive Core")
+    .Add("Right Servo Engaged", true)
+    .WithWidget("Boolean Box")
+    .GetEntry();
+
+
 };
 
 
