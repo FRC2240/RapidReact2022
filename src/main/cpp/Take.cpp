@@ -245,7 +245,7 @@ void Take::UptakeStop()
 
 void Take::DeployIntake()
 {
-  m_rotateIntakePIDController.SetReference(10.1, rev::CANSparkMax::ControlType::kSmartMotion);
+  m_rotateIntakePIDController.SetReference(50.5, rev::CANSparkMax::ControlType::kSmartMotion);
 }
 
 void Take::ReturnIntake()
