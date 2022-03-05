@@ -304,7 +304,6 @@ if (m_stick_climb.GetRightStickButtonReleased()) {
     std::cout << "Right Servo Disengaged\n";
   }
 }
-}
 
 // This method is called at the beginning of the disabled state
 void Robot::DisabledInit() {}
