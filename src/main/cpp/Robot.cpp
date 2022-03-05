@@ -375,12 +375,6 @@ void Robot::TestInit() {
 void Robot::TestPeriodic() {
   m_climber.GetEncoderValues(); 
   m_climber.Run();
-  /*
-  if (m_stick_climb.GetLeftBumperReleased()) {
-    m_climber.Progress();
-    std::cout << "Phase: " << m_climber.GetPhase() << "\n";
-  }
-  */
   
   // JOYSTICK 0 
   if (m_stick_climb.GetXButtonReleased()) {
@@ -402,26 +396,6 @@ void Robot::TestPeriodic() {
 
   if (m_stick_climb.GetLeftBumperReleased()) {
     m_climber.SetPhase(5);
-  }
-
-  if (m_stick_climb.GetRightBumperReleased()) {
-    m_climber.SetPhase(6);
-  }
-
-  if (m_stick_climb.GetLeftTriggerAxis()) {
-    m_climber.SetPhase(7);
-  }
-
-  if (m_stick_climb.GetRightTriggerAxis()) {
-    m_climber.SetPhase(8);
-  }
-
-  if (m_stick_climb.GetLeftStickButton()) {
-    m_climber.SetPhase(9);
-  }
-
-  if (m_stick_climb.GetRightStickButtonReleased()) {
-    m_climber.SetPhase(10); 
   }
 }
 

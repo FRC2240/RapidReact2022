@@ -286,77 +286,7 @@ void Climber::ClimberPIDInit(){
  * Otherwise, evaluate current state and recover to safe mode if needed.
  */
 void Climber::Progress() {
-
-  // Check to see if you can make progress
-  if (CanIProgress()) {
-    // Move to the next state
-    m_phase++;
-  }
-  else {
-    // This is where the climber needs to check IF it needs
-    // to reset state. If it does, then recover. Otherwise,
-    // stay in the current state
-  }
-}
-/**
- * Method to check if the state machine for climbing can progress
- * 
- * returns:
- *   bool - true if you can progress, false if you cannot
- */
-bool Climber::CanIProgress() {
-
-  // Evaluation logic based on current phase
-  switch(m_phase) {
-    case 0:
-    return true;
-      break;
-    
-    case 1: 
-      //return abs(m_rightClimberEncoder.GetPosition()) <= (centerR + 2) && abs(m_rightClimberEncoder.GetPosition()) >= (centerR - 2);  
-      return true;
-      break;
-
-    case 2:
-      //return m_rightExtenderServo.Get() == 0.7 && m_rightClimberExtender.GetSelectedSensorPosition() == kMaxRight; 
-      return true;
-      break;
-
-    case 3:
-      //return m_rightExtenderServo.Get() == 0.0 && m_rightClimberExtender.GetSelectedSensorPosition() == kMinRight;
-      return true;
-      break;
-
-    case 4:
-     //return abs(m_leftClimberEncoder.GetPosition()) <= (highL + 2) && abs(m_leftClimberEncoder.GetPosition()) >= (highL - 2);
-     return true;
-      break;
-
-    case 5:
-     return true;
-      break;
-
-    case 6:
-
-     return true;
-      break;
-
-    case 7:
-     // return m_rightClimberExtender.GetSelectedSensorPosition() == phaseSevenRetract 
-      //  && m_leftClimberExtender.GetSelectedSensorPosition() == phaseSevenExtend;
-      return true;
-      break;
-
-    case 8:
-    //  return m_leftClimberEncoder.GetPosition() == phaseEightRotate;
-    return true;
-      break;
-
-    case 9:
-     // return m_leftClimberExtender.GetSelectedSensorPosition() == phaseNineRetract;
-     return true;
-      break;
-  }
+  m_phase++;
 }
 
 /**
@@ -399,85 +329,88 @@ void Climber::Run() {
     break;
     case 1: 
       // Center Left Arm, rotate right arm out of the way (might not be necessary depending on which arm we choose to start w/)
-
       RotateRight(22.0);
-
+      RotateLeft(centerL);
+      phase_delay = 0;
       break;
 
     case 2:
-    //Ratchet disengages, set soft limits for each case??
-      // Extend left arm (could possibly merge w/ case 1), driver then drives up to bar 
-      RotateLeft(centerL);
+      //Ratchet disengages, set soft limits for each case??
+      // Extend left arm (could possibly merge w/ case 1), driver then drives up to bar
+      if (phase_delay == 0) {
+        SetLeftServo(leftDisengaged);
+        SetRightServo(rightDisengaged);
+        phase_delay++;
+      }
+      else if (phase_delay > 1){
+        EngageLeft(0.5);
+      }
+      else{
+         phase_delay++;
+      }
 
-      /*
-      if (m_rightExtenderServo.Get() == 0.4) {
-        EngageRight(0.5); 
-      }
-      else {
-        EngageRight(0.0);
-      }
-      */
+      phase_delay_redux = 0;
+
       break;
 
     case 3:
-      EngageLeft(0.5);
-      /*
-      //Ratchet reengages, Contract right fully
-      SetRightServo(0.0);
-      if (m_rightExtenderServo.Get() == 0.0) {
-        EngageRight(-0.5);
+      if (phase_delay_redux == 0) {
+        SetLeftServo(0.0);
+        phase_delay_redux++;
+      }
+      else if (phase_delay_redux > 1) {
+        EngageLeft(-0.5);
+
+        if (m_leftClimberExtender.GetSelectedSensorPosition() <= kMinLeft) {
+          m_phase++;
+        }
       }
       else {
-        EngageRight(0.0);
+        phase_delay_redux++;
       }
-      */
+      phase_delay = 0;
       break;
 
     case 4:
-      SetLeftServo(0.0);
-      
+      EngageLeft(0.0);
+      EngageRight(0.5);
+      // Rotate Right Arm and Bot
+      RotateRight(highR);
+      RotateLeft(highL);
+
+      if (m_rightClimberExtender.GetSelectedSensorPosition() >= kMaxRight)
+      {
+        if (m_rightClimberEncoder.GetPosition() == highR && m_leftClimberEncoder.GetPosition() == highL) {
+          if (phase_delay == 0) {
+            SetRightServo(0.0);
+          }
+          else if (phase_delay > 1)
+          {
+            EngageRight(-0.5);
+            if (m_rightClimberExtender.GetSelectedSensorPosition() <= kMinRight) {
+              m_phase++;
+            }
+          }
+          else
+          {
+            phase_delay++;
+          }
+        }
+      }
+
       break;
 
     case 5:
-      // Left contracts
-      EngageLeft(-0.5);
-      
+      EngageRight(0.0);
       break;
-
-    case 6: 
-    // Disengage Right ratchet
+    
+    default:
+      EngageRight(0.0);
       EngageLeft(0.0);
-      SetRightServo(rightDisengaged);
-      
-      break;
-
-    case 7: 
-    // Extend Right
-    EngageRight(0.5);
-    
-
-
-      break;
-
-    case 8: 
-    // Rotate Right Arm and Bot
-    RotateRight(highR);
-    RotateLeft(highL);
-      
-      break;
-
-    case 9: 
-    /* no longer need to rotate?
-      //rotate right
-      RotateRight(highR);
-      */
-     // Contract right
-     SetRightServo(0.0);
-      break;
-    
-    case 10: 
-    EngageRight(-0.5);
-    break;
+      RotateRThrottle(0.0);
+      RotateLThrottle(0.0);
+      SetRightServo(0.0);
+      SetLeftServo(0.0);
   }
 
 }
