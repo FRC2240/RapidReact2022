@@ -86,11 +86,12 @@ class Robot : public frc::TimedRobot {
   std::string m_autoSelected;
 
   frc::RamseteController controller1;
+  frc::DifferentialDriveOdometry *m_odometry;
 
   bool autoFollowPath();
   void autoDrive(units::meters_per_second_t xSpeed, units::radians_per_second_t rot);
   void setSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds);
-
+ 
   // Robot actions during Autonomous
   enum autoActions {
     kIntake,
