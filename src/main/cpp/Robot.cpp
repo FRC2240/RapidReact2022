@@ -19,9 +19,21 @@
  */
 void Robot::RobotInit() { 
 
-  InitializePIDControllers(); 
-  InitializeDashboard();
+  // InitializePIDControllers(); 
+  // InitializeDashboard();
 
+
+//Test
+m_climber.ClimberPIDInit();
+  m_climber.TestDashInit();
+  /*
+  m_take.TestDashInit();
+  m_take.TakePIDInit();
+*/
+  m_climber.InitializeEncoders();
+  //  m_take.InitializeEncoders(); 
+  m_climber.InitializeSoftLimits();
+  
   // Setup Autonomous options
   m_chooser.SetDefaultOption(kAutoDefault, kAutoDefault);
   //m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
@@ -297,10 +309,9 @@ void Robot::TeleopPeriodic() {
   double a = .375/.4495;
   double b = .0745/.4495;
   //Read controller input
-  double throttle = -m_stick.GetLeftTriggerAxis() + 0.9 * m_stick.GetRightTriggerAxis();
- 
-  double throttleExp = a * pow(m_stick.GetLeftTriggerAxis(), 4) + b * pow(m_stick.GetLeftTriggerAxis(), 1.48)-a * pow(m_stick.GetRightTriggerAxis(), 4) + b * pow(m_stick.GetRightTriggerAxis(), 1.48);
-  // double turnInput = pow(m_stick.GetLeftX()*m_turnFactor,1.72) - pow(m_stick.GetLeftY()*m_turnFactor,1.72);
+
+  double throttle = -m_stick.GetLeftTriggerAxis() + m_stick.GetRightTriggerAxis();
+
   double turnInput = m_stick.GetLeftX() - m_stick.GetLeftY();
   // Shooter
   if (m_stick.GetRightBumper()) {
@@ -308,12 +319,49 @@ void Robot::TeleopPeriodic() {
   } else {
     m_drive.ArcadeDrive(throttle, turnInput);
   }
+  
   if (m_stick.GetRightBumperReleased()) {
     m_shooter.Reset();
   }
 
 }
 
+if (m_stick_climb.GetBButton()) {
+  m_climber.EngageRight(0.5);
+}
+else if (m_stick_climb.GetAButton()) {
+  m_climber.EngageRight(-0.5);
+}
+else {
+  m_climber.EngageRight(0.0);
+}
+// engage/disengage servo
+if (m_stick_climb.GetLeftStickButtonReleased()) {
+  if (!m_leftServoEngaged) {
+    m_climber.SetLeftServo(0.0);
+    m_leftServoEngaged = true;
+    std::cout << "Left Servo Engaged\n";
+  }
+  else {
+    m_climber.SetLeftServo(leftDisengaged);
+    m_leftServoEngaged = false;
+    std::cout << "Left Servo Disengaged\n";
+  }
+}
+
+if (m_stick_climb.GetRightStickButtonReleased()) {
+  if (!m_rightServoEngaged) {
+    m_climber.SetRightServo(0.0);
+    m_rightServoEngaged = true;
+    std::cout << "Right Servo Engaged\n";
+  }
+  else {
+    m_climber.SetRightServo(rightDisengaged);
+    m_rightServoEngaged = false;
+    std::cout << "Right Servo Disengaged\n";
+  }
+}
+}
 
 // This method is called at the beginning of the disabled state
 void Robot::DisabledInit() {}
@@ -321,27 +369,62 @@ void Robot::DisabledInit() {}
 // This method is called every 20ms (by default) during disabled
 void Robot::DisabledPeriodic() {}
 
-
 // This method is called at the beginning of the testing state
-void Robot::TestInit() {}
-
-// This method is called every 20ms (by default) during testing
-void Robot::TestPeriodic() {}
-
-
-// Method for initializing PID Controller
-void Robot::InitializePIDControllers() {
-  //  m_climber.ClimberPIDInit();
-  //  m_take.TakePIDInit();
-  //  m_shooter.InitializePIDControllers();
-
+void Robot::TestInit() {
 }
 
-// Method for initializing the Dashboard
-void Robot::InitializeDashboard() {
-  m_climber.ClimberDashInit();
-  m_take.TakeDashInit();
-  m_shooter.InitializeDashboard();
+// This method is called every 20ms (by default) during testing
+void Robot::TestPeriodic() {
+  m_climber.GetEncoderValues(); 
+  m_climber.Run();
+  /*
+  if (m_stick_climb.GetLeftBumperReleased()) {
+    m_climber.Progress();
+    std::cout << "Phase: " << m_climber.GetPhase() << "\n";
+  }
+  */
+  
+  // JOYSTICK 0 
+  if (m_stick_climb.GetXButtonReleased()) {
+    m_climber.SetPhase(1);
+  }
+
+
+  if (m_stick_climb.GetYButtonReleased()) {
+    m_climber.SetPhase(2);
+  }
+
+  if (m_stick_climb.GetBButtonReleased()) {
+    m_climber.SetPhase(3);
+  }
+
+  if (m_stick_climb.GetAButtonReleased()) {
+    m_climber.SetPhase(4);
+  }
+
+  if (m_stick_climb.GetLeftBumperReleased()) {
+    m_climber.SetPhase(5);
+  }
+
+  if (m_stick_climb.GetRightBumperReleased()) {
+    m_climber.SetPhase(6);
+  }
+
+  if (m_stick_climb.GetLeftTriggerAxis()) {
+    m_climber.SetPhase(7);
+  }
+
+  if (m_stick_climb.GetRightTriggerAxis()) {
+    m_climber.SetPhase(8);
+  }
+
+  if (m_stick_climb.GetLeftStickButton()) {
+    m_climber.SetPhase(9);
+  }
+
+  if (m_stick_climb.GetRightStickButtonReleased()) {
+    m_climber.SetPhase(10); 
+  }
 }
 
 // Method for reading the Dashboard
