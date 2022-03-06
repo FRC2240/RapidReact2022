@@ -73,7 +73,7 @@ private:
   bool WrongColor(BallColor ball, frc::DriverStation::Alliance alliance);
 
   // Read Color Sensors
-  void ReadSensors();
+  void ReadSensors(bool toggle);
 
   // Device IDs
   static const int rotateIntakeMotorDeviceID = 5;
