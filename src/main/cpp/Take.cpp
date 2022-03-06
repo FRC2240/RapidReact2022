@@ -59,7 +59,7 @@ void Take::Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance
   //std::cout << "State: " << currentState << "\n"; 
 
   if (toggle || currentState != Off) {
-    ReadSensors();
+    ReadSensors(toggle);
   }
 
   // Driver input?
@@ -73,7 +73,7 @@ void Take::Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance
   }
 
   // Wrong ball in waiting room
-  if ((m_waitingRoomState == blueBall &&
+  /*if ((m_waitingRoomState == blueBall &&
        alliance == frc::DriverStation::Alliance::kRed)
       ||
       (m_waitingRoomState == redBall &&
@@ -94,7 +94,7 @@ void Take::Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance
         (m_uptakeState == redBall &&
          alliance == frc::DriverStation::Alliance::kRed)
         ) {}
-  }
+  }*/
 
   // Full?
   if ((m_waitingRoomState != nullBall) && (m_uptakeState != nullBall)) {
@@ -145,13 +145,14 @@ void Take::Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance
   }
 }
 
-void Take::ReadSensors() {
+void Take::ReadSensors(bool toggle) {
   static int count = 0;
 
   ++count;
 
   // Only read the I2C data once per 10 loops
-  if (count < 10) {
+  // However, force a read if it's a toggle to update the ball states
+  if ((count < 10) && !toggle) {
     return;
   }
 
