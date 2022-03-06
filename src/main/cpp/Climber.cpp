@@ -338,7 +338,6 @@ void Climber::Run() {
       // Centers both arms, disengages servos, and then extends; after left extension is complete, reengages servo
       // NOTE: am worried about this case bc it tries to do so much, might have to split up
       if (phase_delay == 0) {
-      RotateRight(centerR);
       RotateLeft(centerL);
       SetLeftServo(leftDisengaged);
       SetRightServo(rightDisengaged);
@@ -347,6 +346,7 @@ void Climber::Run() {
       else if (phase_delay > 16) { // Is this how you space it out??
         EngageLeft(0.5);
         if (m_leftClimberExtender.GetSelectedSensorPosition() >= kMaxLeft) {
+          RotateRight(centerR);
           SetLeftServo(0.0);
       }
       }
@@ -379,6 +379,7 @@ void Climber::Run() {
            }
            else if (phase_delay_redux > 16) {
              SetRightServo(0.0);
+             RotateRight(finalR);
            }
            else {
              phase_delay_redux++;
@@ -417,12 +418,12 @@ void Climber::GetEncoderValues() {
   frc::SmartDashboard::PutNumber("Current Right Climber Rotation Position: ", m_rightClimberEncoder.GetPosition());
   frc::SmartDashboard::PutNumber("Current Left Climber Extension Position: ", m_leftClimberExtender.GetSelectedSensorPosition());
   frc::SmartDashboard::PutNumber("Current Right Climber Extension Position: ", m_rightClimberExtender.GetSelectedSensorPosition());
-/*
+
   std::cout << "Left Extension Position: " << m_leftClimberExtender.GetSelectedSensorPosition() << "\n";
   std::cout << "Left Rotation Position: " << m_leftClimberEncoder.GetPosition() << "\n";
   std::cout << "Right Extension Position: " << m_rightClimberExtender.GetSelectedSensorPosition() << "\n";
   std::cout << "Right Rotation Position: " << m_rightClimberEncoder.GetPosition() << "\n";
-  */
+  
  
   }
 

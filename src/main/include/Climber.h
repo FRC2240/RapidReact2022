@@ -121,7 +121,7 @@ private:
   int phase_delay_redux = 0;
 
   //rotation positions
-  double centerL = 43, centerR = 20.0, highL = 50.0, highR = 4.5; 
+  double centerL = 43, centerR = 20.0, highL = 60.0, highR = 12.5, finalR = 5; 
 
   //extension soft limits
   double kMaxLeft = 156350.0, kMinLeft = 2000.0, kMaxRight = 386000.0, kMinRight = 2000.0; 
