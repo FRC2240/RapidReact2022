@@ -163,6 +163,8 @@ void Robot::AutonomousPeriodic() {
       m_autoAction = kIdle;
       m_autoState = kDriving;
 
+      m_autoDrive->ResetEncoders();
+
       // Reset the drivetrain's odometry to the starting pose of the trajectory
       m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
       break;
@@ -180,6 +182,8 @@ void Robot::AutonomousPeriodic() {
       m_autoAction = kIdle;
       m_autoState = kDriving;
 
+      m_autoDrive->ResetEncoders();
+
       // Reset the drivetrain's odometry to the starting pose of the trajectory
       m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
       break;
@@ -194,6 +198,8 @@ void Robot::AutonomousPeriodic() {
       m_autoTimer.Start();
       m_autoAction = kIdle;
       m_autoState = kDriving;
+
+      m_autoDrive->ResetEncoders();
 
       // Reset the drivetrain's odometry to the starting pose of the trajectory
       m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
@@ -210,6 +216,8 @@ void Robot::AutonomousPeriodic() {
       m_autoAction = kIdle;
       m_autoState = kDriving;
 
+      m_autoDrive->ResetEncoders();
+
       // Reset the drivetrain's odometry to the starting pose of the trajectory
       m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
       break;
@@ -224,6 +232,8 @@ void Robot::AutonomousPeriodic() {
       m_autoTimer.Start();
       m_autoAction = kIdle;
       m_autoState = kDriving;
+
+      m_autoDrive->ResetEncoders();
 
       // Reset the drivetrain's odometry to the starting pose of the trajectory
       m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
