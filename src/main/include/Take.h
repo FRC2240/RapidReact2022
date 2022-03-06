@@ -31,7 +31,7 @@ public:
   void InitializeEncoders();
   void ReadEncoders();
 
-  void Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance);
+  void Run(bool toggle, bool shooting, bool autonomous, frc::DriverStation::Alliance alliance);
 
 
   // For testing, not operation

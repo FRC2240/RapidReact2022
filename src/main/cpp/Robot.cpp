@@ -124,7 +124,7 @@ void Robot::AutonomousPeriodic() {
   switch(m_autoAction) {
     case kIntake:
       std::cout << "Intake\n";
-      m_take.Run(true, false, m_alliance);
+      m_take.Run(true, false, true, m_alliance);
       m_autoSequence->pop_front();
       m_autoAction = m_autoSequence->front();
       std::cout << "new = " << m_autoAction << "\n";
@@ -249,10 +249,12 @@ void Robot::AutonomousPeriodic() {
   if (m_autoState == kDriving) {
     //std::cout << "driving" << std::endl;
     bool done = autoFollowPath();
+    m_take.Run(false, false, true, m_alliance);
 
    // Next state
    if (done) {
       std::cout << "done driving" << std::endl;
+      m_take.Run(true, true, true, m_alliance);
       m_autoSequence->pop_front();
       m_autoAction = m_autoSequence->front();
       m_autoState = kNothing;
@@ -314,7 +316,7 @@ void Robot::TeleopInit() {
 
 void Robot::TeleopPeriodic() {
   // Intake
-  m_take.Run(m_stick.GetLeftBumperReleased(), m_stick.GetRightBumper(), m_alliance);
+  m_take.Run(m_stick.GetLeftBumperReleased(), m_stick.GetRightBumper(), false, m_alliance);
   
   double a = .375/.4495;
   double b = .0745/.4495;
