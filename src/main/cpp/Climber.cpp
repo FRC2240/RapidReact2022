@@ -358,7 +358,6 @@ void Climber::Run() {
     case 2:
     // Contracts Left and transitions into rest of climb
         EngageLeft(-0.5);
-
         if (m_leftClimberExtender.GetSelectedSensorPosition() <= kMinLeft) {
           EngageLeft(0.0);
         }
@@ -367,7 +366,6 @@ void Climber::Run() {
 // needs to be button press between case 2 and 3
     case 3:
     // Shuts off left motor and begins extending right as right arm and bot rotate
-    
       EngageRight(0.5);
       RotateRight(highR);
       RotateLeft(highL);
@@ -489,7 +487,7 @@ void Climber::TestReadDash() {
 
   // Read climber rotation PID constants
   m_rightClimberRotateCoeff.kP  = frc::SmartDashboard::GetNumber("Right Climber Rotate P Gain", 0.0);
-  \
+  
   m_rightClimberRotateCoeff.kI   = frc::SmartDashboard::GetNumber("Right Climber Rotate I Gain", 0.0);
   m_rightClimberRotateCoeff.kD   = frc::SmartDashboard::GetNumber("Right Climber Rotate D Gain", 0.0);
   m_rightClimberRotateCoeff.kMinOutput = frc::SmartDashboard::GetNumber("Right Climber Rotate Min Output", 0.0);

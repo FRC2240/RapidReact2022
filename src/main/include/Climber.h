@@ -121,10 +121,10 @@ private:
   int phase_delay_redux = 0;
 
   //rotation positions
-  double centerL = 43, centerR = 20.0, highL = 49.0 /*or higher like 57 dunno yet*/ , highR = 5.0; 
+  double centerL = 43, centerR = 20.0, highL = 50.0, highR = 4.5; 
 
   //extension soft limits
-  double kMaxLeft = 156350.0, kMinLeft = 2000.0, kMaxRight = 220000.0 /*also hasn't really been tested, 177175 was the last measured value */, kMinRight = 2000.0; 
+  double kMaxLeft = 156350.0, kMinLeft = 2000.0, kMaxRight = 386000.0, kMinRight = 2000.0; 
 
   //engaged servo positions
   double leftDisengaged = 0.7, rightDisengaged = 0.7; 
