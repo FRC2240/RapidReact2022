@@ -360,14 +360,14 @@ void Climber::Run() {
         EngageLeft(-0.5);
 
         if (m_leftClimberExtender.GetSelectedSensorPosition() <= kMinLeft) {
-          m_phase++;
+          EngageLeft(0.0);
         }
       phase_delay_redux = 0;
       break;
-
+// needs to be button press between case 2 and 3
     case 3:
     // Shuts off left motor and begins extending right as right arm and bot rotate
-      EngageLeft(0.0);
+    
       EngageRight(0.5);
       RotateRight(highR);
       RotateLeft(highL);
