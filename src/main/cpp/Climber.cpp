@@ -286,7 +286,12 @@ void Climber::ClimberPIDInit(){
  * Otherwise, evaluate current state and recover to safe mode if needed.
  */
 void Climber::Progress() {
-  m_phase++;
+  if (m_phase >= 5) {
+    m_phase = 0;
+  }
+  else {
+    m_phase++;
+  }
 }
 
 /**
@@ -332,14 +337,14 @@ void Climber::Run() {
       // Preps bot to climb high
       // Centers both arms, disengages servos, and then extends; after left extension is complete, reengages servo
       // NOTE: am worried about this case bc it tries to do so much, might have to split up
-      if (phase_delay = 0) {
+      if (phase_delay == 0) {
       RotateRight(centerR);
       RotateLeft(centerL);
       SetLeftServo(leftDisengaged);
       SetRightServo(rightDisengaged);
       phase_delay++;
       }
-      else if (phase_delay > 2) { // Is this how you space it out??
+      else if (phase_delay > 16) { // Is this how you space it out??
         EngageLeft(0.5);
         if (m_leftClimberExtender.GetSelectedSensorPosition() >= kMaxLeft) {
           SetLeftServo(0.0);
@@ -357,7 +362,7 @@ void Climber::Run() {
         if (m_leftClimberExtender.GetSelectedSensorPosition() <= kMinLeft) {
           m_phase++;
         }
-      
+      phase_delay_redux = 0;
       break;
 
     case 3:
@@ -371,28 +376,24 @@ void Climber::Run() {
       {
         if (m_rightClimberEncoder.GetPosition() >= highR - 2  && m_rightClimberEncoder.GetPosition() <= highR + 2 &&
          m_leftClimberEncoder.GetPosition() >= highL - 2 && m_leftClimberEncoder.GetPosition() <= highL + 2) {
-           m_phase++;
+           if (phase_delay_redux == 0) {
+             phase_delay_redux++;
+           }
+           else if (phase_delay_redux > 16) {
+             SetRightServo(0.0);
+           }
+           else {
+             phase_delay_redux++;
+           }
         }
       }
-      phase_delay = 0;
       break;
 
     case 4:
-    // Contracts right arm
-      if (phase_delay == 0) {
-        SetRightServo(0.0);
-        phase_delay++;
-      }
-      else if (phase_delay > 1)
-      {
-        EngageRight(-0.5);
-        if (m_rightClimberExtender.GetSelectedSensorPosition() <= kMinRight) {
-          m_phase++;
-        }
-      }
-      else
-      {
-        phase_delay++;
+      // Contracts right arm
+      EngageRight(-0.5);
+      if (m_rightClimberExtender.GetSelectedSensorPosition() <= kMinRight) {
+        m_phase++;
       }
       break;
     
