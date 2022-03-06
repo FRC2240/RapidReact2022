@@ -323,7 +323,20 @@ void Robot::TeleopPeriodic() {
   if (m_stick.GetRightBumperReleased()) {
     m_shooter.Reset();
   }
+  
+  // Manual Climb Controls (Joystick 1)
 
+  //Arm extension
+  if (m_stick_climb.GetYButton()) {
+    m_climber.EngageLeft(0.5);
+  }
+  else if (m_stick_climb.GetXButton()) {
+    m_climber.EngageLeft(-0.5);
+  }
+  else {
+    m_climber.EngageLeft(0.0);
+  }
+  
   if (m_stick_climb.GetBButton()) {
     m_climber.EngageRight(0.5);
   }
@@ -333,7 +346,29 @@ void Robot::TeleopPeriodic() {
   else {
     m_climber.EngageRight(0.0);
   }
-  // engage/disengage servo
+
+  //Arm rotation
+  if (m_stick_climb.GetLeftBumper()) {
+    m_climber.RotateLThrottle(0.5);
+  }
+  else if (m_stick_climb.GetLeftTriggerAxis()) {
+    m_climber.RotateLThrottle(-0.5);
+  }
+  else {
+    m_climber.RotateLThrottle(0.0);
+  }
+
+  if (m_stick_climb.GetRightBumper()) {
+    m_climber.RotateRThrottle(0.5);
+  }
+  else if (m_stick_climb.GetRightTriggerAxis()) {
+    m_climber.RotateRThrottle(-0.5);
+  }
+  else {
+    m_climber.RotateRThrottle(0.0);
+  }
+
+  // engage/disengage servos
   if (m_stick_climb.GetLeftStickButtonReleased()) {
     if (!m_leftServoEngaged) {
       m_climber.SetLeftServo(0.0);

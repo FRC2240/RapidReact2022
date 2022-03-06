@@ -326,43 +326,44 @@ void Climber::Run() {
     EngageRight(0.0);
     RotateRThrottle(0.0);
     RotateLThrottle(0.0);
+    phase_delay = 0;
     break;
     case 1: 
-      // Center Left Arm, rotate right arm out of the way (might not be necessary depending on which arm we choose to start w/)
-      RotateRight(22.0);
+      // Preps bot to climb high
+      // Centers both arms, disengages servos, and then extends; after left extension is complete, reengages servo
+      // NOTE: am worried about this case bc it tries to do so much, might have to split up
+      if (phase_delay = 0) {
+      RotateRight(centerR);
       RotateLeft(centerL);
       SetLeftServo(leftDisengaged);
       SetRightServo(rightDisengaged);
-      phase_delay = 0;
+      phase_delay++;
+      }
+      else if (phase_delay > 2) { // Is this how you space it out??
+        EngageLeft(0.5);
+        if (m_leftClimberExtender.GetSelectedSensorPosition() >= kMaxLeft) {
+          SetLeftServo(0.0);
+      }
+      }
+      else {
+        phase_delay++; 
+      }
       break;
 
     case 2:
-      EngageLeft(0.5);
-      phase_delay_redux = 0;
-
-      break;
-
-    case 3:
-      if (phase_delay_redux == 0) {
-        SetLeftServo(0.0);
-        phase_delay_redux++;
-      }
-      else if (phase_delay_redux > 1) {
+    // Contracts Left and transitions into rest of climb
         EngageLeft(-0.5);
 
         if (m_leftClimberExtender.GetSelectedSensorPosition() <= kMinLeft) {
           m_phase++;
         }
-      }
-      else {
-        phase_delay_redux++;
-      }
+      
       break;
 
-    case 4:
+    case 3:
+    // Shuts off left motor and begins extending right as right arm and bot rotate
       EngageLeft(0.0);
       EngageRight(0.5);
-      // Rotate Right Arm and Bot
       RotateRight(highR);
       RotateLeft(highL);
 
@@ -376,7 +377,8 @@ void Climber::Run() {
       phase_delay = 0;
       break;
 
-    case 5:
+    case 4:
+    // Contracts right arm
       if (phase_delay == 0) {
         SetRightServo(0.0);
         phase_delay++;
@@ -394,14 +396,15 @@ void Climber::Run() {
       }
       break;
     
-    case 6:
+    case 5:
+    // Right motor shuts off, climb to high completed
       EngageRight(0.0);
       break;
     
     default:
       EngageRight(0.0);
       EngageLeft(0.0);
-      RotateRThrottle(0.0);
+      RotateRThrottle(0.0); // would turn off PIDs, so if the climb button is hit too many times everything will shut off and may drag out of frame perim
       RotateLThrottle(0.0);
       SetRightServo(0.0);
       SetLeftServo(0.0);
