@@ -343,7 +343,7 @@ void Climber::Run() {
       SetRightServo(rightDisengaged);
       phase_delay++;
       }
-      else if (phase_delay > 16) { // Is this how you space it out??
+      else if (phase_delay > 32) { // Is this how you space it out??
         EngageLeft(0.5);
         if (m_leftClimberExtender.GetSelectedSensorPosition() >= kMaxLeft) {
           RotateRight(centerR);
@@ -372,8 +372,8 @@ void Climber::Run() {
 
       if (m_rightClimberExtender.GetSelectedSensorPosition() >= kMaxRight)
       {
-        if (m_rightClimberEncoder.GetPosition() >= highR - 2  && m_rightClimberEncoder.GetPosition() <= highR + 2 &&
-         m_leftClimberEncoder.GetPosition() >= highL - 2 && m_leftClimberEncoder.GetPosition() <= highL + 2) {
+        if (m_rightClimberEncoder.GetPosition() >= (highR - 2)  && m_rightClimberEncoder.GetPosition() <= (highR + 2) &&
+         m_leftClimberEncoder.GetPosition() >= (highL - 2) && m_leftClimberEncoder.GetPosition() <= (highL + 2)) {
            if (phase_delay_redux == 0) {
              phase_delay_redux++;
            }
