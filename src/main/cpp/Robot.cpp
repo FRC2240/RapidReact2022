@@ -123,17 +123,13 @@ void Robot::AutonomousPeriodic() {
   // Execute action
   switch(m_autoAction) {
     case kIntake:
-      std::cout << "Intake\n";
       m_take.Run(true, false, true, m_alliance);
       m_autoSequence->pop_front();
       m_autoAction = m_autoSequence->front();
-      std::cout << "new = " << m_autoAction << "\n";
       m_autoState = kNothing;
       break;
 
     case kShoot:
-      std::cout << "Shoot\n";
-
       m_autoTimer.Reset();
       m_autoTimer.Start();
       m_autoAction = kIdle;
@@ -141,8 +137,6 @@ void Robot::AutonomousPeriodic() {
       break;
 
     case kDump:
-      std::cout << "Dump\n";
-
       m_autoTimer.Reset();
       m_autoTimer.Start();
       m_autoAction = kIdle;
@@ -150,13 +144,8 @@ void Robot::AutonomousPeriodic() {
       break;
 
     case kTwoBallPath1:
-      std::cout << "Two Ball Path 1\n";
-
       deployDirectory = deployDirectory / "output/TwoBallFirst.wpilib.json";
       m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-      std::cout << "dir: " << deployDirectory.string() << std::endl;
-
-      std::cout << "Trajectory time: " << m_trajectory.TotalTime().to<double>() << std::endl;
 
       m_autoTimer.Reset();
       m_autoTimer.Start();
@@ -170,12 +159,8 @@ void Robot::AutonomousPeriodic() {
       break;
 
     case kTwoBallPath2:
-      std::cout << "Two Ball Path 2\n";
-
       deployDirectory = deployDirectory / "output/TwoBallSecond.wpilib.json";
       m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-
-      std::cout << "Trajectory time: " << m_trajectory.TotalTime().to<double>() << std::endl;
 
       m_autoTimer.Reset();
       m_autoTimer.Start();
@@ -189,8 +174,6 @@ void Robot::AutonomousPeriodic() {
       break;
 
     case kThreeBallPath1:
-      std::cout << "Three Ball Path 1\n";
-
       deployDirectory = deployDirectory / "output/ThreeBallFirst.wpilib.json";
       m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
 
@@ -206,8 +189,6 @@ void Robot::AutonomousPeriodic() {
       break;
       
     case kThreeBallPath2:
-      std::cout << "Three Ball Path 2\n";
-
       deployDirectory = deployDirectory / "output/ThreeBallSecond.wpilib.json";
       m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
 
@@ -223,8 +204,6 @@ void Robot::AutonomousPeriodic() {
       break;
 
     case kThreeBallPath3:
-      std::cout << "Three Ball Path 3\n";
-
       deployDirectory = deployDirectory / "output/ThreeBallThird.wpilib.json";
       m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
 
@@ -241,19 +220,16 @@ void Robot::AutonomousPeriodic() {
 
     case kIdle:
     default:
-      //std::cout << "Default/Idle\n";
       break;
   }
 
   // Long-lived states...
   if (m_autoState == kDriving) {
-    //std::cout << "driving" << std::endl;
     bool done = autoFollowPath();
     m_take.Run(false, false, true, m_alliance);
 
    // Next state
    if (done) {
-      std::cout << "done driving" << std::endl;
       m_take.Run(true, true, true, m_alliance);
       m_autoSequence->pop_front();
       m_autoAction = m_autoSequence->front();
@@ -266,7 +242,6 @@ void Robot::AutonomousPeriodic() {
       m_shooter.Fire();
     }
     else {
-      std::cout << "shoot done\n";
       m_shooter.Reset();
       m_autoSequence->pop_front();
       m_autoAction = m_autoSequence->front();
@@ -279,7 +254,6 @@ void Robot::AutonomousPeriodic() {
       m_shooter.Dump();
     }
     else {
-      std::cout << "dump done\n";
       m_shooter.Reset();
       m_autoSequence->pop_front();
       m_autoAction = m_autoSequence->front();
@@ -424,14 +398,11 @@ bool Robot::autoFollowPath()
 
     // Set the linear and angular speeds
     m_autoDrive->Drive(refChassisSpeeds.vx, refChassisSpeeds.omega);
-    //std::cout << "did drive" << std::endl;
 
     return false;
   }
   else {
     m_autoDrive->Drive(0_mps, 0_rad_per_s);
-        //std::cout << "done drive" << std::endl;
-
     return true;
   }
 }
