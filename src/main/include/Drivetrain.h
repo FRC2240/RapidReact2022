@@ -68,6 +68,11 @@ class Drivetrain {
   frc::Pose2d GetPose() const;
   units::angle::degree_t GetRotation();
 
+  void ResetEncoders() {
+    m_leftMotor->SetSelectedSensorPosition(0.0);
+    m_rightMotor->SetSelectedSensorPosition(0.0);
+  };
+
   private:
 
   static constexpr double kP = 1.685; //0.157; //2.77;                  // measured

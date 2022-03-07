@@ -42,7 +42,8 @@ Take::Take() {
     .GetEntry();
 }
 
-void Take::Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance) {
+
+void Take::Run(bool toggle, bool shooting, bool autonomous, frc::DriverStation::Alliance alliance) {
   // Events that will affect state:
   // - Driver input
   // - Uptake/Waiting Room become full
@@ -70,9 +71,11 @@ void Take::Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance
   }
 
   // Wrong color in uptake?
-  if (WrongColor(m_uptakeState, alliance)) {
-    m_state = Ejecting;
-    m_ejectTimer = 40;
+  if (!autonomous) {
+    if (WrongColor(m_uptakeState, alliance)) {
+      m_state = Ejecting;
+      m_ejectTimer = 40;
+    }
   }
 
   // Timer complete?

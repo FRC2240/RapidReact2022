@@ -50,7 +50,7 @@ bool Shooter::LimelightTracking()
   // Proportional Steering Constant:
   // If your robot doesn't turn fast enough toward the target, make this number bigger
   // If your robot oscillates (swings back and forth past the target) make this smaller
-  const double STEER_K = 0.04;
+  const double STEER_K = 0.06; //0.04;
   const double MAX_STEER = 0.5;
 
   double tx = m_table->GetNumber("tx", 0.0);
@@ -63,7 +63,13 @@ bool Shooter::LimelightTracking()
   if (tv > 0.0)
   {
     // Proportional steering
+
     limelightTurnCmd = (tx /*+ m_txOFFSET*/) * STEER_K;
+    if (tx < 0.0) {
+      limelightTurnCmd -= 0.1;
+    } else {
+      limelightTurnCmd += 0.1;
+    }
     limelightTurnCmd = std::clamp(limelightTurnCmd, -MAX_STEER, MAX_STEER);
     if (fabs(tx) < 3.0)
     {
