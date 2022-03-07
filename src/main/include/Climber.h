@@ -28,7 +28,7 @@ public:
   void ClimberDashInit();
   void ExtendALowerL(double setpointL);
   void ExtendALowerR(double setpointR);
-  void RotateLeft(double rotatePointL); // f = forwards, b = backwards. All lowercase
+  void RotateLeft(double rotatePointL); 
   void RotateRight(double rotatePointR);
   void EngageLeft(double throttle);
   void EngageRight(double throttle);
@@ -121,7 +121,8 @@ private:
   int phase_delay_redux = 0;
 
   //rotation positions
-  double centerL = 35.5, centerR = 20.0, highL = 60.0, highR = 7.5, finalR = 0.0; 
+  double centerL = 35.5, centerR = 20.0, highL = 60.0, highR = 9.5, finalR = 0.0; 
+  double midRightOne = 30, midRightTwo = 25.5, midRightExtension = 170000, midRightThree = 58.0; 
 
   //extension soft limits
   double kMaxLeft = 156350.0, kMinLeft = 2000.0, kMaxRight = 386000.0, kMinRight = 2000.0; 

@@ -316,8 +316,8 @@ void Robot::TeleopPeriodic() {
     m_climber.Progress();
   }
 
-  if (m_stick_climb.GetRightBumperReleased()) {
-    m_climber.SetPhase(0);
+  if (m_stick_climb.GetYButtonReleased()) {
+    m_climber.SetPhase(6); 
   }
 
 }
