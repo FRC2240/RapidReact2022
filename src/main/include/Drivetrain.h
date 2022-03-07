@@ -18,7 +18,6 @@
 #include <units/time.h>
 #include <units/velocity.h>
 #include <units/voltage.h>
-#include <wpi/math>
 
 #include "ctre/Phoenix.h"
 #include "AHRS.h"

@@ -13,7 +13,7 @@
 #include <networktables/NetworkTableInstance.h>
 
 Take::Take() {
-  TakeDashInit();
+  //TakeDashInit();
   TakePIDInit();
 
   m_waitingRoomPIDController.SetP(m_waitingRoomCoeff.kP);
@@ -401,7 +401,6 @@ void Take::TestDashInit() {
 }
 
 void Take::TestDashRead() {
-  double p, i, d, min, max;
   // rotate intake
   m_rotateIntakeCoeff.kP = frc::SmartDashboard::GetNumber("Rotate Intake P Gain", 0.0);
   m_rotateIntakeCoeff.kI = frc::SmartDashboard::GetNumber("Rotate Intake I Gain", 0.0);

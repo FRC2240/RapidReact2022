@@ -18,11 +18,9 @@
  * in addition to setting up dashboard
  */
 void Robot::RobotInit() { 
-
-
-//Test
-m_climber.ClimberPIDInit();
-  m_climber.TestDashInit();
+  //Test
+  m_climber.ClimberPIDInit();
+  //m_climber.TestDashInit();
 
   m_climber.InitializeEncoders();
   m_climber.InitializeSoftLimits();
@@ -103,7 +101,7 @@ void Robot::AutonomousInit() {
   m_autoSelected = m_chooser.GetSelected();
 
   // Print out the selected autonomous mode
-  fmt::print("Auto selected: {}\n", m_autoSelected);
+  //fmt::print("Auto selected: {}\n", m_autoSelected);
 
   if (m_autoSelected == kTwoBall) {
     m_autoSequence = &m_twoBallSequence;
@@ -277,9 +275,8 @@ void Robot::AutonomousPeriodic() {
  * This is the method called at the beginning of teleoperated mode
  */
 void Robot::TeleopInit() {
-
   m_alliance = frc::DriverStation::GetAlliance();
-  ReadDashboard();
+  //ReadDashboard();
 }
 
 void Robot::TeleopPeriodic() {
@@ -287,10 +284,10 @@ void Robot::TeleopPeriodic() {
   m_climber.Run();
   m_take.Run(m_stick.GetLeftBumperReleased(), m_stick.GetRightBumper(), false, m_alliance);
   
-  double a = .375/.4495;
-  double b = .0745/.4495;
-  //Read controller input
+  //double a = .375/.4495;
+  //double b = .0745/.4495;
 
+  // Read controller input
   double throttle = -m_stick.GetLeftTriggerAxis() + m_stick.GetRightTriggerAxis();
 
   double turnInput = m_stick.GetLeftX() - m_stick.GetLeftY();
