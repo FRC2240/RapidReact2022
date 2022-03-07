@@ -266,6 +266,7 @@ void Robot::TeleopInit() {
 
 void Robot::TeleopPeriodic() {
   // Intake
+  m_climber.Run();
   m_take.Run(m_stick.GetLeftBumperReleased(), m_stick.GetRightBumper(), false, m_alliance);
   
   double a = .375/.4495;
@@ -285,7 +286,44 @@ void Robot::TeleopPeriodic() {
   if (m_stick.GetRightBumperReleased()) {
     m_shooter.Reset();
   }
+  
+  // Climb Controls (Joystick 1)
+  if (m_stick_climb.GetLeftBumperReleased()) {
+    m_climber.Progress();
+  }
 
+  if (m_stick_climb.GetRightBumperReleased()) {
+    m_climber.SetPhase(0);
+  }
+
+}
+
+// This method is called at the beginning of the disabled state
+void Robot::DisabledInit() {}
+
+// This method is called every 20ms (by default) during disabled
+void Robot::DisabledPeriodic() {}
+
+// This method is called at the beginning of the testing state
+void Robot::TestInit() {
+}
+
+// This method is called every 20ms (by default) during testing
+void Robot::TestPeriodic() {
+  m_climber.GetEncoderValues(); 
+
+  // Manual Climb Controls
+  // Arm extension
+  if (m_stick_climb.GetYButton()) {
+    m_climber.EngageLeft(0.5);
+  }
+  else if (m_stick_climb.GetXButton()) {
+    m_climber.EngageLeft(-0.5);
+  }
+  else {
+    m_climber.EngageLeft(0.0);
+  }
+  
   if (m_stick_climb.GetBButton()) {
     m_climber.EngageRight(0.5);
   }
@@ -295,7 +333,29 @@ void Robot::TeleopPeriodic() {
   else {
     m_climber.EngageRight(0.0);
   }
-  // engage/disengage servo
+
+  //Arm rotation
+  if (m_stick_climb.GetLeftBumper()) {
+    m_climber.RotateLThrottle(0.5);
+  }
+  else if (m_stick_climb.GetLeftTriggerAxis()) {
+    m_climber.RotateLThrottle(-0.5);
+  }
+  else {
+    m_climber.RotateLThrottle(0.0);
+  }
+
+  if (m_stick_climb.GetRightBumper()) {
+    m_climber.RotateRThrottle(0.5);
+  }
+  else if (m_stick_climb.GetRightTriggerAxis()) {
+    m_climber.RotateRThrottle(-0.5);
+  }
+  else {
+    m_climber.RotateRThrottle(0.0);
+  }
+
+  // engage/disengage servos
   if (m_stick_climb.GetLeftStickButtonReleased()) {
     if (!m_leftServoEngaged) {
       m_climber.SetLeftServo(0.0);
@@ -320,31 +380,6 @@ void Robot::TeleopPeriodic() {
       m_rightServoEngaged = false;
       std::cout << "Right Servo Disengaged\n";
     }
-  }
-}
-
-// This method is called at the beginning of the disabled state
-void Robot::DisabledInit() {}
-
-// This method is called every 20ms (by default) during disabled
-void Robot::DisabledPeriodic() {}
-
-// This method is called at the beginning of the testing state
-void Robot::TestInit() {
-}
-
-// This method is called every 20ms (by default) during testing
-void Robot::TestPeriodic() {
-  m_climber.GetEncoderValues(); 
-  m_climber.Run();
-  
-  // JOYSTICK 0 
-  if (m_stick_climb.GetLeftBumperReleased()) {
-    m_climber.Progress();
-  }
-
-  if (m_stick_climb.GetRightBumperReleased()) {
-    m_climber.SetPhase(0);
   }
 }
 
