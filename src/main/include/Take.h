@@ -83,7 +83,6 @@ private:
 
   bool intakeRunning = false;
 
-  // Shuffleboard  Shuffleboard::Shuffleboard m_shuffleboard; // Shuffleboard
   frc::DriverStation::Alliance m_alliance;
 
   /* Shuffleboard */

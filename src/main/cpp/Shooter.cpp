@@ -56,25 +56,21 @@ bool Shooter::LimelightTracking()
   double tx = m_table->GetNumber("tx", 0.0);
   double tv = m_table->GetNumber("tv", 0.0);
 
-  //// // std::cout << "tx: " << tx << "; tv: " << tv << "\n";
 
   double limelightTurnCmd = 0.0;
 
 
   if (tv > 0.0)
   {
-    // // std::cout << "Limelight Tracking, tx: " << tx << "\n";
     // Proportional steering
     limelightTurnCmd = (tx /*+ m_txOFFSET*/) * STEER_K;
     limelightTurnCmd = std::clamp(limelightTurnCmd, -MAX_STEER, MAX_STEER);
     if (fabs(tx) < 3.0)
     {
-      // // std::cout << "Shoot true \n";
       shoot = true;
     }
   }
 
-  //// // std::cout << "Trying to turn: " << limelightTurnCmd << "\n";
   // Turn the robot to the target
   m_drive->ArcadeDrive(0.0, limelightTurnCmd);
   return shoot;
@@ -85,9 +81,7 @@ bool Shooter::LimelightTracking()
  */
 double Shooter::CalculateRPM(double d)
 {
-  //return 2924 + (-9.04 * d) + (0.0447 * pow(d, 2)); //new equation
   return 4.67 * d + 2002; 
-//   std::cout << "Desired RPM: " << rpmSpeed << "\n";
 }
 
 void Shooter::Dump() {
@@ -105,8 +99,6 @@ void Shooter::Fire()
   {
     // Calculate distance to target from Limelight data
     double ty = m_table->GetNumber("ty", 0.0);
-    // // std::cout << "ty: " << ty <<"\n";
-    //double distance = kRadiusOfTarget + ((kHeightOfTarget - kHeightLimelight) / tan((kLimelightAngle + ty) * (3.141592653 / 180)));
 
     double distance = -2.39 * ty + (0.139 * pow(ty, 2)) + 105;
 
@@ -123,17 +115,12 @@ void Shooter::Fire()
 
     if ((distance < 250) && (distance > 70))
     {
-      // // // std::cout << "RPM: " << rpm << "\n"; 
       m_shootingMotorAlpha.Set(ControlMode::Velocity, -rpm * (2048.0 / 600.0));
     }
-    // // // // std::cout << "distance = " << distance
-    //           << " want = " << rpm << " got = " << m_shootingMotorAlpha.GetSelectedSensorVelocity() << std::endl;
 
     // Enable feed if we're at 98% of desired shooter speed
-    //std::cout << "Current RPM: " << m_shootingMotorAlpha.GetSelectedSensorVelocity() << "\n";
     if (fabs(m_shootingMotorAlpha.GetSelectedSensorVelocity()* (600.0/2048.0)) > fabs(rpm * 0.99))
     {
-      //std::cout << "Shooting... \n";
       m_take->Feed(1.0);
     } else {
       m_take->Feed(0.0);
@@ -156,9 +143,6 @@ void Shooter::InitializePIDControllers()
   m_shootingMotorAlpha.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 10);
   m_shootingMotorBeta.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 10);
 
-  //_talon.SetSensorPhase(false);
-  // m_shootingMotorAlpha.SetInverted(TalonFXInvertType::CounterClockwise);
-  // m_shootingMotorBeta.SetInverted(TalonFXInvertType::CounterClockwise);
 
   /* Set relevant frame periods to be at least as fast as periodic rate */
   m_shootingMotorAlpha.SetStatusFramePeriod(StatusFrameEnhanced::Status_13_Base_PIDF0, 10, 10);

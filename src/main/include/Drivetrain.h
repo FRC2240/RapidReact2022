@@ -42,10 +42,6 @@ class Drivetrain {
     // Set the distance per pulse for the drive encoders. We can simply use the
     // distance traveled for one rotation of the wheel divided by the encoder
     // resolution.
-    //m_leftEncoder->SetPositionConversionFactor(kDistancePerEncoderRotation);
-    //m_rightEncoder->SetPositionConversionFactor(kDistancePerEncoderRotation);
-    //m_leftEncoder->SetVelocityConversionFactor(kDistancePerEncoderRotation/60.0);
-    //m_rightEncoder->SetVelocityConversionFactor(kDistancePerEncoderRotation/60.0);
 
     m_leftMotor->SetSelectedSensorPosition(0.0);
     m_rightMotor->SetSelectedSensorPosition(0.0);
@@ -62,7 +58,6 @@ class Drivetrain {
 		}
     
     m_odometry = new frc::DifferentialDriveOdometry(m_gyro->GetRotation2d());
-    //std::cout << "DriveTrain pose " << m_odometry->GetPose().Rotation().Degrees() << std::endl;
   }
 
   void SetSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds);
