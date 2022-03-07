@@ -128,11 +128,6 @@ void Climber::ClimberDashRead(){
   m_rotateSetpointL = frc::SmartDashboard::GetNumber("Left Climber Rotate Point", 0.0);
   m_rotateSetpointR = frc::SmartDashboard::GetNumber("Right Climber Rotate Point", 0.0);
 
-  // Print PID to console
-  std::cout << "Read Dashboard Right Rotate Climber p gain: " << p << "\n";
-  std::cout << "Read Dashboard Right Climber Rotate i gain: " << i << "\n";
-  std::cout << "Read Dashboard Right Climber Rotate d gain: " << d << "\n";
-
   // If any PID value is different from currently stored, set that value
   if ((p != m_rightClimberRotateCoeff.kP)) { m_rightClimberRotatePIDController.SetP(p);m_rightClimberRotateCoeff.kP = p; }
   if ((i != m_rightClimberRotateCoeff.kI)) { m_rightClimberRotatePIDController.SetI(i); m_rightClimberRotateCoeff.kI = i; }
@@ -148,11 +143,6 @@ void Climber::ClimberDashRead(){
   d   = frc::SmartDashboard::GetNumber("Left Climber Rotate D Gain", 0.0);
   min = frc::SmartDashboard::GetNumber("Left Climber Rotate Min Output", 0.0);
   max = frc::SmartDashboard::GetNumber("Left Climber Rotate Max Output", 0.0);
-
-  // Print PID constants for left climber rotate
-  std::cout << "Read Dashboard left Climber Rotate p gain: " << p << "\n";
-  std::cout << "Read Dashboard left Climber Rotate i gain: " << i << "\n";
-  std::cout << "Read Dashboard left Climber Rotate d gain: " << d << "\n";
 
   // If any PID constants for left climber rotate differ from stored values, set the new value
   if ((p != m_leftClimberRotateCoeff.kP)) { m_leftClimberRotatePIDController.SetP(p);m_leftClimberRotateCoeff.kP = p; }
@@ -193,7 +183,6 @@ void Climber::ClimberPIDInit(){
 
   //Initialize right climber rotation PID Controller
   m_rightClimberRotatePIDController.SetP(m_rightClimberRotateCoeff.kP);
-  std::cout << "right kP: " << m_rightClimberRotateCoeff.kP << "\n";
   m_rightClimberRotatePIDController.SetI(m_rightClimberRotateCoeff.kI);
   m_rightClimberRotatePIDController.SetD(m_rightClimberRotateCoeff.kD);
   m_rightClimberRotatePIDController.SetIZone(m_rightClimberRotateCoeff.kIz);
@@ -202,7 +191,6 @@ void Climber::ClimberPIDInit(){
 
   // Initialize left climber rotation PID Controller
   m_leftClimberRotatePIDController.SetP(m_leftClimberRotateCoeff.kP);
-  std::cout << "left kP: " << m_leftClimberRotateCoeff.kP << "\n";
   m_leftClimberRotatePIDController.SetI(m_leftClimberRotateCoeff.kI);
   m_leftClimberRotatePIDController.SetD(m_leftClimberRotateCoeff.kD);
   m_leftClimberRotatePIDController.SetIZone(m_leftClimberRotateCoeff.kIz);
