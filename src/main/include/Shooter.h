@@ -30,9 +30,9 @@ class Shooter {
   Take*                   m_take;
 
   double m_overrideRPM;
-  double kHeightOfTarget   = 103.0; // TODO: Measure
-  double kHeightLimelight  = 28.0;  // TODO: Measure
-  double kLimelightAngle   = 13.861;  // TODO: Measure
+  double kHeightOfTarget   = 103.0;
+  double kHeightLimelight  = 28.0;
+  double kLimelightAngle   = 13.861;
   double kRadiusOfTarget   = 26.7;
 
 

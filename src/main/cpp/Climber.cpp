@@ -12,7 +12,6 @@
 
 // Initialization
 Climber::Climber() {
-  // ClimberDashInit();
   ClimberPIDInit();
 }
 
@@ -66,12 +65,10 @@ void Climber::RotateRight(double rotatePointR){
 void Climber::EngageLeft(double throttle) {
   //could set overall (max) soft limits here? Also, should do throttle?? Or do velocity PIDs??
   m_leftClimberExtender.Set(throttle);
-  //std::cout << "Left Encoder Position: " << m_leftClimberExtender.GetSelectedSensorPosition() << "\n";
 }
 
 void Climber::EngageRight(double throttle) {
   m_rightClimberExtender.Set(throttle);
-  //std::cout << "Right Encoder Position: " << m_rightClimberExtender.GetSelectedSensorPosition() << "\n";
 }
 
 /**
@@ -302,14 +299,14 @@ void Climber::Kill() {
   m_phase = 0;
 }
 
-void Climber::Shuffleboard(){ // I can't think of a better place to do this
-  if (m_leftExtenderServo.Get() == 0.7) { // Disengaged
+void Climber::Shuffleboard(){ 
+  if (m_leftExtenderServo.Get() == 0.7) { 
     m_leftServoShuffleboard.SetBoolean(false);
   }
   else{
     m_leftServoShuffleboard.SetBoolean(true);
   }
-  if(m_rightExtenderServo.Get() == 0.7){ //Disengaged
+  if(m_rightExtenderServo.Get() == 0.7){ 
     m_rightServoShuffleboard.SetBoolean(false);
   }
   else{
@@ -418,14 +415,7 @@ void Climber::GetEncoderValues() {
   frc::SmartDashboard::PutNumber("Current Right Climber Rotation Position: ", m_rightClimberEncoder.GetPosition());
   frc::SmartDashboard::PutNumber("Current Left Climber Extension Position: ", m_leftClimberExtender.GetSelectedSensorPosition());
   frc::SmartDashboard::PutNumber("Current Right Climber Extension Position: ", m_rightClimberExtender.GetSelectedSensorPosition());
-
-  std::cout << "Left Extension Position: " << m_leftClimberExtender.GetSelectedSensorPosition() << "\n";
-  std::cout << "Left Rotation Position: " << m_leftClimberEncoder.GetPosition() << "\n";
-  std::cout << "Right Extension Position: " << m_rightClimberExtender.GetSelectedSensorPosition() << "\n";
-  std::cout << "Right Rotation Position: " << m_rightClimberEncoder.GetPosition() << "\n";
-  
- 
-  }
+}
 
 void Climber::InitializeEncoders() {
   m_leftClimberExtender.SetSelectedSensorPosition(0.0);
@@ -517,14 +507,12 @@ void Climber::TestReadDash() {
 }
 
 void Climber::TestL() {
-  //std::cout << "Left Rotation Point: " << m_rotationL << "\n";
   RotateLeft(m_rotationL);
 }
 
 
 void Climber::TestR() {
-  //std::cout << "Right Rotation Point: " << m_rotationR << "\n";
-  //std::cout << "right p: " << m_rightClimberRotateCoeff.kP << "\n";
+
   RotateRight(m_rotationR);
 }
 

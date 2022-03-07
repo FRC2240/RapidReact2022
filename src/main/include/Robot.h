@@ -66,7 +66,6 @@ class Robot : public frc::TimedRobot {
   void TestPeriodic() override;
   void LimelightTracking();
   double CalculateRPM(double d);
-  //void ShooterAim();
 
   void ShooterArm();
   void ShooterFire();
@@ -157,9 +156,7 @@ class Robot : public frc::TimedRobot {
   Climber m_climber;
   Take m_take;
 
-//So long, Joystick.h!
   frc::XboxController m_stick{0};
-// A second controler
   frc::XboxController m_stick_climb{1};
 
   WPI_TalonFX m_frontRightMotor = {8};
@@ -172,7 +169,6 @@ class Robot : public frc::TimedRobot {
 
 
   // Left side of the robot is inverted
-  // Tonk drive
   frc::MotorControllerGroup m_leftDrive{m_frontLeftMotor, m_midLeftMotor, m_backLeftMotor};
   frc::MotorControllerGroup m_rightDrive{m_frontRightMotor, m_midRightMotor, m_backRightMotor};
 
@@ -189,7 +185,6 @@ class Robot : public frc::TimedRobot {
   pidCoeff m_frontLeftMotorCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
   
-// I don't know what either of theese do
   static const int uptakeMotorDeviceID = 9;
   static const int uptakeIdleMotorDeviceID = 14;
 
@@ -197,7 +192,6 @@ Shooter m_shooter{&m_drive, &m_stick, &m_take};
 
 frc::DriverStation::Alliance m_alliance = frc::DriverStation::Alliance::kInvalid;
 
-//auto timer
 frc::Timer m_autoTimer;
 
 frc::Trajectory m_trajectory;

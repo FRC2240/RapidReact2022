@@ -19,24 +19,16 @@
  */
 void Robot::RobotInit() { 
 
-  // InitializePIDControllers(); 
-  // InitializeDashboard();
-
 
 //Test
 m_climber.ClimberPIDInit();
   m_climber.TestDashInit();
-  /*
-  m_take.TestDashInit();
-  m_take.TakePIDInit();
-*/
+
   m_climber.InitializeEncoders();
-  //  m_take.InitializeEncoders(); 
   m_climber.InitializeSoftLimits();
   
   // Setup Autonomous options
   m_chooser.SetDefaultOption(kAutoDefault, kAutoDefault);
-  //m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   m_chooser.AddOption(Robot::kTwoBall, Robot::kTwoBall);
   m_chooser.AddOption(Robot::kThreeBall, Robot::kThreeBall);
   
@@ -260,22 +252,7 @@ void Robot::AutonomousPeriodic() {
       m_autoState = kNothing;
     }
   }
-  // Iteration two
- 
-  /*Robot::m_autoTimer.Start();
-  if (Robot::m_autoTimer.Get() <= units::time::second_t(1)) {
-    m_take.DeployIntake();
-  }
-  if (Robot::m_autoTimer.Get() > units::time::second_t(1) && Robot::m_autoTimer.Get() <= units::time::second_t(5)) {
-    m_take.AutoRunIntake(1);
-    m_drive.ArcadeDrive(0.5, 0);
-  }
-  if  (Robot::m_autoTimer.Get() > units::time::second_t(5) && Robot::m_autoTimer.Get() <= units::time::second_t(9)) {
-    m_shooter.Fire();
-  }
-  if  (Robot::m_autoTimer.Get() > units::time::second_t(9) && Robot::m_autoTimer.Get() <= units::time::second_t(12)) {
-    m_shooter.Fire();
-  }*/
+
 }
 
 /**
@@ -284,7 +261,6 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {
 
   m_alliance = frc::DriverStation::GetAlliance();
-  //InitializePIDControllers();
   ReadDashboard();
 }
 
@@ -424,10 +400,7 @@ bool Robot::autoFollowPath()
     auto desiredPose = m_trajectory.Sample(m_autoTimer.Get());
 
     // Get the reference chassis speeds from the Ramsete Controller
-    // std::cout << "x = " << m_drive->GetPose().X()
-    //          <<  "y = " << m_drive->GetPose().Y() << " rot = " << m_drive->GetPose().Rotation().Degrees() << std::endl;
-    // std::cout << "dx = " << desiredPose.pose.X()
-    //          << " dy = " << desiredPose.pose.Y() << " drot = " << desiredPose.pose.Rotation().Degrees() << std::endl;
+
 
     auto refChassisSpeeds = m_ramseteController.Calculate(m_autoDrive->GetPose(), desiredPose);
 
@@ -438,6 +411,7 @@ bool Robot::autoFollowPath()
   }
   else {
     m_autoDrive->Drive(0_mps, 0_rad_per_s);
+
     return true;
   }
 }
