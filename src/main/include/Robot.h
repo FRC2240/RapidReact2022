@@ -213,4 +213,8 @@ double leftDisengaged = 0.7, rightDisengaged = 0.7;
 
 // **** RAMSETE Control **** //
 Drivetrain* m_autoDrive;
+
+/* enabled | Limit(amp) | Trigger Threshold(amp) | Trigger Threshold Time(s) */
+ctre::phoenix::motorcontrol::StatorCurrentLimitConfiguration m_statorLimit{true, 20, 20, 0.5};
+ctre::phoenix::motorcontrol::SupplyCurrentLimitConfiguration m_supplyLimit{true, 10, 10, 0.3};
 };

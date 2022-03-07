@@ -60,6 +60,23 @@ m_climber.ClimberPIDInit();
   m_backRightMotor.Follow(m_frontRightMotor);
   m_backLeftMotor.Follow(m_frontLeftMotor);
 
+  // Apply current limits
+  m_frontRightMotor.ConfigStatorCurrentLimit(m_statorLimit);
+    m_midRightMotor.ConfigStatorCurrentLimit(m_statorLimit);
+   m_backRightMotor.ConfigStatorCurrentLimit(m_statorLimit);
+
+   m_frontLeftMotor.ConfigStatorCurrentLimit(m_statorLimit);
+     m_midLeftMotor.ConfigStatorCurrentLimit(m_statorLimit);
+    m_backLeftMotor.ConfigStatorCurrentLimit(m_statorLimit);
+
+  m_frontRightMotor.ConfigSupplyCurrentLimit(m_supplyLimit);
+    m_midRightMotor.ConfigSupplyCurrentLimit(m_supplyLimit);
+   m_backRightMotor.ConfigSupplyCurrentLimit(m_supplyLimit);
+
+   m_frontLeftMotor.ConfigSupplyCurrentLimit(m_supplyLimit);
+     m_midLeftMotor.ConfigSupplyCurrentLimit(m_supplyLimit);
+    m_backLeftMotor.ConfigSupplyCurrentLimit(m_supplyLimit);
+
   m_drive.SetSafetyEnabled(false);
 
   // Initialize auto driver
