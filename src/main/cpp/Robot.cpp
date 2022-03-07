@@ -290,6 +290,7 @@ void Robot::TeleopInit() {
 
 void Robot::TeleopPeriodic() {
   // Intake
+  m_climber.Run();
   m_take.Run(m_stick.GetLeftBumperReleased(), m_stick.GetRightBumper(), false, m_alliance);
   
   double a = .375/.4495;
@@ -310,9 +311,33 @@ void Robot::TeleopPeriodic() {
     m_shooter.Reset();
   }
   
-  // Manual Climb Controls (Joystick 1)
+  // Climb Controls (Joystick 1)
+  if (m_stick_climb.GetLeftBumperReleased()) {
+    m_climber.Progress();
+  }
 
-  //Arm extension
+  if (m_stick_climb.GetRightBumperReleased()) {
+    m_climber.SetPhase(0);
+  }
+
+}
+
+// This method is called at the beginning of the disabled state
+void Robot::DisabledInit() {}
+
+// This method is called every 20ms (by default) during disabled
+void Robot::DisabledPeriodic() {}
+
+// This method is called at the beginning of the testing state
+void Robot::TestInit() {
+}
+
+// This method is called every 20ms (by default) during testing
+void Robot::TestPeriodic() {
+  m_climber.GetEncoderValues(); 
+
+  // Manual Climb Controls
+  // Arm extension
   if (m_stick_climb.GetYButton()) {
     m_climber.EngageLeft(0.5);
   }
@@ -379,31 +404,6 @@ void Robot::TeleopPeriodic() {
       m_rightServoEngaged = false;
       std::cout << "Right Servo Disengaged\n";
     }
-  }
-}
-
-// This method is called at the beginning of the disabled state
-void Robot::DisabledInit() {}
-
-// This method is called every 20ms (by default) during disabled
-void Robot::DisabledPeriodic() {}
-
-// This method is called at the beginning of the testing state
-void Robot::TestInit() {
-}
-
-// This method is called every 20ms (by default) during testing
-void Robot::TestPeriodic() {
-  m_climber.GetEncoderValues(); 
-  m_climber.Run();
-  
-  // JOYSTICK 0 
-  if (m_stick_climb.GetLeftBumperReleased()) {
-    m_climber.Progress();
-  }
-
-  if (m_stick_climb.GetRightBumperReleased()) {
-    m_climber.SetPhase(0);
   }
 }
 
