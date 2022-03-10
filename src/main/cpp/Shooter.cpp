@@ -19,7 +19,7 @@ Shooter::Shooter(frc::DifferentialDrive* d, frc::XboxController* s, Take* t)
   // QUESTION: These are being manually called in Robot.cpp, but they are also being called on class instantiation
   // Why is it being repeated?
   // Initialize Dashboard and PID Controllers
-  InitializeDashboard();
+  //InitializeDashboard();
   InitializePIDControllers();
 
   // Follow the alpha
@@ -56,17 +56,14 @@ bool Shooter::LimelightTracking()
   double tx = m_table->GetNumber("tx", 0.0);
   double tv = m_table->GetNumber("tv", 0.0);
 
-  //// // std::cout << "tx: " << tx << "; tv: " << tv << "\n";
-
   double limelightTurnCmd = 0.0;
-
 
   if (tv > 0.0)
   {
-    // // std::cout << "Limelight Tracking, tx: " << tx << "\n";
     // Proportional steering
-
     limelightTurnCmd = (tx /*+ m_txOFFSET*/) * STEER_K;
+
+    // Added a base turn amount to account for friction
     if (tx < 0.0) {
       limelightTurnCmd -= 0.1;
     } else {
@@ -75,12 +72,10 @@ bool Shooter::LimelightTracking()
     limelightTurnCmd = std::clamp(limelightTurnCmd, -MAX_STEER, MAX_STEER);
     if (fabs(tx) < 3.0)
     {
-      // // std::cout << "Shoot true \n";
       shoot = true;
     }
   }
 
-  //// // std::cout << "Trying to turn: " << limelightTurnCmd << "\n";
   // Turn the robot to the target
   m_drive->ArcadeDrive(0.0, limelightTurnCmd);
   return shoot;
@@ -91,9 +86,7 @@ bool Shooter::LimelightTracking()
  */
 double Shooter::CalculateRPM(double d)
 {
-  //return 2924 + (-9.04 * d) + (0.0447 * pow(d, 2)); //new equation
   return 4.67 * d + 2002; 
-//   std::cout << "Desired RPM: " << rpmSpeed << "\n";
 }
 
 void Shooter::Dump() {
@@ -103,7 +96,7 @@ void Shooter::Dump() {
 
 void Shooter::Fire()
 {
-  
+
   m_table->PutNumber("ledMode", 3); // lights on
 
   // Is target locked?
@@ -111,35 +104,28 @@ void Shooter::Fire()
   {
     // Calculate distance to target from Limelight data
     double ty = m_table->GetNumber("ty", 0.0);
-    // // std::cout << "ty: " << ty <<"\n";
-    //double distance = kRadiusOfTarget + ((kHeightOfTarget - kHeightLimelight) / tan((kLimelightAngle + ty) * (3.141592653 / 180)));
 
     double distance = -2.39 * ty + (0.139 * pow(ty, 2)) + 105;
 
     double rpm = CalculateRPM(distance);
-    std::cout << "distance: " << distance << "; Shooter RPM:" << m_shootingMotorAlpha.GetSelectedSensorVelocity()*(600.0/2048.0) << "\n";
+    //std::cout << "distance: " << distance << "; Shooter RPM:" << m_shootingMotorAlpha.GetSelectedSensorVelocity()*(600.0/2048.0) << "\n";
 
     // Override for test/calibration?
     if (fabs(m_overrideRPM) > 1.0)
     {
       rpm = m_overrideRPM;
       frc::SmartDashboard::PutNumber("Shooter RPM", m_shootingMotorAlpha.GetSelectedSensorVelocity()*(600.0/2048.0));
-      std::cout << "Desired RPM: " << rpm << "\n";
+      //std::cout << "Desired RPM: " << rpm << "\n";
     }
 
     if ((distance < 250) && (distance > 70))
     {
-      // // // std::cout << "RPM: " << rpm << "\n"; 
       m_shootingMotorAlpha.Set(ControlMode::Velocity, -rpm * (2048.0 / 600.0));
     }
-    // // // // std::cout << "distance = " << distance
-    //           << " want = " << rpm << " got = " << m_shootingMotorAlpha.GetSelectedSensorVelocity() << std::endl;
 
     // Enable feed if we're at 98% of desired shooter speed
-    //std::cout << "Current RPM: " << m_shootingMotorAlpha.GetSelectedSensorVelocity() << "\n";
     if (fabs(m_shootingMotorAlpha.GetSelectedSensorVelocity()* (600.0/2048.0)) > fabs(rpm * 0.99))
     {
-      //std::cout << "Shooting... \n";
       m_take->Feed(1.0);
     } else {
       m_take->Feed(0.0);
@@ -147,12 +133,10 @@ void Shooter::Fire()
   }
 }
 
-
 void Shooter::InitializePIDControllers()
 {
-
   // Read current dashboard values
-  ReadDashboard();
+  //ReadDashboard();
 
   /* Factory default hardware to prevent unexpected behavior */
   m_shootingMotorAlpha.ConfigFactoryDefault();
@@ -162,9 +146,6 @@ void Shooter::InitializePIDControllers()
   m_shootingMotorAlpha.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 10);
   m_shootingMotorBeta.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 10);
 
-  //_talon.SetSensorPhase(false);
-  // m_shootingMotorAlpha.SetInverted(TalonFXInvertType::CounterClockwise);
-  // m_shootingMotorBeta.SetInverted(TalonFXInvertType::CounterClockwise);
 
   /* Set relevant frame periods to be at least as fast as periodic rate */
   m_shootingMotorAlpha.SetStatusFramePeriod(StatusFrameEnhanced::Status_13_Base_PIDF0, 10, 10);
@@ -184,7 +165,6 @@ void Shooter::InitializePIDControllers()
   m_shootingMotorAlpha.Config_kP(0, m_shooterCoeff.kP, 10);
   m_shootingMotorAlpha.Config_kI(0, m_shooterCoeff.kI, 10);
   m_shootingMotorAlpha.Config_kD(0, m_shooterCoeff.kD, 10);
-
 }
 
 /**
@@ -200,7 +180,6 @@ void Shooter::InitializeDashboard()
   frc::SmartDashboard::PutNumber("Shooter FF Gain", m_shooterCoeff.kFF);
   frc::SmartDashboard::PutNumber("Shooter Max Output", m_shooterCoeff.kMaxOutput);
   frc::SmartDashboard::PutNumber("Shooter Min Output", m_shooterCoeff.kMinOutput);
-
 }
 
 /**
@@ -216,5 +195,4 @@ void Shooter::ReadDashboard()
   m_shooterCoeff.kFF = frc::SmartDashboard::GetNumber("Shooter FF Gain", 0.0);
   m_shooterCoeff.kMinOutput = frc::SmartDashboard::GetNumber("Shooter Min Output", 0.0);
   m_shooterCoeff.kMaxOutput = frc::SmartDashboard::GetNumber("Shooter Max Output", 0.0);
-
 }

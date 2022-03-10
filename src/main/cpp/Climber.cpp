@@ -12,7 +12,6 @@
 
 // Initialization
 Climber::Climber() {
-  // ClimberDashInit();
   ClimberPIDInit();
 }
 
@@ -66,12 +65,10 @@ void Climber::RotateRight(double rotatePointR){
 void Climber::EngageLeft(double throttle) {
   //could set overall (max) soft limits here? Also, should do throttle?? Or do velocity PIDs??
   m_leftClimberExtender.Set(throttle);
-  //std::cout << "Left Encoder Position: " << m_leftClimberExtender.GetSelectedSensorPosition() << "\n";
 }
 
 void Climber::EngageRight(double throttle) {
   m_rightClimberExtender.Set(throttle);
-  //std::cout << "Right Encoder Position: " << m_rightClimberExtender.GetSelectedSensorPosition() << "\n";
 }
 
 /**
@@ -131,11 +128,6 @@ void Climber::ClimberDashRead(){
   m_rotateSetpointL = frc::SmartDashboard::GetNumber("Left Climber Rotate Point", 0.0);
   m_rotateSetpointR = frc::SmartDashboard::GetNumber("Right Climber Rotate Point", 0.0);
 
-  // Print PID to console
-  std::cout << "Read Dashboard Right Rotate Climber p gain: " << p << "\n";
-  std::cout << "Read Dashboard Right Climber Rotate i gain: " << i << "\n";
-  std::cout << "Read Dashboard Right Climber Rotate d gain: " << d << "\n";
-
   // If any PID value is different from currently stored, set that value
   if ((p != m_rightClimberRotateCoeff.kP)) { m_rightClimberRotatePIDController.SetP(p);m_rightClimberRotateCoeff.kP = p; }
   if ((i != m_rightClimberRotateCoeff.kI)) { m_rightClimberRotatePIDController.SetI(i); m_rightClimberRotateCoeff.kI = i; }
@@ -151,11 +143,6 @@ void Climber::ClimberDashRead(){
   d   = frc::SmartDashboard::GetNumber("Left Climber Rotate D Gain", 0.0);
   min = frc::SmartDashboard::GetNumber("Left Climber Rotate Min Output", 0.0);
   max = frc::SmartDashboard::GetNumber("Left Climber Rotate Max Output", 0.0);
-
-  // Print PID constants for left climber rotate
-  std::cout << "Read Dashboard left Climber Rotate p gain: " << p << "\n";
-  std::cout << "Read Dashboard left Climber Rotate i gain: " << i << "\n";
-  std::cout << "Read Dashboard left Climber Rotate d gain: " << d << "\n";
 
   // If any PID constants for left climber rotate differ from stored values, set the new value
   if ((p != m_leftClimberRotateCoeff.kP)) { m_leftClimberRotatePIDController.SetP(p);m_leftClimberRotateCoeff.kP = p; }
@@ -196,7 +183,6 @@ void Climber::ClimberPIDInit(){
 
   //Initialize right climber rotation PID Controller
   m_rightClimberRotatePIDController.SetP(m_rightClimberRotateCoeff.kP);
-  std::cout << "right kP: " << m_rightClimberRotateCoeff.kP << "\n";
   m_rightClimberRotatePIDController.SetI(m_rightClimberRotateCoeff.kI);
   m_rightClimberRotatePIDController.SetD(m_rightClimberRotateCoeff.kD);
   m_rightClimberRotatePIDController.SetIZone(m_rightClimberRotateCoeff.kIz);
@@ -205,7 +191,6 @@ void Climber::ClimberPIDInit(){
 
   // Initialize left climber rotation PID Controller
   m_leftClimberRotatePIDController.SetP(m_leftClimberRotateCoeff.kP);
-  std::cout << "left kP: " << m_leftClimberRotateCoeff.kP << "\n";
   m_leftClimberRotatePIDController.SetI(m_leftClimberRotateCoeff.kI);
   m_leftClimberRotatePIDController.SetD(m_leftClimberRotateCoeff.kD);
   m_leftClimberRotatePIDController.SetIZone(m_leftClimberRotateCoeff.kIz);
@@ -303,20 +288,42 @@ void Climber::Kill() {
   //consider different state for different cases??
 }
 
-void Climber::Shuffleboard(){ // I can't think of a better place to do this
-  if (m_leftExtenderServo.Get() == 0.7) { // Disengaged
+// NOTE:For m_(position)ServoBool, false means an error cout hasn't happened and true means it has.
+void Climber::Shuffleboard(){
+  if (m_leftExtenderServo.Get() == 0.7) {
     m_leftServoShuffleboard.SetBoolean(false);
+    if (m_leftServoCoutBool == true) {m_leftServoCoutBool = false;}
   }
-  else{
+
+  if (m_leftExtenderServo.Get() == 0.0){
     m_leftServoShuffleboard.SetBoolean(true);
+    if (m_leftServoCoutBool == true) {m_leftServoCoutBool = false;}
   }
-  if(m_rightExtenderServo.Get() == 0.7){ //Disengaged
+
+  else {
+    if (m_leftServoCoutBool == false) {
+      std::cout << "Left servo error. Outside of defined positions." << "\n";
+      m_leftServoCoutBool = true;
+    }
+  }
+
+  if(m_rightExtenderServo.Get() == 0.7){
     m_rightServoShuffleboard.SetBoolean(false);
+    if (m_rightServoCoutBool == true){ m_rightServoCoutBool = false;}
+
   }
-  else{
+  if (m_rightExtenderServo.Get() == 0.0){
     m_rightServoShuffleboard.SetBoolean(true);
+    if (m_rightServoCoutBool == true){ m_rightServoCoutBool = false;}
+  }
+  else {
+    if (m_rightServoCoutBool == false) {
+    std::cout << "Right servo error.Outside of defined positions." << "\n";
+    m_rightServoCoutBool = true;
+    }
   }
 }
+
 
 /**
  * Method to be called every period (default 20ms) to run the current state
@@ -450,14 +457,7 @@ void Climber::GetEncoderValues() {
   frc::SmartDashboard::PutNumber("Current Right Climber Rotation Position: ", m_rightClimberEncoder.GetPosition());
   frc::SmartDashboard::PutNumber("Current Left Climber Extension Position: ", m_leftClimberExtender.GetSelectedSensorPosition());
   frc::SmartDashboard::PutNumber("Current Right Climber Extension Position: ", m_rightClimberExtender.GetSelectedSensorPosition());
-
-  std::cout << "Left Extension Position: " << m_leftClimberExtender.GetSelectedSensorPosition() << "\n";
-  std::cout << "Left Rotation Position: " << m_leftClimberEncoder.GetPosition() << "\n";
-  std::cout << "Right Extension Position: " << m_rightClimberExtender.GetSelectedSensorPosition() << "\n";
-  std::cout << "Right Rotation Position: " << m_rightClimberEncoder.GetPosition() << "\n";
-  
- 
-  }
+}
 
 void Climber::InitializeEncoders() {
   m_leftClimberExtender.SetSelectedSensorPosition(0.0);
@@ -549,14 +549,12 @@ void Climber::TestReadDash() {
 }
 
 void Climber::TestL() {
-  //std::cout << "Left Rotation Point: " << m_rotationL << "\n";
   RotateLeft(m_rotationL);
 }
 
 
 void Climber::TestR() {
-  //std::cout << "Right Rotation Point: " << m_rotationR << "\n";
-  //std::cout << "right p: " << m_rightClimberRotateCoeff.kP << "\n";
+
   RotateRight(m_rotationR);
 }
 

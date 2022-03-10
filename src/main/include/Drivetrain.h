@@ -18,7 +18,6 @@
 #include <units/time.h>
 #include <units/velocity.h>
 #include <units/voltage.h>
-#include <wpi/math>
 
 #include "ctre/Phoenix.h"
 #include "AHRS.h"
@@ -42,10 +41,6 @@ class Drivetrain {
     // Set the distance per pulse for the drive encoders. We can simply use the
     // distance traveled for one rotation of the wheel divided by the encoder
     // resolution.
-    //m_leftEncoder->SetPositionConversionFactor(kDistancePerEncoderRotation);
-    //m_rightEncoder->SetPositionConversionFactor(kDistancePerEncoderRotation);
-    //m_leftEncoder->SetVelocityConversionFactor(kDistancePerEncoderRotation/60.0);
-    //m_rightEncoder->SetVelocityConversionFactor(kDistancePerEncoderRotation/60.0);
 
     m_leftMotor->SetSelectedSensorPosition(0.0);
     m_rightMotor->SetSelectedSensorPosition(0.0);
@@ -62,7 +57,6 @@ class Drivetrain {
 		}
     
     m_odometry = new frc::DifferentialDriveOdometry(m_gyro->GetRotation2d());
-    //std::cout << "DriveTrain pose " << m_odometry->GetPose().Rotation().Degrees() << std::endl;
   }
 
   void SetSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds);
@@ -86,7 +80,7 @@ class Drivetrain {
   static constexpr auto   kA = 0.117 * 1_V * 1_s * 1_s / 1_m;  // 0.254 // measured
 
   units::meter_t kTrackWidth = 0.593_m; //0.657_m;                        // measured    
-  double kDistancePerEncoderRotation = 0.0342; //((3.142*6.25/13.5)*0.0254); //0.0387;     // measured (meters)  
+  double kDistancePerEncoderRotation = 0.0373; //((3.142*6.25/13.5)*0.0254); //0.0387;     // measured (meters)  
   double kFalconVelocityToRPM = (600.0/2048.0);
   double kFalconVelocitytoMPS = (kFalconVelocityToRPM*kDistancePerEncoderRotation/60.0);
 
