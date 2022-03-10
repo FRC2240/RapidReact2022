@@ -260,7 +260,7 @@ void Robot::AutonomousPeriodic() {
   }
 
   if (m_autoState == kShooting) {
-    if (m_autoTimer.Get() < units::time::second_t(4)) {
+    if (m_autoTimer.Get() < units::time::second_t(3.5)) {
       m_shooter.Fire();
     }
     else {
@@ -272,7 +272,7 @@ void Robot::AutonomousPeriodic() {
   }
 
   if (m_autoState == kDumping) {
-    if (m_autoTimer.Get() < units::time::second_t(3)) {
+    if (m_autoTimer.Get() < units::time::second_t(2.0)) {
       m_shooter.Dump();
     }
     else {
