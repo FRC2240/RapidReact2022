@@ -25,7 +25,7 @@ void Robot::RobotInit() {
   m_climber.InitializeSoftLimits();
   
   // Setup Autonomous options
-  m_chooser.SetDefaultOption(kAutoDefault, kAutoDefault);
+  m_chooser.SetDefaultOption(Robot::kFiveBall, Robot::kFiveBall);
   m_chooser.AddOption(Robot::kTwoBall, Robot::kTwoBall);
   m_chooser.AddOption(Robot::kThreeBall, Robot::kThreeBall);
   
@@ -110,8 +110,8 @@ void Robot::AutonomousInit() {
     m_autoSequence = &m_threeBallSequence;
   }
 
-  if (m_autoSelected == kAutoDefault) {
-    m_autoSequence = &m_noSequence;
+  if (m_autoSelected == kFiveBall) {
+    m_autoSequence = &m_fiveBallSequence;
   }
 
   // First action
@@ -225,6 +225,21 @@ void Robot::AutonomousPeriodic() {
       m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
       break;
 
+    case kThreeBallPath4:
+      deployDirectory = deployDirectory / "output/ThreeBallFourth.wpilib.json";
+      m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+
+      m_autoTimer.Reset();
+      m_autoTimer.Start();
+      m_autoAction = kIdle;
+      m_autoState = kDriving;
+
+      m_autoDrive->ResetEncoders();
+
+      // Reset the drivetrain's odometry to the starting pose of the trajectory
+      m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
+      break;      
+
     case kIdle:
     default:
       break;
@@ -245,7 +260,7 @@ void Robot::AutonomousPeriodic() {
   }
 
   if (m_autoState == kShooting) {
-    if (m_autoTimer.Get() < units::time::second_t(4)) {
+    if (m_autoTimer.Get() < units::time::second_t(3.5)) {
       m_shooter.Fire();
     }
     else {
@@ -257,7 +272,7 @@ void Robot::AutonomousPeriodic() {
   }
 
   if (m_autoState == kDumping) {
-    if (m_autoTimer.Get() < units::time::second_t(3)) {
+    if (m_autoTimer.Get() < units::time::second_t(2.0)) {
       m_shooter.Dump();
     }
     else {
