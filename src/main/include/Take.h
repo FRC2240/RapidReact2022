@@ -16,8 +16,9 @@
 class Take
 {
 public:
-  Take();
-//  void Feed(double feedSpeed);
+
+  Take(); 
+  
   void TakePIDInit();
   void TakeDashRead();
   void TakeDashInit();
@@ -26,7 +27,12 @@ public:
   void Feed(double speed);
 
 
-  void Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance);
+
+  void InitializeEncoders();
+  void ReadEncoders();
+
+  void Run(bool toggle, bool shooting, bool autonomous, frc::DriverStation::Alliance alliance);
+
 
   // For testing, not operation
 
@@ -36,8 +42,14 @@ public:
   void DeployIntake();
   void ReturnIntake();
 
+  void TestDashInit();
+  void TestDashRead();
+  void SetIntakePosition(double position);
+  void TestRotation();
+
   void AutoRunIntake(double speed);
   void AutoStopIntake();
+
 
   enum BallColor
   {
@@ -54,13 +66,6 @@ public:
 
 private:
 
-  void InitializeEncoders();
-  void TestDashInit();
-  void TestDashRead();
-  void SetIntakePosition(double);
-  void TestRotation();
-  void ReadEncoders();
-
   // Determine the ball color from Color Sensor value
   BallColor Color(frc::Color);
 
@@ -68,7 +73,7 @@ private:
   bool WrongColor(BallColor ball, frc::DriverStation::Alliance alliance);
 
   // Read Color Sensors
-  void ReadSensors();
+  void ReadSensors(bool toggle);
 
   // Device IDs
   static const int rotateIntakeMotorDeviceID = 5;
@@ -78,7 +83,6 @@ private:
 
   bool intakeRunning = false;
 
-  // Shuffleboard  Shuffleboard::Shuffleboard m_shuffleboard; // Shuffleboard
   frc::DriverStation::Alliance m_alliance;
 
   /* Shuffleboard */
@@ -112,8 +116,6 @@ private:
 
     .GetEntry();
 
-
-
   // Motors
   rev::CANSparkMax m_rotateIntakeMotor{rotateIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_spinIntakeMotor{spinIntakeMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
@@ -136,7 +138,7 @@ private:
     double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
   };
 
-  double kMaxVel = 4000, kMinVel = 0, kMaxAcc = 2500, kAllErr = 0.2;
+  double kMaxVel = 5000, kMinVel = 0, kMaxAcc = 4500, kAllErr = 4.0;
   pidCoeff m_rotateIntakeCoeff{3.0e-4, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
   pidCoeff m_uptakeCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};

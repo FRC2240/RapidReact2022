@@ -1,6 +1,11 @@
 #include "Take.h"
-#include "log.h"
+// #include "log.h"
 #include <iostream>
+
+#include <frc/smartdashboard/SmartDashboard.h>
+#include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableInstance.h>
+
 
 
 #include <frc/smartdashboard/SmartDashboard.h>
@@ -8,8 +13,7 @@
 #include <networktables/NetworkTableInstance.h>
 
 Take::Take() {
-  //  InitializeEncoders();
-  TakeDashInit();
+  //TakeDashInit();
   TakePIDInit();
 
   m_waitingRoomPIDController.SetP(m_waitingRoomCoeff.kP);
@@ -21,6 +25,7 @@ Take::Take() {
 
   frc::Shuffleboard::GetTab("Drive Core")
     .Add("Uptake Ball Color", false)
+
     .WithWidget("Boolean Box")
     .GetEntry();
   frc::Shuffleboard::GetTab("Drive Core")
@@ -36,13 +41,9 @@ Take::Take() {
     .WithWidget("Boolean Box")
     .GetEntry();
 }
-/*
-void Take::Feed(double feedSpeed) {
-  m_waitingRoomMotor.Set(feedSpeed);
-  m_uptakeMotor.Set(-feedSpeed);
-}
-*/
-void Take::Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance) {
+
+
+void Take::Run(bool toggle, bool shooting, bool autonomous, frc::DriverStation::Alliance alliance) {
   // Events that will affect state:
   // - Driver input
   // - Uptake/Waiting Room become full
@@ -51,7 +52,7 @@ void Take::Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance
   auto currentState = m_state;
 
   if (toggle || currentState != Off) {
-    ReadSensors();
+    ReadSensors(toggle);
   }
 
   // Driver input?
@@ -64,39 +65,17 @@ void Take::Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance
     m_state = Intaking;
   }
 
-  // Wrong ball in waiting room
-  if ((m_waitingRoomState == blueBall &&
-       alliance == frc::DriverStation::Alliance::kRed)
-      ||
-      (m_waitingRoomState == redBall &&
-       alliance == frc::DriverStation::Alliance::kBlue)
-      ) {
-    // And the ball is wrong
-    if ((m_uptakeState ==  blueBall &&
-        alliance == frc::DriverStation::Alliance::kRed)
-      ||
-        (m_uptakeState == redBall &&
-       alliance == frc::DriverStation::Alliance::kBlue)
-        ) {}
-
-    // And the ball is right
-    if ((m_uptakeState ==  blueBall &&
-         alliance == frc::DriverStation::Alliance::kBlue)
-        ||
-        (m_uptakeState == redBall &&
-         alliance == frc::DriverStation::Alliance::kRed)
-        ) {}
-  }
-
   // Full?
   if ((m_waitingRoomState != nullBall) && (m_uptakeState != nullBall)) {
     m_state = Off;
   }
 
   // Wrong color in uptake?
-  if (WrongColor(m_uptakeState, alliance)) {
-    m_state = Ejecting;
-    m_ejectTimer = 40;
+  if (!autonomous) {
+    if (WrongColor(m_uptakeState, alliance)) {
+      m_state = Ejecting;
+      m_ejectTimer = 40;
+    }
   }
 
   // Timer complete?
@@ -136,13 +115,14 @@ void Take::Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance
   }
 }
 
-void Take::ReadSensors() {
+void Take::ReadSensors(bool toggle) {
   static int count = 0;
 
   ++count;
 
   // Only read the I2C data once per 10 loops
-  if (count < 10) {
+  // However, force a read if it's a toggle to update the ball states
+  if ((count < 10) && !toggle) {
     return;
   }
 
@@ -156,8 +136,6 @@ void Take::ReadSensors() {
 
 
   //Shuffleboard
-
-  // Does it exist?
   if (m_uptakeState == blueBall) {
     m_uptakeBallBlueBoard.SetBoolean(true);
       }
@@ -186,8 +164,6 @@ void Take::ReadSensors() {
     m_roomBallBlueBoard.SetBoolean(false);
   }
 
-
-
   count = 0;
 }
 
@@ -210,7 +186,7 @@ void Take::UptakeStop()
 
 void Take::DeployIntake()
 {
-  m_rotateIntakePIDController.SetReference(10.1, rev::CANSparkMax::ControlType::kSmartMotion);
+  m_rotateIntakePIDController.SetReference(50.5, rev::CANSparkMax::ControlType::kSmartMotion);
 }
 
 void Take::ReturnIntake()
@@ -310,11 +286,8 @@ void Take::TakeDashRead()
   // rotate intake
   // read PID coefficients from SmartDashboard
   p = frc::SmartDashboard::GetNumber("Rotate Intake P Gain", 0);
-  // // std::cout << "Read Dashboard rotate intake p gain: " << p << "\n";
   i = frc::SmartDashboard::GetNumber("Rotate Intake I Gain", 0);
-  // // std::cout << "Read Dashboard rotate intake i gain: " << i << "\n";
   d = frc::SmartDashboard::GetNumber("Rotate Intake D Gain", 0);
-  // // std::cout << "Read Dashboard rotate intake d gain: " << d << "\n";
   min = frc::SmartDashboard::GetNumber("Rotate Intake Min Output", 0);
   max = frc::SmartDashboard::GetNumber("Rotate Intake Max Output", 0);
 
@@ -342,11 +315,8 @@ void Take::TakeDashRead()
   }
 
   p = frc::SmartDashboard::GetNumber("Uptake P Gain", 0);
-  // // std::cout << "Read Dashboard uptake p gain: " << p << "\n";
   i = frc::SmartDashboard::GetNumber("Uptake I Gain", 0);
-  // // std::cout << "Read Dashboard uptake i gain: " << i << "\n";
   d = frc::SmartDashboard::GetNumber("Uptake D Gain", 0);
-  // // std::cout << "Read Dashboard uptake d gain: " << d << "\n";
   min = frc::SmartDashboard::GetNumber("Uptake Min Output", 0);
   max = frc::SmartDashboard::GetNumber("Uptake Max Output", 0);
 
@@ -373,11 +343,8 @@ void Take::TakeDashRead()
   }
 
   p = frc::SmartDashboard::GetNumber("Waiting Room P Gain", 0);
-  // std::cout << "Read Dashboard waiting room p gain: " << p << "\n";
   i = frc::SmartDashboard::GetNumber("Waiting Room I Gain", 0);
-  // std::cout << "Read Dashboard waiting room i gain: " << i << "\n";
   d = frc::SmartDashboard::GetNumber("Waiting Room D Gain", 0);
-  // std::cout << "Read Dashboard waiting room d gain: " << d << "\n";
   min = frc::SmartDashboard::GetNumber("Waiting Room Min Output", 0);
   max = frc::SmartDashboard::GetNumber("Waiting Room Max Output", 0);
 
@@ -405,21 +372,16 @@ void Take::TakeDashRead()
 
   // FIXME
   frc::Color dashDetectedColorUptake; // = m_uptakeSensor.GetColor();
-  //    double dashUptakeIR; // = m_uptakeSensor.GetIR(); //unused
 
   frc::SmartDashboard::PutNumber("Red", dashDetectedColorUptake.red);
   frc::SmartDashboard::PutNumber("Green", dashDetectedColorUptake.green);
   frc::SmartDashboard::PutNumber("Blue", dashDetectedColorUptake.blue);
-  //  frc::SmartDashboard::PutNumber("IR", dashUptakeIR); // UNUSED
 
   // FIXME
-  frc::Color dashDetectedColorRoom; // = m_waitingRoomSensor.GetColor();
-  //  double dashRoomIR; // = m_waitingRoomSensor.GetIR(); // Unused
-
+  frc::Color dashDetectedColorRoom;
   frc::SmartDashboard::PutNumber("Red", dashDetectedColorRoom.red);
   frc::SmartDashboard::PutNumber("Green", dashDetectedColorRoom.green);
   frc::SmartDashboard::PutNumber("Blue", dashDetectedColorRoom.blue);
-  //  frc::SmartDashboard::PutNumber("IR", dashRoomIR); //Unsued
 }
 
 void Take::InitializeEncoders() {
@@ -439,7 +401,6 @@ void Take::TestDashInit() {
 }
 
 void Take::TestDashRead() {
-  double p, i, d, min, max;
   // rotate intake
   m_rotateIntakeCoeff.kP = frc::SmartDashboard::GetNumber("Rotate Intake P Gain", 0.0);
   m_rotateIntakeCoeff.kI = frc::SmartDashboard::GetNumber("Rotate Intake I Gain", 0.0);
