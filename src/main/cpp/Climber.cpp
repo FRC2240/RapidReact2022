@@ -298,7 +298,7 @@ void Climber::Shuffleboard(){
   if (m_leftExtenderServo.Get() == 0.7) {
     m_leftServoShuffleboard.SetBoolean(false);
   }
-  if (m_leftExtenderServo.Get() == 0.0{
+  if (m_leftExtenderServo.Get() == 0.0){
     m_leftServoShuffleboard.SetBoolean(true);
   }
   else {
@@ -307,7 +307,7 @@ void Climber::Shuffleboard(){
   if(m_rightExtenderServo.Get() == 0.7){
     m_rightServoShuffleboard.SetBoolean(false);
   }
-  if (m_rightExtenderServo == 0.0{
+  if (m_rightExtenderServo.Get() == 0.0){
     m_rightServoShuffleboard.SetBoolean(true);
   }
   else {

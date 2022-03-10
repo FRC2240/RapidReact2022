@@ -21,8 +21,7 @@ Take::Take() {
   m_waitingRoomPIDController.SetD(m_waitingRoomCoeff.kD);
   m_waitingRoomPIDController.SetIZone(m_waitingRoomCoeff.kIz);
   m_waitingRoomPIDController.SetFF(m_waitingRoomCoeff.kFF);
-  m_waitingRoomPIDController.SetOutputRange(m_waitingRoomCoeff.kMinOutput, m_waitingRoomCoeff.kMaxOutput);0
-                                                                                                            }
+  m_waitingRoomPIDController.SetOutputRange(m_waitingRoomCoeff.kMinOutput, m_waitingRoomCoeff.kMaxOutput);                                                                                                            }
 
 void Take::Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance) {
   // Events that will affect state:x
