@@ -113,6 +113,10 @@ private:
   int phase_delay = 0;
   int phase_delay_redux = 0;
 
+  // NOTE: False means an error cout hasn't happened and true means it has.
+  bool m_leftServoCoutBool = false;
+  bool m_rightServoCoutBool = false;
+
   //rotation positions
   double centerL = 35.5, centerR = 20.0, highL = 60.0, highR = 7.5, finalR = 0.0; 
 
