@@ -316,8 +316,13 @@ void Robot::TeleopPeriodic() {
     m_climber.Progress();
   }
 
+
   if (m_stick_climb.GetYButtonReleased()) {
     m_climber.SetPhase(6); 
+  }
+
+  if (m_stick_climb.GetBButtonReleased()) {
+    m_climber.Kill();
   }
 
 }
@@ -334,7 +339,7 @@ void Robot::TestInit() {
 
 // This method is called every 20ms (by default) during testing
 void Robot::TestPeriodic() {
-  m_climber.GetEncoderValues(); 
+  //m_climber.GetEncoderValues(); 
 
   // Manual Climb Controls
   // Arm extension

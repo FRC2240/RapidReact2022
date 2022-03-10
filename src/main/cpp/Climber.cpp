@@ -8,7 +8,7 @@
 #include <fmt/core.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
-// TODO: Add a kill button
+
 
 // Initialization
 Climber::Climber() {
@@ -300,6 +300,7 @@ void Climber::Progress() {
  */
 void Climber::Kill() {
   m_phase = 0;
+  //consider different state for different cases??
 }
 
 void Climber::Shuffleboard(){ // I can't think of a better place to do this
@@ -377,7 +378,7 @@ void Climber::Run() {
            if (phase_delay_redux == 0) {
              phase_delay_redux++;
            }
-           else if (phase_delay_redux > 16) {
+           else if (phase_delay_redux > 8) {
              SetRightServo(0.0);
              RotateRight(finalR);
            }
