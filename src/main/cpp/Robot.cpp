@@ -21,7 +21,7 @@ void Robot::RobotInit() {
 
 
 //Test
-m_climber.ClimberPIDInit();
+  m_climber.ClimberPIDInit();
   m_climber.TestDashInit();
 
   m_climber.InitializeEncoders();
@@ -279,7 +279,7 @@ void Robot::TeleopInit() {
 void Robot::TeleopPeriodic() {
   // Intake
   m_take.Run(m_stick.GetLeftBumperReleased(), m_stick.GetRightBumper(), m_alliance);
-  
+  m_climber.Shuffleboard();
   double a = .375/.4495;
   double b = .0745/.4495;
   //Read controller input
