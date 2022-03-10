@@ -91,7 +91,7 @@ void Shooter::Dump() {
 
 void Shooter::Fire()
 {
-  
+
   m_table->PutNumber("ledMode", 3); // lights on
 
   // Is target locked?
