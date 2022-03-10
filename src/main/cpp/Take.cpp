@@ -21,26 +21,7 @@ Take::Take() {
   m_waitingRoomPIDController.SetD(m_waitingRoomCoeff.kD);
   m_waitingRoomPIDController.SetIZone(m_waitingRoomCoeff.kIz);
   m_waitingRoomPIDController.SetFF(m_waitingRoomCoeff.kFF);
-  m_waitingRoomPIDController.SetOutputRange(m_waitingRoomCoeff.kMinOutput, m_waitingRoomCoeff.kMaxOutput);
-
-  frc::Shuffleboard::GetTab("Drive Core")
-    .Add("Uptake Ball Color", false)
-
-    .WithWidget("Boolean Box")
-    .GetEntry();
-  frc::Shuffleboard::GetTab("Drive Core")
-    .Add("Room Ball Color", false)
-    .WithWidget("Boolean Box")
-    .GetEntry();
-  frc::Shuffleboard::GetTab("Drive Core")
-    .Add("Uptake Ball Exists", false)
-    .WithWidget("Boolean Box")
-    .GetEntry();
-  frc::Shuffleboard::GetTab("Drive Core")
-    .Add("Room Ball Exists", false)
-    .WithWidget("Boolean Box")
-    .GetEntry();
-}
+  m_waitingRoomPIDController.SetOutputRange(m_waitingRoomCoeff.kMinOutput, m_waitingRoomCoeff.kMaxOutput);                                                                                                            }
 
 
 void Take::Run(bool toggle, bool shooting, bool autonomous, frc::DriverStation::Alliance alliance) {

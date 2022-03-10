@@ -18,9 +18,8 @@
  * in addition to setting up dashboard
  */
 void Robot::RobotInit() { 
-  //Test
+
   m_climber.ClimberPIDInit();
-  //m_climber.TestDashInit();
 
   m_climber.InitializeEncoders();
   m_climber.InitializeSoftLimits();
@@ -281,6 +280,7 @@ void Robot::TeleopInit() {
 
 void Robot::TeleopPeriodic() {
   // Intake
+
   m_climber.Run();
   m_take.Run(m_stick.GetLeftBumperReleased(), m_stick.GetRightBumper(), false, m_alliance);
   

@@ -287,20 +287,27 @@ void Climber::Kill() {
   m_phase = 0;
 }
 
-void Climber::Shuffleboard(){ 
-  if (m_leftExtenderServo.Get() == 0.7) { 
+void Climber::Shuffleboard(){
+  if (m_leftExtenderServo.Get() == 0.7) {
     m_leftServoShuffleboard.SetBoolean(false);
   }
-  else{
+  if (m_leftExtenderServo.Get() == 0.0){
     m_leftServoShuffleboard.SetBoolean(true);
   }
-  if(m_rightExtenderServo.Get() == 0.7){ 
+  else {
+    std::cout << "Left servo error. Outside of defined positions." << "\n";
+  }
+  if(m_rightExtenderServo.Get() == 0.7){
     m_rightServoShuffleboard.SetBoolean(false);
   }
-  else{
+  if (m_rightExtenderServo.Get() == 0.0){
     m_rightServoShuffleboard.SetBoolean(true);
   }
+  else {
+    std::cout << "Right servo error.Outside of defined positions." << "\n";
+  }
 }
+
 
 /**
  * Method to be called every period (default 20ms) to run the current state
