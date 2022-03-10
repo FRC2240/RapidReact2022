@@ -81,8 +81,10 @@ class Robot : public frc::TimedRobot {
  private:
   frc::SendableChooser<std::string> m_chooser;
   const std::string kAutoDefault = "Default";
-  const std::string kTwoBall = "TwoBall";
-  const std::string kThreeBall = "ThreeBall";
+  const std::string kTwoBall     = "TwoBall";
+  const std::string kThreeBall   = "ThreeBall";
+  const std::string kFiveBall    = "FiveBall";
+
   std::string m_autoSelected;
   
  
@@ -96,6 +98,7 @@ class Robot : public frc::TimedRobot {
     kThreeBallPath1,
     kThreeBallPath2,
     kThreeBallPath3,
+    kThreeBallPath4,
     kIdle
   };
 
@@ -118,67 +121,82 @@ class Robot : public frc::TimedRobot {
     kIdle
   };
 
-  // Three-Ball Auto Sequence
-  std::list<autoActions> m_threeBallSequence{
+// Three-Ball Auto Sequence
+std::list<autoActions> m_threeBallSequence{
+  kIntake,
+  kThreeBallPath1,
+  kShoot,
+  kIntake,
+  kThreeBallPath2,
+  kShoot,
+  kIntake,
+  kThreeBallPath3,
+  kIdle
+};
+
+// Five-Ball Auto Sequence
+std::list<autoActions> m_fiveBallSequence{
     kIntake,
     kThreeBallPath1,
     kShoot,
     kIntake,
     kThreeBallPath2,
     kShoot,
+    kIntake,
     kThreeBallPath3,
+    kThreeBallPath4,
+    kShoot,
     kIdle
-  };
+};
 
-  std::list<autoActions> m_noSequence{
-    kIdle
-  };
+std::list<autoActions> m_noSequence{
+    kIdle};
 
-  std::list<autoActions> *m_autoSequence;
-  autoActions m_autoAction;
-  autoState m_autoState;
+std::list<autoActions> *m_autoSequence;
+autoActions m_autoAction;
+autoState m_autoState;
 
-  double m_driveExponent = 1.2;
-  double m_turnFactor = 0.5;
-  bool manualShootingEnabled;
-  bool limelightTrackingBool = false;
-  bool wrongBallInSystem;
-  bool uptakeBool;
-  fs::path deployDirectory;
+double m_driveExponent = 1.2;
+double m_turnFactor = 0.5;
+bool manualShootingEnabled;
+bool limelightTrackingBool = false;
+bool wrongBallInSystem;
+bool uptakeBool;
+fs::path deployDirectory;
 
-  double taLowBound, taHighBound;
-  double txLowBound, txHighBound;
-  double tyLowBound, tyHighBound;
-  double heightOfTarget;
-  double heightLimelight;
-  double constantLimelightAngle;
+double taLowBound, taHighBound;
+double txLowBound, txHighBound;
+double tyLowBound, tyHighBound;
+double heightOfTarget;
+double heightLimelight;
+double constantLimelightAngle;
 
-  Climber m_climber;
-  Take m_take;
+Climber m_climber;
+Take m_take;
 
-  frc::XboxController m_stick{0};
-  frc::XboxController m_stick_climb{1};
+frc::XboxController m_stick{0};
+frc::XboxController m_stick_climb{1};
 
-  WPI_TalonFX m_frontRightMotor = {8};
-  WPI_TalonFX m_midRightMotor = {3};
-  WPI_TalonFX m_backRightMotor = {7};
-  WPI_TalonFX m_frontLeftMotor = {2};
+WPI_TalonFX m_frontRightMotor = {8};
+WPI_TalonFX m_midRightMotor = {3};
+WPI_TalonFX m_backRightMotor = {7};
+WPI_TalonFX m_frontLeftMotor = {2};
 
-  WPI_TalonFX m_midLeftMotor = {1};
-  WPI_TalonFX m_backLeftMotor = {17};
+WPI_TalonFX m_midLeftMotor = {1};
+WPI_TalonFX m_backLeftMotor = {17};
 
+// Left side of the robot is inverted
+frc::MotorControllerGroup m_leftDrive{m_frontLeftMotor, m_midLeftMotor, m_backLeftMotor};
+frc::MotorControllerGroup m_rightDrive{m_frontRightMotor, m_midRightMotor, m_backRightMotor};
 
-  // Left side of the robot is inverted
-  frc::MotorControllerGroup m_leftDrive{m_frontLeftMotor, m_midLeftMotor, m_backLeftMotor};
-  frc::MotorControllerGroup m_rightDrive{m_frontRightMotor, m_midRightMotor, m_backRightMotor};
+frc::DifferentialDrive m_drive{m_leftDrive, m_rightDrive};
 
-  frc::DifferentialDrive m_drive{m_leftDrive, m_rightDrive};
+frc2::PIDController m_frontRightMotorPIDController{0.0, 0.0, 0.0}; // kP, kI, kD
+frc2::PIDController m_frontLeftMotorPIDController{0.0, 0.0, 0.0};
 
-  frc2::PIDController m_frontRightMotorPIDController{0.0, 0.0, 0.0}; //kP, kI, kD
-  frc2::PIDController m_frontLeftMotorPIDController{0.0, 0.0, 0.0};
-
-  struct pidCoeff {
-      double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
+struct pidCoeff
+{
+  double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
   };
 
   pidCoeff m_frontRightMotorCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
