@@ -294,24 +294,39 @@ void Climber::Kill() {
   m_phase = 0;
 }
 
+// NOTE:For m_(position)ServoBool, false means an error cout hasn't happened and true means it has.
 void Climber::Shuffleboard(){
   if (m_leftExtenderServo.Get() == 0.7) {
     m_leftServoShuffleboard.SetBoolean(false);
+    if (m_leftServoCoutBool == true) {m_leftServoCoutBool = false;}
   }
+
   if (m_leftExtenderServo.Get() == 0.0){
     m_leftServoShuffleboard.SetBoolean(true);
+    if (m_leftServoCoutBool == true) {m_leftServoCoutBool = false;}
   }
+
   else {
-    std::cout << "Left servo error. Outside of defined positions." << "\n";
+    if (m_leftServoCoutBool == false) {
+      std::cout << "Left servo error. Outside of defined positions." << "\n";
+      m_leftServoCoutBool = true;
+    }
   }
+
   if(m_rightExtenderServo.Get() == 0.7){
     m_rightServoShuffleboard.SetBoolean(false);
+    if (m_rightServoCoutBool == true){ m_rightServoCoutBool = false;}
+
   }
   if (m_rightExtenderServo.Get() == 0.0){
     m_rightServoShuffleboard.SetBoolean(true);
+    if (m_rightServoCoutBool == true){ m_rightServoCoutBool = false;}
   }
   else {
+    if (m_rightServoCoutBool == false) {
     std::cout << "Right servo error.Outside of defined positions." << "\n";
+    m_rightServoCoutBool = true;
+    }
   }
 }
 
