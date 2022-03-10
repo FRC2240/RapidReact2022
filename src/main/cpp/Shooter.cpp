@@ -19,7 +19,7 @@ Shooter::Shooter(frc::DifferentialDrive* d, frc::XboxController* s, Take* t)
   // QUESTION: These are being manually called in Robot.cpp, but they are also being called on class instantiation
   // Why is it being repeated?
   // Initialize Dashboard and PID Controllers
-  InitializeDashboard();
+  //InitializeDashboard();
   InitializePIDControllers();
 
   // Follow the alpha
@@ -50,20 +50,25 @@ bool Shooter::LimelightTracking()
   // Proportional Steering Constant:
   // If your robot doesn't turn fast enough toward the target, make this number bigger
   // If your robot oscillates (swings back and forth past the target) make this smaller
-  const double STEER_K = 0.04;
+  const double STEER_K = 0.06; //0.04;
   const double MAX_STEER = 0.5;
 
   double tx = m_table->GetNumber("tx", 0.0);
   double tv = m_table->GetNumber("tv", 0.0);
 
-
   double limelightTurnCmd = 0.0;
-
 
   if (tv > 0.0)
   {
     // Proportional steering
     limelightTurnCmd = (tx /*+ m_txOFFSET*/) * STEER_K;
+
+    // Added a base turn amount to account for friction
+    if (tx < 0.0) {
+      limelightTurnCmd -= 0.1;
+    } else {
+      limelightTurnCmd += 0.1;
+    }
     limelightTurnCmd = std::clamp(limelightTurnCmd, -MAX_STEER, MAX_STEER);
     if (fabs(tx) < 3.0)
     {
@@ -103,14 +108,14 @@ void Shooter::Fire()
     double distance = -2.39 * ty + (0.139 * pow(ty, 2)) + 105;
 
     double rpm = CalculateRPM(distance);
-    std::cout << "distance: " << distance << "; Shooter RPM:" << m_shootingMotorAlpha.GetSelectedSensorVelocity()*(600.0/2048.0) << "\n";
+    //std::cout << "distance: " << distance << "; Shooter RPM:" << m_shootingMotorAlpha.GetSelectedSensorVelocity()*(600.0/2048.0) << "\n";
 
     // Override for test/calibration?
     if (fabs(m_overrideRPM) > 1.0)
     {
       rpm = m_overrideRPM;
       frc::SmartDashboard::PutNumber("Shooter RPM", m_shootingMotorAlpha.GetSelectedSensorVelocity()*(600.0/2048.0));
-      std::cout << "Desired RPM: " << rpm << "\n";
+      //std::cout << "Desired RPM: " << rpm << "\n";
     }
 
     if ((distance < 250) && (distance > 70))
@@ -128,12 +133,10 @@ void Shooter::Fire()
   }
 }
 
-
 void Shooter::InitializePIDControllers()
 {
-
   // Read current dashboard values
-  ReadDashboard();
+  //ReadDashboard();
 
   /* Factory default hardware to prevent unexpected behavior */
   m_shootingMotorAlpha.ConfigFactoryDefault();
@@ -162,7 +165,6 @@ void Shooter::InitializePIDControllers()
   m_shootingMotorAlpha.Config_kP(0, m_shooterCoeff.kP, 10);
   m_shootingMotorAlpha.Config_kI(0, m_shooterCoeff.kI, 10);
   m_shootingMotorAlpha.Config_kD(0, m_shooterCoeff.kD, 10);
-
 }
 
 /**
@@ -178,7 +180,6 @@ void Shooter::InitializeDashboard()
   frc::SmartDashboard::PutNumber("Shooter FF Gain", m_shooterCoeff.kFF);
   frc::SmartDashboard::PutNumber("Shooter Max Output", m_shooterCoeff.kMaxOutput);
   frc::SmartDashboard::PutNumber("Shooter Min Output", m_shooterCoeff.kMinOutput);
-
 }
 
 /**
@@ -194,5 +195,4 @@ void Shooter::ReadDashboard()
   m_shooterCoeff.kFF = frc::SmartDashboard::GetNumber("Shooter FF Gain", 0.0);
   m_shooterCoeff.kMinOutput = frc::SmartDashboard::GetNumber("Shooter Min Output", 0.0);
   m_shooterCoeff.kMaxOutput = frc::SmartDashboard::GetNumber("Shooter Max Output", 0.0);
-
 }

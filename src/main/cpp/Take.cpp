@@ -13,7 +13,7 @@
 #include <networktables/NetworkTableInstance.h>
 
 Take::Take() {
-  TakeDashInit();
+  //TakeDashInit();
   TakePIDInit();
 
   m_waitingRoomPIDController.SetP(m_waitingRoomCoeff.kP);
@@ -23,8 +23,10 @@ Take::Take() {
   m_waitingRoomPIDController.SetFF(m_waitingRoomCoeff.kFF);
   m_waitingRoomPIDController.SetOutputRange(m_waitingRoomCoeff.kMinOutput, m_waitingRoomCoeff.kMaxOutput);                                                                                                            }
 
-void Take::Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance) {
-  // Events that will affect state:x
+
+void Take::Run(bool toggle, bool shooting, bool autonomous, frc::DriverStation::Alliance alliance) {
+  // Events that will affect state:
+  // - Driver input
   // - Uptake/Waiting Room become full
   // - Wrong color detected
   // - Eject complete
@@ -50,9 +52,11 @@ void Take::Run(bool toggle, bool shooting, frc::DriverStation::Alliance alliance
   }
 
   // Wrong color in uptake?
-  if (WrongColor(m_uptakeState, alliance)) {
-    m_state = Ejecting;
-    m_ejectTimer = 40;
+  if (!autonomous) {
+    if (WrongColor(m_uptakeState, alliance)) {
+      m_state = Ejecting;
+      m_ejectTimer = 40;
+    }
   }
 
   // Timer complete?
@@ -378,7 +382,6 @@ void Take::TestDashInit() {
 }
 
 void Take::TestDashRead() {
-  double p, i, d, min, max;
   // rotate intake
   m_rotateIntakeCoeff.kP = frc::SmartDashboard::GetNumber("Rotate Intake P Gain", 0.0);
   m_rotateIntakeCoeff.kI = frc::SmartDashboard::GetNumber("Rotate Intake I Gain", 0.0);

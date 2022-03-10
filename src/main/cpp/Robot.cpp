@@ -19,10 +19,7 @@
  */
 void Robot::RobotInit() { 
 
-
-//Test
   m_climber.ClimberPIDInit();
-  m_climber.TestDashInit();
 
   m_climber.InitializeEncoders();
   m_climber.InitializeSoftLimits();
@@ -51,6 +48,24 @@ void Robot::RobotInit() {
   //Setup back motor pair
   m_backRightMotor.Follow(m_frontRightMotor);
   m_backLeftMotor.Follow(m_frontLeftMotor);
+
+  // Apply current limits
+  m_frontRightMotor.ConfigStatorCurrentLimit(m_statorLimit);
+    m_midRightMotor.ConfigStatorCurrentLimit(m_statorLimit);
+   m_backRightMotor.ConfigStatorCurrentLimit(m_statorLimit);
+
+   m_frontLeftMotor.ConfigStatorCurrentLimit(m_statorLimit);
+     m_midLeftMotor.ConfigStatorCurrentLimit(m_statorLimit);
+    m_backLeftMotor.ConfigStatorCurrentLimit(m_statorLimit);
+
+  m_frontRightMotor.ConfigSupplyCurrentLimit(m_supplyLimit);
+    m_midRightMotor.ConfigSupplyCurrentLimit(m_supplyLimit);
+   m_backRightMotor.ConfigSupplyCurrentLimit(m_supplyLimit);
+
+   m_frontLeftMotor.ConfigSupplyCurrentLimit(m_supplyLimit);
+     m_midLeftMotor.ConfigSupplyCurrentLimit(m_supplyLimit);
+    m_backLeftMotor.ConfigSupplyCurrentLimit(m_supplyLimit);
+  
 
   m_drive.SetSafetyEnabled(false);
 
@@ -85,7 +100,7 @@ void Robot::AutonomousInit() {
   m_autoSelected = m_chooser.GetSelected();
 
   // Print out the selected autonomous mode
-  fmt::print("Auto selected: {}\n", m_autoSelected);
+  //fmt::print("Auto selected: {}\n", m_autoSelected);
 
   if (m_autoSelected == kTwoBall) {
     m_autoSequence = &m_twoBallSequence;
@@ -115,17 +130,13 @@ void Robot::AutonomousPeriodic() {
   // Execute action
   switch(m_autoAction) {
     case kIntake:
-      std::cout << "Intake\n";
-      m_take.Run(true, false, m_alliance);
+      m_take.Run(true, false, true, m_alliance);
       m_autoSequence->pop_front();
       m_autoAction = m_autoSequence->front();
-      std::cout << "new = " << m_autoAction << "\n";
       m_autoState = kNothing;
       break;
 
     case kShoot:
-      std::cout << "Shoot\n";
-
       m_autoTimer.Reset();
       m_autoTimer.Start();
       m_autoAction = kIdle;
@@ -133,8 +144,6 @@ void Robot::AutonomousPeriodic() {
       break;
 
     case kDump:
-      std::cout << "Dump\n";
-
       m_autoTimer.Reset();
       m_autoTimer.Start();
       m_autoAction = kIdle;
@@ -142,43 +151,36 @@ void Robot::AutonomousPeriodic() {
       break;
 
     case kTwoBallPath1:
-      std::cout << "Two Ball Path 1\n";
-
       deployDirectory = deployDirectory / "output/TwoBallFirst.wpilib.json";
       m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-      std::cout << "dir: " << deployDirectory.string() << std::endl;
-
-      std::cout << "Trajectory time: " << m_trajectory.TotalTime().to<double>() << std::endl;
 
       m_autoTimer.Reset();
       m_autoTimer.Start();
       m_autoAction = kIdle;
       m_autoState = kDriving;
+
+      m_autoDrive->ResetEncoders();
 
       // Reset the drivetrain's odometry to the starting pose of the trajectory
       m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
       break;
 
     case kTwoBallPath2:
-      std::cout << "Two Ball Path 2\n";
-
       deployDirectory = deployDirectory / "output/TwoBallSecond.wpilib.json";
       m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-
-      std::cout << "Trajectory time: " << m_trajectory.TotalTime().to<double>() << std::endl;
 
       m_autoTimer.Reset();
       m_autoTimer.Start();
       m_autoAction = kIdle;
       m_autoState = kDriving;
 
+      m_autoDrive->ResetEncoders();
+
       // Reset the drivetrain's odometry to the starting pose of the trajectory
       m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
       break;
 
     case kThreeBallPath1:
-      std::cout << "Three Ball Path 1\n";
-
       deployDirectory = deployDirectory / "output/ThreeBallFirst.wpilib.json";
       m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
 
@@ -187,13 +189,13 @@ void Robot::AutonomousPeriodic() {
       m_autoAction = kIdle;
       m_autoState = kDriving;
 
+      m_autoDrive->ResetEncoders();
+
       // Reset the drivetrain's odometry to the starting pose of the trajectory
       m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
       break;
       
     case kThreeBallPath2:
-      std::cout << "Three Ball Path 2\n";
-
       deployDirectory = deployDirectory / "output/ThreeBallSecond.wpilib.json";
       m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
 
@@ -202,13 +204,13 @@ void Robot::AutonomousPeriodic() {
       m_autoAction = kIdle;
       m_autoState = kDriving;
 
+      m_autoDrive->ResetEncoders();
+
       // Reset the drivetrain's odometry to the starting pose of the trajectory
       m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
       break;
 
     case kThreeBallPath3:
-      std::cout << "Three Ball Path 3\n";
-
       deployDirectory = deployDirectory / "output/ThreeBallThird.wpilib.json";
       m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
 
@@ -216,6 +218,8 @@ void Robot::AutonomousPeriodic() {
       m_autoTimer.Start();
       m_autoAction = kIdle;
       m_autoState = kDriving;
+
+      m_autoDrive->ResetEncoders();
 
       // Reset the drivetrain's odometry to the starting pose of the trajectory
       m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
@@ -229,10 +233,11 @@ void Robot::AutonomousPeriodic() {
   // Long-lived states...
   if (m_autoState == kDriving) {
     bool done = autoFollowPath();
+    m_take.Run(false, false, true, m_alliance);
 
    // Next state
    if (done) {
-      std::cout << "done driving" << std::endl;
+      m_take.Run(true, true, true, m_alliance);
       m_autoSequence->pop_front();
       m_autoAction = m_autoSequence->front();
       m_autoState = kNothing;
@@ -244,7 +249,6 @@ void Robot::AutonomousPeriodic() {
       m_shooter.Fire();
     }
     else {
-      std::cout << "shoot done\n";
       m_shooter.Reset();
       m_autoSequence->pop_front();
       m_autoAction = m_autoSequence->front();
@@ -257,7 +261,6 @@ void Robot::AutonomousPeriodic() {
       m_shooter.Dump();
     }
     else {
-      std::cout << "dump done\n";
       m_shooter.Reset();
       m_autoSequence->pop_front();
       m_autoAction = m_autoSequence->front();
@@ -271,19 +274,20 @@ void Robot::AutonomousPeriodic() {
  * This is the method called at the beginning of teleoperated mode
  */
 void Robot::TeleopInit() {
-
   m_alliance = frc::DriverStation::GetAlliance();
-  ReadDashboard();
+  //ReadDashboard();
 }
 
 void Robot::TeleopPeriodic() {
   // Intake
-  m_take.Run(m_stick.GetLeftBumperReleased(), m_stick.GetRightBumper(), m_alliance);
-  m_climber.Shuffleboard();
-  double a = .375/.4495;
-  double b = .0745/.4495;
-  //Read controller input
 
+  m_climber.Run();
+  m_take.Run(m_stick.GetLeftBumperReleased(), m_stick.GetRightBumper(), false, m_alliance);
+  
+  //double a = .375/.4495;
+  //double b = .0745/.4495;
+
+  // Read controller input
   double throttle = -m_stick.GetLeftTriggerAxis() + m_stick.GetRightTriggerAxis();
 
   double turnInput = m_stick.GetLeftX() - m_stick.GetLeftY();
@@ -297,7 +301,44 @@ void Robot::TeleopPeriodic() {
   if (m_stick.GetRightBumperReleased()) {
     m_shooter.Reset();
   }
+  
+  // Climb Controls (Joystick 1)
+  if (m_stick_climb.GetLeftBumperReleased()) {
+    m_climber.Progress();
+  }
 
+  if (m_stick_climb.GetRightBumperReleased()) {
+    m_climber.SetPhase(0);
+  }
+
+}
+
+// This method is called at the beginning of the disabled state
+void Robot::DisabledInit() {}
+
+// This method is called every 20ms (by default) during disabled
+void Robot::DisabledPeriodic() {}
+
+// This method is called at the beginning of the testing state
+void Robot::TestInit() {
+}
+
+// This method is called every 20ms (by default) during testing
+void Robot::TestPeriodic() {
+  m_climber.GetEncoderValues(); 
+
+  // Manual Climb Controls
+  // Arm extension
+  if (m_stick_climb.GetYButton()) {
+    m_climber.EngageLeft(0.5);
+  }
+  else if (m_stick_climb.GetXButton()) {
+    m_climber.EngageLeft(-0.5);
+  }
+  else {
+    m_climber.EngageLeft(0.0);
+  }
+  
   if (m_stick_climb.GetBButton()) {
     m_climber.EngageRight(0.5);
   }
@@ -307,7 +348,29 @@ void Robot::TeleopPeriodic() {
   else {
     m_climber.EngageRight(0.0);
   }
-  // engage/disengage servo
+
+  //Arm rotation
+  if (m_stick_climb.GetLeftBumper()) {
+    m_climber.RotateLThrottle(0.5);
+  }
+  else if (m_stick_climb.GetLeftTriggerAxis()) {
+    m_climber.RotateLThrottle(-0.5);
+  }
+  else {
+    m_climber.RotateLThrottle(0.0);
+  }
+
+  if (m_stick_climb.GetRightBumper()) {
+    m_climber.RotateRThrottle(0.5);
+  }
+  else if (m_stick_climb.GetRightTriggerAxis()) {
+    m_climber.RotateRThrottle(-0.5);
+  }
+  else {
+    m_climber.RotateRThrottle(0.0);
+  }
+
+  // engage/disengage servos
   if (m_stick_climb.GetLeftStickButtonReleased()) {
     if (!m_leftServoEngaged) {
       m_climber.SetLeftServo(0.0);
@@ -332,31 +395,6 @@ void Robot::TeleopPeriodic() {
       m_rightServoEngaged = false;
       std::cout << "Right Servo Disengaged\n";
     }
-  }
-}
-
-// This method is called at the beginning of the disabled state
-void Robot::DisabledInit() {}
-
-// This method is called every 20ms (by default) during disabled
-void Robot::DisabledPeriodic() {}
-
-// This method is called at the beginning of the testing state
-void Robot::TestInit() {
-}
-
-// This method is called every 20ms (by default) during testing
-void Robot::TestPeriodic() {
-  m_climber.GetEncoderValues(); 
-  m_climber.Run();
-  
-  // JOYSTICK 0 
-  if (m_stick_climb.GetLeftBumperReleased()) {
-    m_climber.Progress();
-  }
-
-  if (m_stick_climb.GetRightBumperReleased()) {
-    m_climber.SetPhase(0);
   }
 }
 

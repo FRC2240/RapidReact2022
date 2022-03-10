@@ -128,11 +128,6 @@ void Climber::ClimberDashRead(){
   m_rotateSetpointL = frc::SmartDashboard::GetNumber("Left Climber Rotate Point", 0.0);
   m_rotateSetpointR = frc::SmartDashboard::GetNumber("Right Climber Rotate Point", 0.0);
 
-  // Print PID to console
-  std::cout << "Read Dashboard Right Rotate Climber p gain: " << p << "\n";
-  std::cout << "Read Dashboard Right Climber Rotate i gain: " << i << "\n";
-  std::cout << "Read Dashboard Right Climber Rotate d gain: " << d << "\n";
-
   // If any PID value is different from currently stored, set that value
   if ((p != m_rightClimberRotateCoeff.kP)) { m_rightClimberRotatePIDController.SetP(p);m_rightClimberRotateCoeff.kP = p; }
   if ((i != m_rightClimberRotateCoeff.kI)) { m_rightClimberRotatePIDController.SetI(i); m_rightClimberRotateCoeff.kI = i; }
@@ -148,11 +143,6 @@ void Climber::ClimberDashRead(){
   d   = frc::SmartDashboard::GetNumber("Left Climber Rotate D Gain", 0.0);
   min = frc::SmartDashboard::GetNumber("Left Climber Rotate Min Output", 0.0);
   max = frc::SmartDashboard::GetNumber("Left Climber Rotate Max Output", 0.0);
-
-  // Print PID constants for left climber rotate
-  std::cout << "Read Dashboard left Climber Rotate p gain: " << p << "\n";
-  std::cout << "Read Dashboard left Climber Rotate i gain: " << i << "\n";
-  std::cout << "Read Dashboard left Climber Rotate d gain: " << d << "\n";
 
   // If any PID constants for left climber rotate differ from stored values, set the new value
   if ((p != m_leftClimberRotateCoeff.kP)) { m_leftClimberRotatePIDController.SetP(p);m_leftClimberRotateCoeff.kP = p; }
@@ -193,7 +183,6 @@ void Climber::ClimberPIDInit(){
 
   //Initialize right climber rotation PID Controller
   m_rightClimberRotatePIDController.SetP(m_rightClimberRotateCoeff.kP);
-  std::cout << "right kP: " << m_rightClimberRotateCoeff.kP << "\n";
   m_rightClimberRotatePIDController.SetI(m_rightClimberRotateCoeff.kI);
   m_rightClimberRotatePIDController.SetD(m_rightClimberRotateCoeff.kD);
   m_rightClimberRotatePIDController.SetIZone(m_rightClimberRotateCoeff.kIz);
@@ -202,7 +191,6 @@ void Climber::ClimberPIDInit(){
 
   // Initialize left climber rotation PID Controller
   m_leftClimberRotatePIDController.SetP(m_leftClimberRotateCoeff.kP);
-  std::cout << "left kP: " << m_leftClimberRotateCoeff.kP << "\n";
   m_leftClimberRotatePIDController.SetI(m_leftClimberRotateCoeff.kI);
   m_leftClimberRotatePIDController.SetD(m_leftClimberRotateCoeff.kD);
   m_leftClimberRotatePIDController.SetIZone(m_leftClimberRotateCoeff.kIz);
@@ -283,7 +271,12 @@ void Climber::ClimberPIDInit(){
  * Otherwise, evaluate current state and recover to safe mode if needed.
  */
 void Climber::Progress() {
-  m_phase++;
+  if (m_phase >= 5) {
+    m_phase = 0;
+  }
+  else {
+    m_phase++;
+  }
 }
 
 /**
@@ -330,82 +323,80 @@ void Climber::Run() {
     EngageRight(0.0);
     RotateRThrottle(0.0);
     RotateLThrottle(0.0);
+    phase_delay = 0;
     break;
     case 1: 
-      // Center Left Arm, rotate right arm out of the way (might not be necessary depending on which arm we choose to start w/)
-      RotateRight(22.0);
+      // Preps bot to climb high
+      // Centers both arms, disengages servos, and then extends; after left extension is complete, reengages servo
+      // NOTE: am worried about this case bc it tries to do so much, might have to split up
+      if (phase_delay == 0) {
       RotateLeft(centerL);
       SetLeftServo(leftDisengaged);
       SetRightServo(rightDisengaged);
-      phase_delay = 0;
+      phase_delay++;
+      }
+      else if (phase_delay > 32) { // Is this how you space it out??
+        EngageLeft(0.5);
+        if (m_leftClimberExtender.GetSelectedSensorPosition() >= kMaxLeft) {
+          RotateRight(centerR);
+          SetLeftServo(0.0);
+      }
+      }
+      else {
+        phase_delay++; 
+      }
       break;
 
     case 2:
-      EngageLeft(0.5);
-      phase_delay_redux = 0;
-
-      break;
-
-    case 3:
-      if (phase_delay_redux == 0) {
-        SetLeftServo(0.0);
-        phase_delay_redux++;
-      }
-      else if (phase_delay_redux > 1) {
+    // Contracts Left and transitions into rest of climb
         EngageLeft(-0.5);
-
         if (m_leftClimberExtender.GetSelectedSensorPosition() <= kMinLeft) {
-          m_phase++;
+          EngageLeft(0.0);
         }
-      }
-      else {
-        phase_delay_redux++;
-      }
+      phase_delay_redux = 0;
       break;
-
-    case 4:
-      EngageLeft(0.0);
+// needs to be button press between case 2 and 3
+    case 3:
+    // Shuts off left motor and begins extending right as right arm and bot rotate
       EngageRight(0.5);
-      // Rotate Right Arm and Bot
       RotateRight(highR);
       RotateLeft(highL);
 
       if (m_rightClimberExtender.GetSelectedSensorPosition() >= kMaxRight)
       {
-        if (m_rightClimberEncoder.GetPosition() >= highR - 2  && m_rightClimberEncoder.GetPosition() <= highR + 2 &&
-         m_leftClimberEncoder.GetPosition() >= highL - 2 && m_leftClimberEncoder.GetPosition() <= highL + 2) {
-           m_phase++;
+        if (m_rightClimberEncoder.GetPosition() >= (highR - 2)  && m_rightClimberEncoder.GetPosition() <= (highR + 2) &&
+         m_leftClimberEncoder.GetPosition() >= (highL - 2) && m_leftClimberEncoder.GetPosition() <= (highL + 2)) {
+           if (phase_delay_redux == 0) {
+             phase_delay_redux++;
+           }
+           else if (phase_delay_redux > 16) {
+             SetRightServo(0.0);
+             RotateRight(finalR);
+           }
+           else {
+             phase_delay_redux++;
+           }
         }
       }
-      phase_delay = 0;
       break;
 
-    case 5:
-      if (phase_delay == 0) {
-        SetRightServo(0.0);
-        phase_delay++;
-      }
-      else if (phase_delay > 1)
-      {
-        EngageRight(-0.5);
-        if (m_rightClimberExtender.GetSelectedSensorPosition() <= kMinRight) {
-          m_phase++;
-        }
-      }
-      else
-      {
-        phase_delay++;
+    case 4:
+      // Contracts right arm
+      EngageRight(-0.5);
+      if (m_rightClimberExtender.GetSelectedSensorPosition() <= kMinRight) {
+        m_phase++;
       }
       break;
     
-    case 6:
+    case 5:
+    // Right motor shuts off, climb to high completed
       EngageRight(0.0);
       break;
     
     default:
       EngageRight(0.0);
       EngageLeft(0.0);
-      RotateRThrottle(0.0);
+      RotateRThrottle(0.0); // would turn off PIDs, so if the climb button is hit too many times everything will shut off and may drag out of frame perim
       RotateLThrottle(0.0);
       SetRightServo(0.0);
       SetLeftServo(0.0);
@@ -419,8 +410,7 @@ void Climber::GetEncoderValues() {
   frc::SmartDashboard::PutNumber("Current Right Climber Rotation Position: ", m_rightClimberEncoder.GetPosition());
   frc::SmartDashboard::PutNumber("Current Left Climber Extension Position: ", m_leftClimberExtender.GetSelectedSensorPosition());
   frc::SmartDashboard::PutNumber("Current Right Climber Extension Position: ", m_rightClimberExtender.GetSelectedSensorPosition());
-
-  }
+}
 
 void Climber::InitializeEncoders() {
   m_leftClimberExtender.SetSelectedSensorPosition(0.0);
@@ -483,7 +473,7 @@ void Climber::TestReadDash() {
 
   // Read climber rotation PID constants
   m_rightClimberRotateCoeff.kP  = frc::SmartDashboard::GetNumber("Right Climber Rotate P Gain", 0.0);
-  \
+  
   m_rightClimberRotateCoeff.kI   = frc::SmartDashboard::GetNumber("Right Climber Rotate I Gain", 0.0);
   m_rightClimberRotateCoeff.kD   = frc::SmartDashboard::GetNumber("Right Climber Rotate D Gain", 0.0);
   m_rightClimberRotateCoeff.kMinOutput = frc::SmartDashboard::GetNumber("Right Climber Rotate Min Output", 0.0);

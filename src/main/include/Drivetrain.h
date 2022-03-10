@@ -18,7 +18,6 @@
 #include <units/time.h>
 #include <units/velocity.h>
 #include <units/voltage.h>
-#include <wpi/math>
 
 #include "ctre/Phoenix.h"
 #include "AHRS.h"
@@ -67,6 +66,11 @@ class Drivetrain {
   void ResetOdometry(const frc::Pose2d& pose);
   frc::Pose2d GetPose() const;
   units::angle::degree_t GetRotation();
+
+  void ResetEncoders() {
+    m_leftMotor->SetSelectedSensorPosition(0.0);
+    m_rightMotor->SetSelectedSensorPosition(0.0);
+  };
 
   private:
 
