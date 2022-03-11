@@ -319,6 +319,8 @@ void Robot::TeleopPeriodic() {
 
 if (m_stick.GetRightStickButton()) {
   m_take.Feed(-0.5);
+  m_take.IntakeFeed(-0.5);
+
 }
 
 if (m_stick.GetLeftBumper()) {

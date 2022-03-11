@@ -25,7 +25,7 @@ public:
   void ColorsInit();
   void SetColor();
   void Feed(double speed);
-
+  void IntakeFeed(double speed);
 
 
   void InitializeEncoders();
