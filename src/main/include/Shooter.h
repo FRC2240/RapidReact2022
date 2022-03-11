@@ -12,17 +12,18 @@ class Shooter {
  public:
   Shooter(frc::DifferentialDrive* d, frc::XboxController* s, Take* t);
   
-  void Fire();
+  void Fire(double m);
   void Reset();
   void InitializePIDControllers();
   void InitializeDashboard();
   void ReadDashboard();
   void ManualShoot(); 
   void Dump();
-
+  void Setup();
+  
  private:
 
-  double CalculateRPM(double d);
+  double CalculateRPM(double m, double d);
   bool LimelightTracking();
 
   frc::DifferentialDrive* m_drive;
@@ -34,6 +35,7 @@ class Shooter {
   double kHeightLimelight  = 28.0;
   double kLimelightAngle   = 13.861;
   double kRadiusOfTarget   = 26.7;
+  double m_scalar = 1.0;
 
 
   WPI_TalonFX m_shootingMotorAlpha {21};

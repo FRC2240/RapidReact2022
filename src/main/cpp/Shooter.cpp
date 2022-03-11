@@ -25,6 +25,13 @@ Shooter::Shooter(frc::DifferentialDrive* d, frc::XboxController* s, Take* t)
   // Follow the alpha
   m_shootingMotorBeta.Follow(m_shootingMotorAlpha);
   m_shootingMotorBeta.SetInverted(InvertType::OpposeMaster);
+
+  m_table->PutNumber("stream", 2); // PiP
+
+}
+
+void Shooter::Setup() {
+    m_table->PutNumber("stream", 2); // PiP
 }
 
 // Reset
@@ -84,9 +91,11 @@ bool Shooter::LimelightTracking()
 /**
  * Method to calculate shooter RPM. Not defined at the moment
  */
-double Shooter::CalculateRPM(double d)
+double Shooter::CalculateRPM(double m, double d)
 {
-  return 4.67 * d + 2002; 
+  //return 4.67 * d + 2002; 
+  //return m * (553 + 23.1 * d - 0.0598 * pow(d, 2)); 
+  return m * (1382 + 9.23 * d - 0.0137 * pow(d, 2));
 }
 
 void Shooter::Dump() {
@@ -94,9 +103,10 @@ void Shooter::Dump() {
   m_take->Feed(0.5);
 }
 
-void Shooter::Fire()
+void Shooter::Fire(double m)
 {
-
+  m_scalar = m_scalar * m;
+  //std::cout << "Scalar: " << m_scalar << "\n";  
   m_table->PutNumber("ledMode", 3); // lights on
 
   // Is target locked?
@@ -107,8 +117,8 @@ void Shooter::Fire()
 
     double distance = -2.39 * ty + (0.139 * pow(ty, 2)) + 105;
 
-    double rpm = CalculateRPM(distance);
-    //std::cout << "distance: " << distance << "; Shooter RPM:" << m_shootingMotorAlpha.GetSelectedSensorVelocity()*(600.0/2048.0) << "\n";
+    double rpm = CalculateRPM(m_scalar, distance);
+    std::cout << "distance: " << distance << "; Shooter RPM:" << m_shootingMotorAlpha.GetSelectedSensorVelocity()*(600.0/2048.0) << "\n";
 
     // Override for test/calibration?
     if (fabs(m_overrideRPM) > 1.0)

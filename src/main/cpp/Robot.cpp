@@ -23,7 +23,7 @@ void Robot::RobotInit() {
 
   m_climber.InitializeEncoders();
   m_climber.InitializeSoftLimits();
-  
+  m_shooter.InitializeDashboard();
   // Setup Autonomous options
   m_chooser.SetDefaultOption(Robot::kFiveBall, Robot::kFiveBall);
   m_chooser.AddOption(Robot::kTwoBall, Robot::kTwoBall);
@@ -261,7 +261,7 @@ void Robot::AutonomousPeriodic() {
 
   if (m_autoState == kShooting) {
     if (m_autoTimer.Get() < units::time::second_t(3.5)) {
-      m_shooter.Fire();
+      m_shooter.Fire(1.0);
     }
     else {
       m_shooter.Reset();
@@ -290,7 +290,9 @@ void Robot::AutonomousPeriodic() {
  */
 void Robot::TeleopInit() {
   m_alliance = frc::DriverStation::GetAlliance();
+  m_shooter.Setup();
   //ReadDashboard();
+  m_shooter.ReadDashboard();  
 }
 
 void Robot::TeleopPeriodic() {
@@ -302,13 +304,22 @@ void Robot::TeleopPeriodic() {
   //double a = .375/.4495;
   //double b = .0745/.4495;
 
-  // Read controller input
+  // Read controller input                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
   double throttle = -m_stick.GetLeftTriggerAxis() + m_stick.GetRightTriggerAxis();
 
   double turnInput = m_stick.GetLeftX() - m_stick.GetLeftY();
   // Shooter
+  double m = 1.0; 
+  if (m_stick_climb.GetXButtonReleased()) {
+    m = 1.01; 
+  }
+  if (m_stick_climb.GetAButtonReleased()) {
+    m = .99; 
+  }
+
+
   if (m_stick.GetRightBumper()) {
-    m_shooter.Fire();
+    m_shooter.Fire(m);
   } else {
     m_drive.ArcadeDrive(throttle, turnInput);
   }
@@ -317,6 +328,8 @@ void Robot::TeleopPeriodic() {
     m_shooter.Reset();
   }
   
+  
+
   // Climb Controls (Joystick 1)
   if (m_stick_climb.GetLeftBumperReleased()) {
     m_climber.Progress();

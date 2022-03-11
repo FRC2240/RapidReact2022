@@ -89,9 +89,9 @@ private:
   nt::NetworkTableEntry m_roomBallRedBoard = frc::Shuffleboard::GetTab("Drive Core")
 
     .Add("Room Ball Red", false)
-
-    .WithWidget("Toggle Button")
-
+    .WithWidget("Boolean Box")
+    .WithSize(1,1)
+    .WithPosition(0,2)
     .GetEntry();
 
   nt::NetworkTableEntry m_roomBallBlueBoard = frc::Shuffleboard::GetTab("Drive Core")
@@ -99,6 +99,8 @@ private:
     .Add("Room Ball Blue", false)
 
     .WithWidget("Boolean Box")
+    .WithSize(1,1)
+    .WithPosition(9,2)
 
     .GetEntry();
   nt::NetworkTableEntry m_uptakeBallRedBoard = frc::Shuffleboard::GetTab("Drive Core")
@@ -106,6 +108,8 @@ private:
     .Add("Uptake Ball Red", false)
 
     .WithWidget("Boolean Box")
+    .WithSize(1,1)
+    .WithPosition(0,3)
 
     .GetEntry();
   nt::NetworkTableEntry m_uptakeBallBlueBoard = frc::Shuffleboard::GetTab("Drive Core")
@@ -113,7 +117,8 @@ private:
     .Add("Uptake Ball Blue", false)
 
     .WithWidget("Boolean Box")
-
+    .WithSize(1,1)
+    .WithPosition(9,3)
     .GetEntry();
 
   // Motors

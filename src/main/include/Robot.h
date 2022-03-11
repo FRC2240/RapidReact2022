@@ -174,6 +174,15 @@ double constantLimelightAngle;
 Climber m_climber;
 Take m_take;
 
+/* Shuffleboard */
+  nt::NetworkTableEntry m_cameraWidget = frc::Shuffleboard::GetTab("Drive Core")
+
+    .Add("Room Ball Red", false)
+    .WithWidget("Boolean Box")
+    .WithSize(1,1)
+    .WithPosition(0,2)
+    .GetEntry();
+
 frc::XboxController m_stick{0};
 frc::XboxController m_stick_climb{1};
 
