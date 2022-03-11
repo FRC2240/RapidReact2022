@@ -177,7 +177,7 @@ void Take::UptakeStop()
 
 int Take::DeployIntake()
 {
-  if ((fabs(m_rotateIntakeEncoder.GetVelocity()) < 100) && (stowDelayCount > 10)) {
+  if ((fabs(m_rotateIntakeEncoder.GetVelocity()) < 100) && (stowDelayCount > 40)) {
     m_rotateIntakeMotor.Set(0.0);
     return Deployed;
   }
@@ -191,7 +191,7 @@ int Take::DeployIntake()
 
 int Take::ReturnIntake()
 {
-  if ((fabs(m_rotateIntakeEncoder.GetVelocity()) < 100) && (stowDelayCount > 10)) {
+  if ((fabs(m_rotateIntakeEncoder.GetVelocity()) < 100) && (stowDelayCount > 40)) {
     m_rotateIntakeMotor.Set(0.0);
     return Stowed;
   }
