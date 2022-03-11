@@ -25,7 +25,7 @@ public:
   void ColorsInit();
   void SetColor();
   void Feed(double speed);
-
+  void IntakeFeed(double speed);
 
 
   void InitializeEncoders();
@@ -49,6 +49,7 @@ public:
 
   void AutoRunIntake(double speed);
   void AutoStopIntake();
+  void IntakeFeed(double speed);
 
 
   enum BallColor
