@@ -20,7 +20,7 @@ class Shooter {
   void ManualShoot(); 
   void Dump();
   void Setup();
-  
+
  private:
 
   double CalculateRPM(double m, double d);
@@ -36,6 +36,7 @@ class Shooter {
   double kLimelightAngle   = 13.861;
   double kRadiusOfTarget   = 26.7;
   double m_scalar = 1.0;
+  int m_phaseDelay = 0; 
 
 
   WPI_TalonFX m_shootingMotorAlpha {21};

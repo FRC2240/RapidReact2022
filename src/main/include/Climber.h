@@ -118,7 +118,7 @@ private:
   bool m_rightServoCoutBool = false;
 
   //rotation positions
-  double centerL = 35.5, centerR = 20.0, highL = 60.0, highR = 9.5, finalR = 5.0; 
+  double centerL = 35.5, centerR = 20.0, highL = 60.0, highR = 10.5, finalR = 5.0; 
   double midRightOne = 30, midRightTwo = 25.5, midRightExtension = 170000, midRightThree = 58.0; 
 
   //extension soft limits

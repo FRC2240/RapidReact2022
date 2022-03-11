@@ -40,6 +40,7 @@ void Shooter::Reset()
   m_table->PutNumber("ledMode", 1); // lights off
   m_shootingMotorAlpha.Set(0.0);    // motors off
   m_take->Feed(0.0);                // feed off
+  m_phaseDelay = 0;                 // phase delay resets
 }
 
 
@@ -124,7 +125,7 @@ void Shooter::Fire(double m)
     if (fabs(m_overrideRPM) > 1.0)
     {
       rpm = m_overrideRPM;
-      frc::SmartDashboard::PutNumber("Shooter RPM", m_shootingMotorAlpha.GetSelectedSensorVelocity()*(600.0/2048.0));
+      //frc::SmartDashboard::PutNumber("Shooter RPM", m_shootingMotorAlpha.GetSelectedSensorVelocity()*(600.0/2048.0));
       //std::cout << "Desired RPM: " << rpm << "\n";
     }
 
@@ -133,6 +134,8 @@ void Shooter::Fire(double m)
       m_shootingMotorAlpha.Set(ControlMode::Velocity, -rpm * (2048.0 / 600.0));
     }
 
+    m_phaseDelay++; 
+    if (m_phaseDelay > 10) {
     // Enable feed if we're at 98% of desired shooter speed
     if (fabs(m_shootingMotorAlpha.GetSelectedSensorVelocity()* (600.0/2048.0)) > fabs(rpm * 0.99))
     {
@@ -140,7 +143,9 @@ void Shooter::Fire(double m)
     } else {
       m_take->Feed(0.0);
     }
+    }
   }
+  
 }
 
 void Shooter::InitializePIDControllers()

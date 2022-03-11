@@ -271,7 +271,7 @@ void Climber::ClimberPIDInit(){
  * Otherwise, evaluate current state and recover to safe mode if needed.
  */
 void Climber::Progress() {
-  if (m_phase >= 5) {
+  if (m_phase >= 6) {
     m_phase = 0;
   }
   else {
@@ -377,7 +377,7 @@ void Climber::Run() {
       EngageRight(0.5);
       RotateRight(highR);
       RotateLeft(highL);
-
+/*
       if (m_rightClimberExtender.GetSelectedSensorPosition() >= kMaxRight)
       {
         if (m_rightClimberEncoder.GetPosition() >= (highR - 2)  && m_rightClimberEncoder.GetPosition() <= (highR + 2) &&
@@ -392,12 +392,19 @@ void Climber::Run() {
            else {
              phase_delay_redux++;
            }
-        }
+        }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
       }
+      */
       break;
-
+    
     case 4:
+      RotateRThrottle(0.0);
+      SetRightServo(0.0);
+    break; 
+
+    case 5:
       // Contracts right arm
+      RotateLeft(30.0);
       EngageRight(-0.5);
       if (m_rightClimberExtender.GetSelectedSensorPosition() <= kMinRight) {
         m_phase++;
@@ -405,35 +412,35 @@ void Climber::Run() {
       break;
     
     
-    case 5:
+    case 6:
     // Right motor shuts off, climb to high completed
       EngageRight(0.0);
       break;
 //Right Mid Climb
-      case 6:
+      case 7:
     // Left lifts out of way
     RotateLeft(midRightOne);
     SetRightServo(rightDisengaged);
     break;
 
-    case 7:
+    case 8:
     // Right rotates up to center
     RotateRight(midRightTwo);
     break;
 
-    case 8:
+    case 9:
     EngageRight(0.5);
     if (m_rightClimberExtender.GetSelectedSensorPosition() >= midRightExtension) {
       EngageRight(0.0);
     }
     break;
 
-    case 9:
+    case 10:
     RotateLeft(midRightThree); 
     SetRightServo(0.0);
     break;
 
-    case 10:
+    case 11:
     EngageRight(-0.5);
     if (m_rightClimberExtender.GetSelectedSensorPosition() <= kMinRight) {
       EngageRight(0.0); 
