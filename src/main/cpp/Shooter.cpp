@@ -26,12 +26,12 @@ Shooter::Shooter(frc::DifferentialDrive* d, frc::XboxController* s, Take* t)
   m_shootingMotorBeta.Follow(m_shootingMotorAlpha);
   m_shootingMotorBeta.SetInverted(InvertType::OpposeMaster);
 
-  m_table->PutNumber("stream", 2); // PiP
+  m_table->PutNumber("stream", 1); // PiP
 
 }
 
 void Shooter::Setup() {
-    m_table->PutNumber("stream", 2); // PiP
+    m_table->PutNumber("stream", 1); // PiP
 }
 
 // Reset
@@ -118,7 +118,7 @@ void Shooter::Fire(double m)
     double distance = -2.39 * ty + (0.139 * pow(ty, 2)) + 105;
 
     double rpm = CalculateRPM(m_scalar, distance);
-    std::cout << "distance: " << distance << "; Shooter RPM:" << m_shootingMotorAlpha.GetSelectedSensorVelocity()*(600.0/2048.0) << "\n";
+    //std::cout << "distance: " << distance << "; Shooter RPM:" << m_shootingMotorAlpha.GetSelectedSensorVelocity()*(600.0/2048.0) << "\n";
 
     // Override for test/calibration?
     if (fabs(m_overrideRPM) > 1.0)

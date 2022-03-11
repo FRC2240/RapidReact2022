@@ -271,7 +271,7 @@ void Climber::ClimberPIDInit(){
  * Otherwise, evaluate current state and recover to safe mode if needed.
  */
 void Climber::Progress() {
-  if (m_phase >= 10) {
+  if (m_phase >= 5) {
     m_phase = 0;
   }
   else {
@@ -404,12 +404,12 @@ void Climber::Run() {
       }
       break;
     
-    //Right Mid Climb
+    
     case 5:
     // Right motor shuts off, climb to high completed
       EngageRight(0.0);
       break;
-
+//Right Mid Climb
       case 6:
     // Left lifts out of way
     RotateLeft(midRightOne);

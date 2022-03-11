@@ -18,12 +18,13 @@
  * in addition to setting up dashboard
  */
 void Robot::RobotInit() { 
+  m_shooter.Setup(); 
 
   m_climber.ClimberPIDInit();
 
   m_climber.InitializeEncoders();
   m_climber.InitializeSoftLimits();
-  m_shooter.InitializeDashboard();
+  //m_shooter.InitializeDashboard();
   // Setup Autonomous options
   m_chooser.SetDefaultOption(Robot::kFiveBall, Robot::kFiveBall);
   m_chooser.AddOption(Robot::kTwoBall, Robot::kTwoBall);
@@ -290,9 +291,9 @@ void Robot::AutonomousPeriodic() {
  */
 void Robot::TeleopInit() {
   m_alliance = frc::DriverStation::GetAlliance();
-  m_shooter.Setup();
+  //m_shooter.Setup();
   //ReadDashboard();
-  m_shooter.ReadDashboard();  
+  //m_shooter.ReadDashboard();  
 }
 
 void Robot::TeleopPeriodic() {
@@ -335,11 +336,11 @@ void Robot::TeleopPeriodic() {
     m_climber.Progress();
   }
 
-
+/*
   if (m_stick_climb.GetYButtonReleased()) {
     m_climber.SetPhase(6); 
   }
-
+*/
   if (m_stick_climb.GetBButtonReleased()) {
     m_climber.Kill();
   }
