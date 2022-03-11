@@ -100,7 +100,7 @@ double Shooter::CalculateRPM(double m, double d)
 }
 
 void Shooter::Dump() {
-  m_shootingMotorAlpha.Set(ControlMode::PercentOutput, -0.3);
+  m_shootingMotorAlpha.Set(ControlMode::PercentOutput, -0.5);
   m_take->Feed(0.5);
 }
 
