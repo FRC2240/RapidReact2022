@@ -39,8 +39,8 @@ public:
   void UptakeStart(double speed);
   void UptakeStop();
 
-  void DeployIntake();
-  void ReturnIntake();
+  int DeployIntake();
+  int ReturnIntake();
 
   void TestDashInit();
   void TestDashRead();
@@ -64,6 +64,13 @@ public:
     Ejecting,
   };
 
+    enum RotateState {
+    Stowed,
+    Deployed,
+    Deploying,
+    Stowing
+  };
+
 private:
 
   // Determine the ball color from Color Sensor value
@@ -83,6 +90,8 @@ private:
 
   bool intakeRunning = false;
 
+  int stowDelayCount = 0;
+  int deployDelayCount = 0;
   frc::DriverStation::Alliance m_alliance;
 
   /* Shuffleboard */
