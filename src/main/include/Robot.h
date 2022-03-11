@@ -115,10 +115,11 @@ class Robot : public frc::TimedRobot {
     kIntake,
     kTwoBallPath1,
     kShoot,
-    kIntake,
-    kTwoBallPath2,
-    kDump,
     kIdle
+    //kIntake,
+    //kTwoBallPath2,
+    //kDump,
+    //kIdle
   };
 
 // Three-Ball Auto Sequence
