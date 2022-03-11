@@ -76,12 +76,37 @@ void Take::Run(bool toggle, bool shooting, bool autonomous, frc::DriverStation::
   if (toggle) {stowDelayCount = 0;}
   else {stowDelayCount = stowDelayCount++;}
 
+if (toggle) {
+  if (m_rotate == Stowed) {
+    DeployIntake();
+    m_rotate = Deploying;
+  }
+  if (m_rotate == Deployed) {
+    ReturnIntake();
+    m_rotate = Stowing;
+  }
+
+}
+
+if (m_rotate == Deploying) {
+  DeployIntake();
+
+  }
+if (m_rotate == Stowing) {
+  ReturnIntake();
+  }
+
+
+
+
+/*
 if (ReturnIntake() == Stowing) {
   ReturnIntake();
 }
 if (DeployIntake() == Deploying) {
   DeployIntake();
 }
+*/
 
   // Intake ON or OFF (manual toggle or auto-stop because we're full)
   if (m_state != currentState)
@@ -175,14 +200,18 @@ void Take::UptakeStop()
   m_uptakeMotor.Set(0);
 }
 
+/* -------- */
+
 int Take::DeployIntake()
 {
   if ((fabs(m_rotateIntakeEncoder.GetVelocity()) < 100) && (stowDelayCount > 40)) {
     m_rotateIntakeMotor.Set(0.0);
+    m_rotate = Deployed;
     return Deployed;
   }
   else {
     m_rotateIntakeMotor.Set(0.5);
+    m_rotate = Deploying;
     return Deploying;
 
   }
@@ -193,10 +222,12 @@ int Take::ReturnIntake()
 {
   if ((fabs(m_rotateIntakeEncoder.GetVelocity()) < 100) && (stowDelayCount > 40)) {
     m_rotateIntakeMotor.Set(0.0);
+    m_rotate = Stowed;
     return Stowed;
   }
   else {
     m_rotateIntakeMotor.Set(-0.5);
+    m_rotate = Stowing;
     return Stowing;
   }
   //m_rotatentakePIDController.SetReference(0.0, rev::CANSparkMax::ControlType::kSmartMotion);

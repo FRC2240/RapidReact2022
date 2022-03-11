@@ -92,6 +92,8 @@ private:
 
   int stowDelayCount = 0;
   int deployDelayCount = 0;
+  RotateState m_rotate = Stowed;
+
   frc::DriverStation::Alliance m_alliance;
 
   /* Shuffleboard */
