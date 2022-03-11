@@ -136,7 +136,7 @@ private:
 
   nt::NetworkTableEntry m_leftServoShuffleboard =
     frc::Shuffleboard::GetTab("Drive Core")
-    .Add("Left Servo Engaged", false)
+    .Add("Left Servo Engaged", true)
     .WithWidget("Boolean Box")
     .GetEntry();
 
