@@ -317,7 +317,9 @@ void Robot::TeleopPeriodic() {
     m = .99; 
   }
 
-
+if (m_stick.GetLeftBumper()) {
+  m_shooter.Dump();
+}
   if (m_stick.GetRightBumper()) {
     m_shooter.Fire(m);
   } else {
