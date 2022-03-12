@@ -32,7 +32,7 @@ Shooter::Shooter(frc::DifferentialDrive* d, frc::XboxController* s, Take* t)
 
 void Shooter::Setup() {
     m_table->PutNumber("stream", 1); // PiP}
-
+}
 // Reset
 void Shooter::Reset()
 {
