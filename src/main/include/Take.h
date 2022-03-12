@@ -49,7 +49,6 @@ public:
 
   void AutoRunIntake(double speed);
   void AutoStopIntake();
-  void IntakeFeed(double speed);
 
 
   enum BallColor

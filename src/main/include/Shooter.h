@@ -37,6 +37,8 @@ class Shooter {
   double kRadiusOfTarget   = 26.7;
   double m_scalar = 1.0;
   int m_phaseDelay = 0; 
+  double lowRPM = 1000.0;
+  int m_lowDelay = 0;
 
 
   WPI_TalonFX m_shootingMotorAlpha {21};

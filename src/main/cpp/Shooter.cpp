@@ -31,8 +31,7 @@ Shooter::Shooter(frc::DifferentialDrive* d, frc::XboxController* s, Take* t)
 }
 
 void Shooter::Setup() {
-    m_table->PutNumber("stream", 1); // PiP
-}
+    m_table->PutNumber("stream", 1); // PiP}
 
 // Reset
 void Shooter::Reset()
@@ -100,8 +99,26 @@ double Shooter::CalculateRPM(double m, double d)
 }
 
 void Shooter::Dump() {
-  m_shootingMotorAlpha.Set(ControlMode::PercentOutput, -0.5);
-  m_take->Feed(0.5);
+  if (fabs(m_overrideRPM) > 1.0)
+  {
+     
+   lowRPM = 1000;
+  }
+  //m_shootingMotorAlpha.Set(ControlMode::PercentOutput, -0.5);
+  //m_shootingMotorAlpha.Set(ControlMode::Velocity, -lowRPM * (2048.0 / 600.0));
+  m_shootingMotorAlpha.Set(-0.3); 
+  m_take->Feed(1.0);
+/*
+  //if (fabs(m_shootingMotorAlpha.GetSelectedSensorVelocity()* (600.0/2048.0)) > fabs(lowRPM * 0.8)){
+    if (m_lowDelay > 10){
+    m_take->Feed(1.0);
+      m_lowDelay = 0;
+    }
+    else {
+     m_lowDelay++;
+    }
+  //}
+  */
 }
 
 void Shooter::Fire(double m)
