@@ -82,6 +82,7 @@ private:
   static const int waitingRoomMotorDeviceID  = 14;
 
   bool intakeRunning = false;
+  int m_coutTimer = 0;
 
   frc::DriverStation::Alliance m_alliance;
 

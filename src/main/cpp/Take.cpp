@@ -68,6 +68,11 @@ void Take::Run(bool toggle, bool shooting, bool autonomous, frc::DriverStation::
     }
   }
 
+if (m_coutTimer <= 10) {
+  std::cout << m_rotateIntakeEncoder.GetPosition() << "\n";
+  m_coutTimer = 0;
+}
+else {m_coutTimer++;}
   // Shooting? Disable intake
   if (shooting) {
     m_state = Off;
@@ -173,6 +178,7 @@ void Take::DeployIntake()
 void Take::ReturnIntake()
 {
   m_rotateIntakePIDController.SetReference(0.0, rev::CANSparkMax::ControlType::kSmartMotion);
+
 }
 
 void Take::AutoRunIntake(double speed){
