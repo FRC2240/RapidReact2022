@@ -123,7 +123,9 @@ private:
   rev::CANSparkMax m_waitingRoomMotor{waitingRoomMotorDeviceID, rev::CANSparkMax::MotorType::kBrushless};
 
   // Encoders
-  rev::SparkMaxRelativeEncoder m_rotateIntakeEncoder     = m_rotateIntakeMotor.GetEncoder();
+  //rev::SparkMaxRelativeEncoder m_rotateIntakeEncoder     = m_rotateIntakeMotor.GetEncoder();
+  rev::SparkMaxAlternateEncoder m_rotateIntakeEncoder = m_rotateIntakeMotor.GetAlternateEncoder(rev::CANEncoder::AlternateEncoderType::kQuadrature, 8192);
+
   rev::SparkMaxRelativeEncoder m_spinIntakeEncoder       = m_spinIntakeMotor.GetEncoder();
   rev::SparkMaxRelativeEncoder m_uptakeMotorEncoder      = m_uptakeMotor.GetEncoder();
   rev::SparkMaxRelativeEncoder m_waitingRoomMotorEncoder = m_waitingRoomMotor.GetEncoder();
@@ -138,7 +140,7 @@ private:
     double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
   };
 
-  double kMaxVel = 5000, kMinVel = 0, kMaxAcc = 4500, kAllErr = 4.0;
+  double kMaxVel = 5000, kMinVel = 0, kMaxAcc = 4500, kAllErr = 0.04;
   pidCoeff m_rotateIntakeCoeff{3.0e-4, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
   pidCoeff m_uptakeCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
