@@ -81,9 +81,9 @@ class Robot : public frc::TimedRobot {
  private:
   frc::SendableChooser<std::string> m_chooser;
   const std::string kAutoDefault = "Default";
-  const std::string kTwoBall     = "TwoBall";
-  const std::string kThreeBall   = "ThreeBall";
-  const std::string kFiveBall    = "FiveBall";
+  const std::string kMiddle      = "Middle";
+  const std::string kHanger      = "Hanger";
+  const std::string kTerminal    = "Terminal";
 
   std::string m_autoSelected;
   
@@ -93,12 +93,12 @@ class Robot : public frc::TimedRobot {
     kIntake,
     kShoot,
     kDump,
-    kTwoBallPath1,
-    kTwoBallPath2,
-    kThreeBallPath1,
-    kThreeBallPath2,
-    kThreeBallPath3,
-    kThreeBallPath4,
+    kMiddlePath,
+    kHangerPath,
+    kTerminalPath1,
+    kTerminalPath2,
+    kTerminalPath3,
+    kTerminalPath4,
     kIdle
   };
 
@@ -110,41 +110,28 @@ class Robot : public frc::TimedRobot {
     kNothing
   };
 
-  // Two-Ball Auto Sequence
-  std::list<autoActions> m_twoBallSequence{
+std::list<autoActions> m_middleSequence{
     kIntake,
-    kTwoBallPath1,
+    kMiddlePath,
     kShoot,
-    kIntake,
-    kTwoBallPath2,
-    kDump,
     kIdle
-  };
-
-// Three-Ball Auto Sequence
-std::list<autoActions> m_threeBallSequence{
-  kIntake,
-  kThreeBallPath1,
-  kShoot,
-  kIntake,
-  kThreeBallPath2,
-  kShoot,
-  kIntake,
-  kThreeBallPath3,
-  kIdle
 };
 
-// Five-Ball Auto Sequence
-std::list<autoActions> m_fiveBallSequence{
+std::list<autoActions> m_hangerSequence{
     kIntake,
-    kThreeBallPath1,
+    kHangerPath,
+    kShoot,
+    kIdle
+};
+
+std::list<autoActions> m_terminalSequence{
+    kIntake,
+    kTerminalPath1,
+    kTerminalPath2,
     kShoot,
     kIntake,
-    kThreeBallPath2,
-    kShoot,
-    kIntake,
-    kThreeBallPath3,
-    kThreeBallPath4,
+    kTerminalPath3,
+    kTerminalPath4,
     kShoot,
     kIdle
 };
