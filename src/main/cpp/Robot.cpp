@@ -25,9 +25,9 @@ void Robot::RobotInit() {
   m_climber.InitializeSoftLimits();
   
   // Setup Autonomous options
-  m_chooser.SetDefaultOption(Robot::kFiveBall, Robot::kFiveBall);
-  m_chooser.AddOption(Robot::kTwoBall, Robot::kTwoBall);
-  m_chooser.AddOption(Robot::kThreeBall, Robot::kThreeBall);
+  m_chooser.AddOption(Robot::kMiddle, Robot::kMiddle);
+  m_chooser.AddOption(Robot::kHanger, Robot::kHanger);
+  m_chooser.AddOption(Robot::kTerminal, Robot::kTerminal);
   
   // Add Autonomous options to dashboard
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
@@ -102,16 +102,16 @@ void Robot::AutonomousInit() {
   // Print out the selected autonomous mode
   //fmt::print("Auto selected: {}\n", m_autoSelected);
 
-  if (m_autoSelected == kTwoBall) {
-    m_autoSequence = &m_twoBallSequence;
+  if (m_autoSelected == kMiddle) {
+    m_autoSequence = &m_middleSequence;
   }
 
-  if (m_autoSelected == kThreeBall) {
-    m_autoSequence = &m_threeBallSequence;
+  if (m_autoSelected == kHanger) {
+    m_autoSequence = &m_hangerSequence;
   }
 
-  if (m_autoSelected == kFiveBall) {
-    m_autoSequence = &m_fiveBallSequence;
+  if (m_autoSelected == kTerminal) {
+    m_autoSequence = &m_terminalSequence;
   }
 
   // First action
@@ -150,8 +150,23 @@ void Robot::AutonomousPeriodic() {
       m_autoState = kDumping;
       break;
 
-    case kTwoBallPath1:
-      deployDirectory = deployDirectory / "output/TwoBallFirst.wpilib.json";
+    case kMiddlePath:
+      deployDirectory = deployDirectory / "output/MiddlePath.wpilib.json";
+      m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+
+      m_autoTimer.Reset();
+      m_autoTimer.Start();
+      m_autoAction = kIdle;
+      m_autoState = kDriving;
+
+      m_autoDrive->ResetEncoders();
+
+      // Reset the drivetrain's odometry to the starting pose of the trajectory
+      m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
+      break; 
+
+    case kHangerPath:
+      deployDirectory = deployDirectory / "output/HangerPath.wpilib.json";
       m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
 
       m_autoTimer.Reset();
@@ -165,8 +180,8 @@ void Robot::AutonomousPeriodic() {
       m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
       break;
 
-    case kTwoBallPath2:
-      deployDirectory = deployDirectory / "output/TwoBallSecond.wpilib.json";
+    case kTerminalPath1:
+      deployDirectory = deployDirectory / "output/TerminalPath1.wpilib.json";
       m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
 
       m_autoTimer.Reset();
@@ -180,23 +195,8 @@ void Robot::AutonomousPeriodic() {
       m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
       break;
 
-    case kThreeBallPath1:
-      deployDirectory = deployDirectory / "output/ThreeBallFirst.wpilib.json";
-      m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-
-      m_autoTimer.Reset();
-      m_autoTimer.Start();
-      m_autoAction = kIdle;
-      m_autoState = kDriving;
-
-      m_autoDrive->ResetEncoders();
-
-      // Reset the drivetrain's odometry to the starting pose of the trajectory
-      m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
-      break;
-      
-    case kThreeBallPath2:
-      deployDirectory = deployDirectory / "output/ThreeBallSecond.wpilib.json";
+    case kTerminalPath2:
+      deployDirectory = deployDirectory / "output/TerminalPath2.wpilib.json";
       m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
 
       m_autoTimer.Reset();
@@ -210,8 +210,8 @@ void Robot::AutonomousPeriodic() {
       m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
       break;
 
-    case kThreeBallPath3:
-      deployDirectory = deployDirectory / "output/ThreeBallThird.wpilib.json";
+    case kTerminalPath3:
+      deployDirectory = deployDirectory / "output/TerminalPath3.wpilib.json";
       m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
 
       m_autoTimer.Reset();
@@ -225,8 +225,8 @@ void Robot::AutonomousPeriodic() {
       m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
       break;
 
-    case kThreeBallPath4:
-      deployDirectory = deployDirectory / "output/ThreeBallFourth.wpilib.json";
+    case kTerminalPath4:
+      deployDirectory = deployDirectory / "output/TerminalPath4.wpilib.json";
       m_trajectory = frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
 
       m_autoTimer.Reset();
@@ -238,7 +238,7 @@ void Robot::AutonomousPeriodic() {
 
       // Reset the drivetrain's odometry to the starting pose of the trajectory
       m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
-      break;      
+      break;
 
     case kIdle:
     default:
