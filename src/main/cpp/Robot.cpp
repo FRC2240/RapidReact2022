@@ -315,6 +315,7 @@ void Robot::TeleopPeriodic() {
   if (m_stick.GetRightBumperReleased()) {
     m_shooter.Reset();
   }
+  
   if (m_stick_climb.GetXButton()){
     m_climber.EngageLeft(0.5);
   }
