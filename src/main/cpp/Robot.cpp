@@ -315,13 +315,9 @@ void Robot::TeleopPeriodic() {
   if (m_stick.GetRightBumperReleased()) {
     m_shooter.Reset();
   }
-  
-  if (m_stick_climb.GetXButton()){
-    m_climber.EngageLeft(0.5);
-  }
-  if (m_stick_climb.GetYButton()){
-    m_climber.EngageLeft(0.5);
-  }
+
+  double climbThrottle = m_stick_climb.GetLeftY() * 0.5;
+  m_climber.EngageLeft(climbThrottle);
 }
 
 // This method is called at the beginning of the disabled state
