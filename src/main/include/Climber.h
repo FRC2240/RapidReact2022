@@ -25,19 +25,7 @@ public:
   void ClimberPIDInit();
   void ClimberDashRead();
   void ClimberDashInit();
-  void ExtendALowerL(double setpointL);
-  void ExtendALowerR(double setpointR);
-  void RotateLeft(double rotatePointL); // f = forwards, b = backwards. All lowercase
-  void RotateRight(double rotatePointR);
   void EngageLeft(double throttle);
-  void EngageRight(double throttle);
-
-  void SetLeftServo(double position);
-  void SetRightServo(double position);
-
-  void Progress();
-  void Kill();
-  void Run();
 
   void GetEncoderValues();
   void InitializeEncoders();
@@ -50,50 +38,20 @@ public:
   void TestR();
 
   void SetPhase(int phase);
-  int GetPhase(); 
-
-  void RotateRThrottle(double throttle);
-  void RotateLThrottle(double throttle);
-
-
-  void Shuffleboard();
-
+  int GetPhase();
 
 private:
 
-  frc::Servo m_rightExtenderServo {0};
-  frc::Servo m_leftExtenderServo {1};
-
   frc::SendableChooser<std::string> m_chooser;
 
-
-  // Stolen from Robot.h
-  static const int rightClimberRotationNeoDeviceID = 10;
-  static const int leftClimberRotationNeoDeviceID = 11;
-
-  rev::CANSparkMax m_rightClimberRotationNeo{rightClimberRotationNeoDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_leftClimberRotationNeo{leftClimberRotationNeoDeviceID, rev::CANSparkMax::MotorType::kBrushless};
-
   // Climber falcons
-  WPI_TalonFX m_rightClimberExtender = {12}; //pretty sure these were flipped
   WPI_TalonFX m_leftClimberExtender = {13};
   TalonFXSensorCollection m_leftClimberExtenderEncoder = m_leftClimberExtender.GetSensorCollection();
-  TalonFXSensorCollection m_rightClimberExtenderEncoder = m_rightClimberExtender.GetSensorCollection();
 
   struct pidCoeff {
     double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
   };
-  
-  rev::SparkMaxPIDController m_leftClimberRotatePIDController = m_leftClimberRotationNeo.GetPIDController();
-  rev::SparkMaxPIDController m_rightClimberRotatePIDController = m_rightClimberRotationNeo.GetPIDController();
 
-  
-  rev::SparkMaxRelativeEncoder m_rightClimberEncoder = m_rightClimberRotationNeo.GetEncoder(); 
-  rev::SparkMaxRelativeEncoder m_leftClimberEncoder = m_leftClimberRotationNeo.GetEncoder(); 
-
-  //Neos
-  pidCoeff m_leftClimberRotateCoeff{0.0003, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0}; // negative to go to center
-  pidCoeff m_rightClimberRotateCoeff{0.0003, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
   // Smart Motion
   double kLMaxVel = 6000, kLMinVel = 0, kLMaxAcc = 4000, kLAllErr = 2; 
   double kRMaxVel = 6000, kRMinVel = 0, kRMaxAcc = 4000, kRAllErr = 2; 
@@ -101,11 +59,8 @@ private:
 
   //Falcons 
   pidCoeff m_leftClimberExtendCoeff{0.1, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0}; 
-  pidCoeff m_rightClimberExtendCoeff{0.1, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
-
 
   double m_rotateSetpointR, m_rotateSetpointL = 0.0;
-
 
   double m_climbExtendPointR, m_climbExtendPointL = 0.0;
 
@@ -114,8 +69,6 @@ private:
   int phase_delay_redux = 0;
 
   // NOTE: False means an error cout hasn't happened and true means it has.
-  bool m_leftServoCoutBool = false;
-  bool m_rightServoCoutBool = false;
 
   //rotation positions
   double centerL = 35.5, centerR = 20.0, highL = 60.0, highR = 7.5, finalR = 0.0; 
@@ -123,29 +76,9 @@ private:
   //extension soft limits
   double kMaxLeft = 156350.0, kMinLeft = 2000.0, kMaxRight = 386000.0, kMinRight = 2000.0; 
 
-  //engaged servo positions
-  double leftDisengaged = 0.7, rightDisengaged = 0.7; 
-
-
-
   //testing
   double m_rotationR, m_rotationL;
 
-
   frc::Timer m_climbTimer;
-
-  nt::NetworkTableEntry m_leftServoShuffleboard =
-    frc::Shuffleboard::GetTab("Drive Core")
-    .Add("Left Servo Engaged", true)
-    .WithWidget("Boolean Box")
-    .GetEntry();
-
-  nt::NetworkTableEntry m_rightServoShuffleboard =
-    frc::Shuffleboard::GetTab("Drive Core")
-    .Add("Right Servo Engaged", true)
-    .WithWidget("Boolean Box")
-    .GetEntry();
-
 };
-
 
