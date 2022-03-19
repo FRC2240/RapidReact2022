@@ -158,7 +158,7 @@ void Shooter::InitializePIDControllers()
   m_shootingMotorAlpha.ConfigNominalOutputForward(0, 10);
   m_shootingMotorAlpha.ConfigNominalOutputReverse(0, 10);
   m_shootingMotorAlpha.ConfigPeakOutputForward(m_shooterCoeff.kMaxOutput, 10);
-  m_shootingMotorAlpha.ConfigPeakOutputReverse(m_shooterCoeff.kMinOutput, -10);
+  m_shootingMotorAlpha.ConfigPeakOutputReverse(m_shooterCoeff.kMinOutput, 10);
 
   m_shootingMotorAlpha.SelectProfileSlot(0, 0);
   m_shootingMotorAlpha.Config_kF(0, m_shooterCoeff.kFF, 10);
@@ -188,11 +188,20 @@ void Shooter::InitializeDashboard()
 void Shooter::ReadDashboard()
 {
   m_overrideRPM = frc::SmartDashboard::GetNumber("Overridden RPM", 0.0);
-
+/*
   m_shooterCoeff.kP = frc::SmartDashboard::GetNumber("Shooter P Gain", 0.0);
   m_shooterCoeff.kI = frc::SmartDashboard::GetNumber("Shooter I Gain", 0.0);
   m_shooterCoeff.kD = frc::SmartDashboard::GetNumber("Shooter D Gain", 0.0);
   m_shooterCoeff.kFF = frc::SmartDashboard::GetNumber("Shooter FF Gain", 0.0);
   m_shooterCoeff.kMinOutput = frc::SmartDashboard::GetNumber("Shooter Min Output", 0.0);
   m_shooterCoeff.kMaxOutput = frc::SmartDashboard::GetNumber("Shooter Max Output", 0.0);
+  */
 }
+
+void Shooter::Go(){
+  // m_shootingMotorAlpha.Set(ControlMode::Velocity, m_overrideRPM * (2048.0 / 600.0));
+   m_shootingMotorAlpha.Set(ControlMode::PercentOutput, -0.6);
+   m_take->Feed(1.0); 
+   std::cout << "RPM: " << m_overrideRPM << std::endl;
+   std::cout << "Actual RPM: " << m_shootingMotorAlpha.GetSelectedSensorVelocity() *(600.0/2048.0) << "\n"; 
+ }

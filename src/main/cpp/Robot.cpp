@@ -290,6 +290,7 @@ void Robot::AutonomousPeriodic() {
  */
 void Robot::TeleopInit() {
   m_alliance = frc::DriverStation::GetAlliance();
+  m_shooter.ReadDashboard();
   //ReadDashboard();
 }
 
@@ -307,14 +308,17 @@ void Robot::TeleopPeriodic() {
   double turnInput = m_stick.GetLeftX() - m_stick.GetLeftY();
   // Shooter
   if (m_stick.GetRightBumper()) {
-    m_shooter.Fire();
+    //m_shooter.Fire();
+    m_shooter.Go();
   } else {
     m_drive.ArcadeDrive(throttle, turnInput);
   }
-  
   if (m_stick.GetRightBumperReleased()) {
     m_shooter.Reset();
   }
+
+  
+
 
   double climbThrottle = m_stick_climb.GetLeftY() * 0.25;
   m_climber.EngageLeft(climbThrottle);
@@ -328,10 +332,12 @@ void Robot::DisabledPeriodic() {}
 
 // This method is called at the beginning of the testing state
 void Robot::TestInit() {
+
 }
 
 // This method is called every 20ms (by default) during testing
-void Robot::TestPeriodic() {}
+void Robot::TestPeriodic() {
+}
 
 // Method for reading the Dashboard
 void Robot::ReadDashboard() {
