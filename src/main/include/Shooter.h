@@ -19,6 +19,7 @@ class Shooter {
   void ReadDashboard();
   void ManualShoot(); 
   void Dump();
+  void Go();
 
  private:
 
