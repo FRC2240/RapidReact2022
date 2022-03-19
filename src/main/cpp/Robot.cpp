@@ -64,8 +64,7 @@ void Robot::RobotInit() {
    m_frontLeftMotor.ConfigSupplyCurrentLimit(m_supplyLimit);
      m_midLeftMotor.ConfigSupplyCurrentLimit(m_supplyLimit);
     m_backLeftMotor.ConfigSupplyCurrentLimit(m_supplyLimit);
-  
-
+      
   m_drive.SetSafetyEnabled(false);
 
   // Initialize auto driver
@@ -317,6 +316,9 @@ void Robot::TeleopPeriodic() {
 
   double climbThrottle = m_stick_climb.GetLeftY() * 0.5;
   m_climber.EngageLeft(climbThrottle);
+//WARING: NEVER USE 0.4
+//IT WILL STALL AND NOT WORK. I don't know why.
+
 }
 
 // This method is called at the beginning of the disabled state
