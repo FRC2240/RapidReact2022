@@ -316,7 +316,7 @@ void Robot::TeleopPeriodic() {
     m_shooter.Reset();
   }
 
-  double climbThrottle = m_stick_climb.GetLeftY() * 0.5;
+  double climbThrottle = m_stick_climb.GetLeftY() * 0.25;
   m_climber.EngageLeft(climbThrottle);
 }
 

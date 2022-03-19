@@ -19,7 +19,7 @@ Shooter::Shooter(frc::DifferentialDrive* d, frc::XboxController* s, Take* t)
   // QUESTION: These are being manually called in Robot.cpp, but they are also being called on class instantiation
   // Why is it being repeated?
   // Initialize Dashboard and PID Controllers
-  //InitializeDashboard();
+  InitializeDashboard();
   InitializePIDControllers();
 
   // Follow the alpha
@@ -96,7 +96,7 @@ void Shooter::Dump() {
 
 void Shooter::Fire()
 {
-
+ReadDashboard();
   m_table->PutNumber("ledMode", 3); // lights on
 
   // Is target locked?
