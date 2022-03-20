@@ -21,8 +21,13 @@ Take::Take() {
   m_waitingRoomPIDController.SetD(m_waitingRoomCoeff.kD);
   m_waitingRoomPIDController.SetIZone(m_waitingRoomCoeff.kIz);
   m_waitingRoomPIDController.SetFF(m_waitingRoomCoeff.kFF);
-  m_waitingRoomPIDController.SetOutputRange(m_waitingRoomCoeff.kMinOutput, m_waitingRoomCoeff.kMaxOutput);                                                                                                            }
+  m_waitingRoomPIDController.SetOutputRange(m_waitingRoomCoeff.kMinOutput, m_waitingRoomCoeff.kMaxOutput);
 
+  // Setup external encoder
+  m_rotateIntakeEncoder.SetInverted(false);
+  m_rotateIntakeEncoder.SetPosition(0.0);
+  m_rotateIntakePIDController.SetFeedbackDevice(m_rotateIntakeEncoder);
+}
 
 void Take::Run(bool toggle, bool shooting, bool autonomous, frc::DriverStation::Alliance alliance) {
   // Events that will affect state:
@@ -31,6 +36,8 @@ void Take::Run(bool toggle, bool shooting, bool autonomous, frc::DriverStation::
   // - Wrong color detected
   // - Eject complete
   auto currentState = m_state;
+
+  std::cout << "rotate: " << m_rotateIntakeEncoder.GetPosition() << std::endl;
 
   if (toggle || currentState != Off) {
     ReadSensors(toggle);
@@ -167,7 +174,7 @@ void Take::UptakeStop()
 
 void Take::DeployIntake()
 {
-  m_rotateIntakePIDController.SetReference(50.5, rev::CANSparkMax::ControlType::kSmartMotion);
+  m_rotateIntakePIDController.SetReference(0.25, rev::CANSparkMax::ControlType::kSmartMotion);
 }
 
 void Take::ReturnIntake()
