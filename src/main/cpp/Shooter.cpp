@@ -85,9 +85,9 @@ bool Shooter::LimelightTracking()
 /**
  * Method to calculate shooter RPM. Not defined at the moment
  */
-double Shooter::CalculateRPM(double d)
+double Shooter::CalculateRPM(double m, double d)
 {
-  return 9.66 * d + 1257; 
+  return m * (9.66 * d + 1257); 
 }
 
 void Shooter::Dump() {
@@ -95,9 +95,10 @@ void Shooter::Dump() {
   m_take->Feed(0.5);
 }
 
-void Shooter::Fire()
+void Shooter::Fire(double m)
 {
 ReadDashboard();
+ m_scalar = m_scalar * m; 
 
   m_table->PutNumber("ledMode", 3); // lights on
 
@@ -110,7 +111,7 @@ ReadDashboard();
 
     double distance = 95.3 + -4.41 * ty + 0.126 * pow (ty, 2) + -2.24E-03 * pow(ty, 3); 
 
-    double rpm = CalculateRPM(distance);
+    double rpm = CalculateRPM(m_scalar, distance);
     //std::cout << "distance: " << distance << "\n";
 
     // Override for test/calibration?

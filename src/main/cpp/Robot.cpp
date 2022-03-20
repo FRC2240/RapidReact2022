@@ -260,7 +260,7 @@ void Robot::AutonomousPeriodic() {
 
   if (m_autoState == kShooting) {
     if (m_autoTimer.Get() < units::time::second_t(3.5)) {
-      m_shooter.Fire();
+      m_shooter.Fire(1.0);
     }
     else {
       m_shooter.Reset();
@@ -305,8 +305,16 @@ void Robot::TeleopPeriodic() {
 
   double turnInput = m_stick.GetLeftX() - m_stick.GetLeftY();
   // Shooter
+  double m = 1.0;
+  if (m_stick_climb.GetXButtonReleased()) {
+    m = 1.01;
+  }
+  if (m_stick_climb.GetAButtonReleased()) {
+    m = 0.99;
+  }
+
   if (m_stick.GetRightBumper()) {
-    m_shooter.Fire();
+    m_shooter.Fire(m);
     //m_shooter.Go();
   } else {
     m_drive.ArcadeDrive(throttle, turnInput);
