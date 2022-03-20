@@ -120,10 +120,10 @@ ReadDashboard();
       //std::cout << "Desired RPM: " << rpm << "\n";
     }
 
-    //if ((distance < 250) && (distance > 70))
-    //{
+    if ((distance < 150) && (distance > 50))
+    {
       m_shootingMotorAlpha.Set(ControlMode::Velocity, -rpm * (2048.0 / 600.0));
-    //}
+    }
 
     // Enable feed if we're at 98% of desired shooter speed
     if (fabs(m_shootingMotorAlpha.GetSelectedSensorVelocity()* (600.0/2048.0)) > fabs(rpm * 0.98))
