@@ -35,7 +35,7 @@ class Shooter {
   double kHeightLimelight  = 28.0;
   double kLimelightAngle   = 13.861;
   double kRadiusOfTarget   = 26.7;
-  int m_phaseDelay; 
+  int m_phaseDelay = 0; 
 
 
   WPI_TalonFX m_shootingMotorAlpha {21};

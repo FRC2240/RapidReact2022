@@ -91,7 +91,7 @@ void Take::Run(bool toggle, bool shooting, bool autonomous, frc::DriverStation::
       case Intaking:
         DeployIntake();
         m_spinIntakeMotor.Set(-1.0);
-        m_uptakeMotor.Set(-0.4);
+        m_uptakeMotor.Set(-0.3);
         break;
       case Off:
       default:

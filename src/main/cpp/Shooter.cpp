@@ -106,12 +106,12 @@ ReadDashboard();
   {
     // Calculate distance to target from Limelight data
     double ty = m_table->GetNumber("ty", 0.0);
-    std::cout << "ty: " << ty << "\n"; 
+    //std::cout << "ty: " << ty << "\n"; 
 
     double distance = 95.3 + -4.41 * ty + 0.126 * pow (ty, 2) + -2.24E-03 * pow(ty, 3); 
 
     double rpm = CalculateRPM(distance);
-    std::cout << "distance: " << distance << "\n";
+    //std::cout << "distance: " << distance << "\n";
 
     // Override for test/calibration?
     if (fabs(m_overrideRPM) > 1.0)
