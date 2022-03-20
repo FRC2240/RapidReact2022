@@ -24,9 +24,9 @@ Take::Take() {
   m_waitingRoomPIDController.SetOutputRange(m_waitingRoomCoeff.kMinOutput, m_waitingRoomCoeff.kMaxOutput);
 
   // Setup external encoder
+  m_rotateIntakeEncoder.SetInverted(false);
   m_rotateIntakeEncoder.SetPosition(0.0);
   m_rotateIntakePIDController.SetFeedbackDevice(m_rotateIntakeEncoder);
-  m_rotateIntakeEncoder.SetInverted(true);
 }
 
 void Take::Run(bool toggle, bool shooting, bool autonomous, frc::DriverStation::Alliance alliance) {
@@ -36,6 +36,8 @@ void Take::Run(bool toggle, bool shooting, bool autonomous, frc::DriverStation::
   // - Wrong color detected
   // - Eject complete
   auto currentState = m_state;
+
+  std::cout << "rotate: " << m_rotateIntakeEncoder.GetPosition() << std::endl;
 
   if (toggle || currentState != Off) {
     ReadSensors(toggle);
