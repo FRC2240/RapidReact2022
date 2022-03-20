@@ -25,8 +25,6 @@ Shooter::Shooter(frc::DifferentialDrive* d, frc::XboxController* s, Take* t)
   // Follow the alpha
   m_shootingMotorBeta.Follow(m_shootingMotorAlpha);
   m_shootingMotorBeta.SetInverted(InvertType::OpposeMaster);
-
-  int m_phaseDelay = 0; 
 }
 
 // Reset
@@ -35,6 +33,7 @@ void Shooter::Reset()
   m_table->PutNumber("ledMode", 1); // lights off
   m_shootingMotorAlpha.Set(0.0);    // motors off
   m_take->Feed(0.0);                // feed off
+  m_phaseDelay = 0; 
 }
 
 
