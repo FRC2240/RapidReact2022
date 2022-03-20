@@ -86,7 +86,7 @@ bool Shooter::LimelightTracking()
  */
 double Shooter::CalculateRPM(double d)
 {
-  return 4.67 * d + 2002; 
+  return 9.66 * d + 1257; 
 }
 
 void Shooter::Dump() {
@@ -97,6 +97,7 @@ void Shooter::Dump() {
 void Shooter::Fire()
 {
 ReadDashboard();
+
   m_table->PutNumber("ledMode", 3); // lights on
 
   // Is target locked?
@@ -104,11 +105,12 @@ ReadDashboard();
   {
     // Calculate distance to target from Limelight data
     double ty = m_table->GetNumber("ty", 0.0);
+    std::cout << "ty: " << ty << "\n"; 
 
-    double distance = -2.39 * ty + (0.139 * pow(ty, 2)) + 105;
+    double distance = 95.3 + -4.41 * ty + 0.126 * pow (ty, 2) + -2.24E-03 * pow(ty, 3); 
 
     double rpm = CalculateRPM(distance);
-    //std::cout << "distance: " << distance << "; Shooter RPM:" << m_shootingMotorAlpha.GetSelectedSensorVelocity()*(600.0/2048.0) << "\n";
+    std::cout << "distance: " << distance << "\n";
 
     // Override for test/calibration?
     if (fabs(m_overrideRPM) > 1.0)
@@ -118,13 +120,13 @@ ReadDashboard();
       //std::cout << "Desired RPM: " << rpm << "\n";
     }
 
-    if ((distance < 250) && (distance > 70))
-    {
+    //if ((distance < 250) && (distance > 70))
+    //{
       m_shootingMotorAlpha.Set(ControlMode::Velocity, -rpm * (2048.0 / 600.0));
-    }
+    //}
 
     // Enable feed if we're at 98% of desired shooter speed
-    if (fabs(m_shootingMotorAlpha.GetSelectedSensorVelocity()* (600.0/2048.0)) > fabs(rpm * 0.99))
+    if (fabs(m_shootingMotorAlpha.GetSelectedSensorVelocity()* (600.0/2048.0)) > fabs(rpm * 0.98))
     {
       m_take->Feed(1.0);
     } else {
@@ -188,14 +190,14 @@ void Shooter::InitializeDashboard()
 void Shooter::ReadDashboard()
 {
   m_overrideRPM = frc::SmartDashboard::GetNumber("Overridden RPM", 0.0);
-/*
+
   m_shooterCoeff.kP = frc::SmartDashboard::GetNumber("Shooter P Gain", 0.0);
   m_shooterCoeff.kI = frc::SmartDashboard::GetNumber("Shooter I Gain", 0.0);
   m_shooterCoeff.kD = frc::SmartDashboard::GetNumber("Shooter D Gain", 0.0);
   m_shooterCoeff.kFF = frc::SmartDashboard::GetNumber("Shooter FF Gain", 0.0);
-  m_shooterCoeff.kMinOutput = frc::SmartDashboard::GetNumber("Shooter Min Output", 0.0);
-  m_shooterCoeff.kMaxOutput = frc::SmartDashboard::GetNumber("Shooter Max Output", 0.0);
-  */
+  m_shooterCoeff.kMinOutput = frc::SmartDashboard::GetNumber("Shooter Min Output", -1.0);
+  m_shooterCoeff.kMaxOutput = frc::SmartDashboard::GetNumber("Shooter Max Output", 1.0);
+  
 }
 
 void Shooter::Go(){

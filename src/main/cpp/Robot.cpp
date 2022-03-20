@@ -4,7 +4,6 @@
 
 #include "Robot.h"
 
-
 // Standard C++ Libraries
 #include <iostream>
 #include <math.h>
@@ -282,7 +281,6 @@ void Robot::AutonomousPeriodic() {
       m_autoState = kNothing;
     }
   }
-
 }
 
 /**
@@ -291,12 +289,12 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {
   m_alliance = frc::DriverStation::GetAlliance();
   m_shooter.ReadDashboard();
+  m_shooter.InitializePIDControllers();
   //ReadDashboard();
 }
 
 void Robot::TeleopPeriodic() {
   // Intake
-
   m_take.Run(m_stick.GetLeftBumperReleased(), m_stick.GetRightBumper(), false, m_alliance);
   
   //double a = .375/.4495;
@@ -308,17 +306,14 @@ void Robot::TeleopPeriodic() {
   double turnInput = m_stick.GetLeftX() - m_stick.GetLeftY();
   // Shooter
   if (m_stick.GetRightBumper()) {
-    //m_shooter.Fire();
-    m_shooter.Go();
+    m_shooter.Fire();
+    //m_shooter.Go();
   } else {
     m_drive.ArcadeDrive(throttle, turnInput);
   }
   if (m_stick.GetRightBumperReleased()) {
     m_shooter.Reset();
   }
-
-  
-
 
   double climbThrottle = m_stick_climb.GetLeftY() * 0.25;
   m_climber.EngageLeft(climbThrottle);
@@ -332,7 +327,6 @@ void Robot::DisabledPeriodic() {}
 
 // This method is called at the beginning of the testing state
 void Robot::TestInit() {
-
 }
 
 // This method is called every 20ms (by default) during testing

@@ -37,7 +37,6 @@ void Take::Run(bool toggle, bool shooting, bool autonomous, frc::DriverStation::
   // - Eject complete
   auto currentState = m_state;
 
-  std::cout << "rotate: " << m_rotateIntakeEncoder.GetPosition() << std::endl;
 
   if (toggle || currentState != Off) {
     ReadSensors(toggle);

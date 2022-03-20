@@ -47,7 +47,7 @@ class Shooter {
     double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
   };
 
-  pidCoeff m_shooterCoeff{0.35, 0.000002, 0.0, 0.0, 0.06, 1.0, -1.0};
+  pidCoeff m_shooterCoeff{0.5, 0.000001, 0.0, 0.0, 0.075, 1.0, -1.0};
 
   std::shared_ptr<nt::NetworkTable> m_table = nt::NetworkTableInstance::GetDefault().GetTable("limelight-brute");
 

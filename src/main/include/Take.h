@@ -140,8 +140,8 @@ private:
     double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
   };
 
-  double kMaxVel = 5000, kMinVel = 0, kMaxAcc = 4500, kAllErr = 0.04;
-  pidCoeff m_rotateIntakeCoeff{3.0e-4, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
+  double kMaxVel = 15000, kMinVel = 0, kMaxAcc = 13000, kAllErr = 0.02;
+  pidCoeff m_rotateIntakeCoeff{6.0e-4, 0.0, 0.0, 0.0, 0.0, 1.0, -1.0};
 
   pidCoeff m_uptakeCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
   pidCoeff m_waitingRoomCoeff{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
