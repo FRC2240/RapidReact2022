@@ -25,6 +25,8 @@ Shooter::Shooter(frc::DifferentialDrive* d, frc::XboxController* s, Take* t)
   // Follow the alpha
   m_shootingMotorBeta.Follow(m_shootingMotorAlpha);
   m_shootingMotorBeta.SetInverted(InvertType::OpposeMaster);
+
+  int m_phaseDelay = 0; 
 }
 
 // Reset
@@ -125,12 +127,15 @@ ReadDashboard();
       m_shootingMotorAlpha.Set(ControlMode::Velocity, -rpm * (2048.0 / 600.0));
     }
 
+    m_phaseDelay++; 
+    if (m_phaseDelay > 10) {
     // Enable feed if we're at 98% of desired shooter speed
-    if (fabs(m_shootingMotorAlpha.GetSelectedSensorVelocity()* (600.0/2048.0)) > fabs(rpm * 0.98))
+    if (fabs(m_shootingMotorAlpha.GetSelectedSensorVelocity()* (600.0/2048.0)) > fabs(rpm * 0.99))
     {
       m_take->Feed(1.0);
     } else {
       m_take->Feed(0.0);
+    }
     }
   }
 }
