@@ -131,7 +131,7 @@ std::list<autoActions> m_terminalSequence{
     kShoot,
     kIntake,
     kTerminalPath3,
-    kTerminalPath4,
+    //kTerminalPath4,
     kShoot,
     kIdle
 };
