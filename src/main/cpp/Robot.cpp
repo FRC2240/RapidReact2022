@@ -303,7 +303,7 @@ void Robot::TeleopPeriodic() {
   // Read controller input
   double throttle = -m_stick.GetLeftTriggerAxis() + m_stick.GetRightTriggerAxis();
 
-  double turnInput = m_stick.GetLeftX() - m_stick.GetLeftY();
+  double turnInput = m_stick.GetLeftX();
   // Shooter
   if (m_stick.GetRightBumper()) {
     m_shooter.Fire();
@@ -315,7 +315,7 @@ void Robot::TeleopPeriodic() {
     m_shooter.Reset();
   }
 
-  double climbThrottle = m_stick_climb.GetLeftY() * 0.25;
+  double climbThrottle = m_stick_climb.GetLeftY() * 0.5;
   m_climber.EngageLeft(climbThrottle);
 }
 
