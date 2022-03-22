@@ -23,7 +23,7 @@ class Shooter {
 
  private:
 
-  double CalculateRPM(double d);
+  double CalculateRPM(double ty);
   bool LimelightTracking();
 
   frc::DifferentialDrive* m_drive;

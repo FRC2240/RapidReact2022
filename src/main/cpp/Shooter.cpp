@@ -85,9 +85,11 @@ bool Shooter::LimelightTracking()
 /**
  * Method to calculate shooter RPM. Not defined at the moment
  */
-double Shooter::CalculateRPM(double d)
+double Shooter::CalculateRPM(double ty)
 {
-  return 9.66 * d + 1257; 
+  //return 9.66 * d + 1257; 
+  //return 2275 + -51.1 * ty + 1.15 * pow(ty, 2); //equation w/ actual rpm
+  return 2375 + -31.7 * ty + 0.581 * pow(ty, 2); //equation w/ set rpm
 }
 
 void Shooter::Dump() {
@@ -106,11 +108,11 @@ ReadDashboard();
   {
     // Calculate distance to target from Limelight data
     double ty = m_table->GetNumber("ty", 0.0);
-    //std::cout << "ty: " << ty << "\n"; 
+    std::cout << "ty: " << ty << "\n"; 
 
     double distance = 95.3 + -4.41 * ty + 0.126 * pow (ty, 2) + -2.24E-03 * pow(ty, 3); 
 
-    double rpm = CalculateRPM(distance);
+    double rpm = CalculateRPM(ty);
     //std::cout << "distance: " << distance << "\n";
 
     // Override for test/calibration?
@@ -121,15 +123,15 @@ ReadDashboard();
       //std::cout << "Desired RPM: " << rpm << "\n";
     }
 
-    if ((distance < 150) && (distance > 50))
-    {
+    //if ((distance < 150) && (distance > 50))
+    //{
       m_shootingMotorAlpha.Set(ControlMode::Velocity, -rpm * (2048.0 / 600.0));
-    }
+    //}
 
     m_phaseDelay++; 
     if (m_phaseDelay > 10) {
     // Enable feed if we're at 98% of desired shooter speed
-    if (fabs(m_shootingMotorAlpha.GetSelectedSensorVelocity()* (600.0/2048.0)) > fabs(rpm * 0.99))
+    if (fabs(m_shootingMotorAlpha.GetSelectedSensorVelocity()* (600.0/2048.0)) > fabs(rpm * 0.97))
     {
       m_take->Feed(1.0);
     } else {
