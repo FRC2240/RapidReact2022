@@ -305,18 +305,17 @@ void Robot::TeleopPeriodic() {
 
   double turnInput = m_stick.GetLeftX();
   // Shooter
-  double m = 0.0;
   // each time x is pressed, RPM increased by 10
   if (m_stick_climb.GetXButtonReleased()) {
-    m++;
+    m_shooter.m_scalar++;
   }
   // each time a is pressed, RPM is decreased by 10
   if (m_stick.GetAButtonReleased()) {
-    m--; 
+    m_shooter.m_scalar--; 
   }
 
   if (m_stick.GetRightBumper()) {
-    m_shooter.Fire(m);
+    m_shooter.Fire(m_shooter.m_scalar);
   
   } else {
     m_drive.ArcadeDrive(throttle, turnInput);
