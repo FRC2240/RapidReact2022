@@ -12,7 +12,7 @@ class Shooter {
  public:
   Shooter(frc::DifferentialDrive* d, frc::XboxController* s, Take* t);
   
-  void Fire(double m);
+  void Fire();
   void Reset();
   void InitializePIDControllers();
   void InitializeDashboard();

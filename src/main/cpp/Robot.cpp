@@ -260,7 +260,7 @@ void Robot::AutonomousPeriodic() {
 
   if (m_autoState == kShooting) {
     if (m_autoTimer.Get() < units::time::second_t(3.5)) {
-      m_shooter.Fire(0.0);
+      m_shooter.Fire();
     }
     else {
       m_shooter.Reset();
@@ -315,7 +315,7 @@ void Robot::TeleopPeriodic() {
   }
 
   if (m_stick.GetRightBumper()) {
-    m_shooter.Fire(m_shooter.m_scalar);
+    m_shooter.Fire();
   
   } else {
     m_drive.ArcadeDrive(throttle, turnInput);

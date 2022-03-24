@@ -97,12 +97,11 @@ void Shooter::Dump() {
   m_take->Feed(0.5);
 }
 
-void Shooter::Fire(double m)
+void Shooter::Fire()
 {
   // ReadDashboard(); // For calibration
 
   m_table->PutNumber("ledMode", 3); // lights on
-  m_scalar = 10 * m; 
 
   // Is target locked?
   if (LimelightTracking())
@@ -114,7 +113,7 @@ void Shooter::Fire(double m)
     
     // std::cout << "ty: " << ty << "\n"; // For calibration
 
-    double rpm = CalculateRPM(ty) + m_scalar; // RPM should increment by steps of 10
+    double rpm = CalculateRPM(ty) + m_scalar * 10; // RPM should increment by steps of 10
 
     // Override for test/calibration?
     if (fabs(m_overrideRPM) > 1.0)
