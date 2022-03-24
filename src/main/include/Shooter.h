@@ -21,7 +21,7 @@ class Shooter {
   void Dump();
   void Go();
 
-  double m_scalar = 0.0; 
+  int m_scalar = 0; 
 
  private:
 

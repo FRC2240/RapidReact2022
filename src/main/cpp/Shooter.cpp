@@ -19,7 +19,7 @@ Shooter::Shooter(frc::DifferentialDrive* d, frc::XboxController* s, Take* t)
   // QUESTION: These are being manually called in Robot.cpp, but they are also being called on class instantiation
   // Why is it being repeated?
   // Initialize Dashboard and PID Controllers
-  InitializeDashboard();
+  //InitializeDashboard();
   InitializePIDControllers();
 
   // Follow the alpha
@@ -113,7 +113,7 @@ void Shooter::Fire()
     
     // std::cout << "ty: " << ty << "\n"; // For calibration
 
-    double rpm = CalculateRPM(ty) + m_scalar * 10; // RPM should increment by steps of 10
+    double rpm = CalculateRPM(ty) + m_scalar * 10.0; // RPM should increment by steps of 10
 
     // Override for test/calibration?
     if (fabs(m_overrideRPM) > 1.0)

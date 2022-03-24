@@ -288,7 +288,7 @@ void Robot::AutonomousPeriodic() {
  */
 void Robot::TeleopInit() {
   m_alliance = frc::DriverStation::GetAlliance();
-  m_shooter.ReadDashboard();
+  //m_shooter.ReadDashboard();
   m_shooter.InitializePIDControllers();
   //ReadDashboard();
 }
@@ -310,7 +310,7 @@ void Robot::TeleopPeriodic() {
     m_shooter.m_scalar++;
   }
   // each time a is pressed, RPM is decreased by 10
-  if (m_stick.GetAButtonReleased()) {
+  if (m_stick_climb.GetAButtonReleased()) {
     m_shooter.m_scalar--; 
   }
 
