@@ -315,7 +315,7 @@ void Robot::TeleopPeriodic() {
   }
 
   double climbThrottle = m_stick_climb.GetLeftY() * 0.5;
-  m_climber.EngageLeft(climbThrottle);
+  m_climber.EngageLeft(-climbThrottle);
 //WARING: NEVER USE 0.4
 //IT WILL STALL AND NOT WORK. I don't know why.
 

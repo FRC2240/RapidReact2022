@@ -68,13 +68,12 @@ private:
   int phase_delay = 0;
   int phase_delay_redux = 0;
 
-  // NOTE: False means an error cout hasn't happened and true means it has.
 
   //rotation positions
   double centerL = 35.5, centerR = 20.0, highL = 60.0, highR = 7.5, finalR = 0.0; 
 
   //extension soft limits
-  double kMaxLeft = 256350.0, kMinLeft = 2000.0, kMaxRight = 386000.0, kMinRight = 2000.0; 
+  double kMaxLeft = 256350.0, kMinLeft = 0.0, kMaxRight = 386000.0, kMinRight = 2000.0; 
 
   //testing
   double m_rotationR, m_rotationL;
