@@ -133,7 +133,7 @@ void Shooter::Fire()
     {
       m_take->Feed(1.0, 0.0);
       m_phaseDelay++;
-      if (m_phaseDelay > 50) {
+      if (m_phaseDelay > 25) {
         m_take->Feed (1.0, 1.0);
       }
     } else {
