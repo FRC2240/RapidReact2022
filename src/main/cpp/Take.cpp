@@ -154,9 +154,9 @@ void Take::ReadSensors(bool toggle) {
   count = 0;
 }
 
-void Take::Feed(double speed) {
-  m_uptakeMotor.Set(-speed);
-  m_waitingRoomMotor.Set(speed);
+void Take::Feed(double speedWR, double speedUptake) {
+  m_uptakeMotor.Set(-speedUptake);
+  m_waitingRoomMotor.Set(speedWR);
 }
 
 void Take::UptakeStart(double speed)

@@ -259,8 +259,7 @@ void Robot::AutonomousPeriodic() {
       m_autoTimer.Start();
       m_drive.ArcadeDrive(-0.5, 0);
       m_autoAction = kIdle; 
-      m_autoState = kInstantOK; 
-      
+      m_autoState = kInstantOK;       
 
       break;
 

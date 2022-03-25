@@ -24,7 +24,7 @@ public:
   void TakeDashInit();
   void ColorsInit();
   void SetColor();
-  void Feed(double speed);
+  void Feed(double speedWR, double speedUptake);
 
 
 

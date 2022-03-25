@@ -32,7 +32,7 @@ void Shooter::Reset()
 {
   m_table->PutNumber("ledMode", 1); // lights off
   m_shootingMotorAlpha.Set(0.0);    // motors off
-  m_take->Feed(0.0);                // feed off
+  m_take->Feed(0.0, 0.0);                // feed off
   m_phaseDelay = 0; 
 }
 
@@ -94,7 +94,7 @@ double Shooter::CalculateRPM(double ty)
 
 void Shooter::Dump() {
   m_shootingMotorAlpha.Set(ControlMode::PercentOutput, -0.3);
-  m_take->Feed(0.5);
+  m_take->Feed(0.5, 0.5);
 }
 
 void Shooter::Fire()
@@ -128,15 +128,16 @@ void Shooter::Fire()
       m_shootingMotorAlpha.Set(ControlMode::Velocity, -rpm * (2048.0 / 600.0));
     //}
 
-    m_phaseDelay++; 
-    if (m_phaseDelay > 50) {
     // Enable feed if we're at 98% of desired shooter speed
     if (fabs(m_shootingMotorAlpha.GetSelectedSensorVelocity()* (600.0/2048.0)) > fabs(rpm * 0.97))
     {
-      m_take->Feed(1.0);
+      m_take->Feed(1.0, 0.0);
+      m_phaseDelay++;
+      if (m_phaseDelay > 50) {
+        m_take->Feed (1.0, 1.0);
+      }
     } else {
-      m_take->Feed(0.0);
-    }
+      m_take->Feed(0.0, 0.0); // waiting room, uptake
     }
   }
 }
@@ -202,14 +203,14 @@ void Shooter::ReadDashboard()
   m_shooterCoeff.kD = frc::SmartDashboard::GetNumber("Shooter D Gain", 0.0);
   m_shooterCoeff.kFF = frc::SmartDashboard::GetNumber("Shooter FF Gain", 0.0);
   m_shooterCoeff.kMinOutput = frc::SmartDashboard::GetNumber("Shooter Min Output", -1.0);
-  m_shooterCoeff.kMaxOutput = frc::SmartDashboard::GetNumber("Shooter Max Output", 1.0);
+  m_shooterCoeff.kMaxOutput = frc::SmartDashboard::GetNumber("Shooter Mtput", 1.0);
   
 }
 
 void Shooter::Go(){
   // m_shootingMotorAlpha.Set(ControlMode::Velocity, m_overrideRPM * (2048.0 / 600.0));
    m_shootingMotorAlpha.Set(ControlMode::PercentOutput, -0.6);
-   m_take->Feed(1.0); 
+   m_take->Feed(1.0, 1.0); 
    std::cout << "RPM: " << m_overrideRPM << std::endl;
    std::cout << "Actual RPM: " << m_shootingMotorAlpha.GetSelectedSensorVelocity() *(600.0/2048.0) << "\n"; 
  }
