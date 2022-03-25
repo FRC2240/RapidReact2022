@@ -27,6 +27,9 @@ void Robot::RobotInit() {
   m_chooser.AddOption(Robot::kMiddle, Robot::kMiddle);
   m_chooser.AddOption(Robot::kHanger, Robot::kHanger);
   m_chooser.AddOption(Robot::kTerminal, Robot::kTerminal);
+  m_chooser.AddOption(Robot::kNoAuto, Robot::kNoAuto);
+  m_chooser.AddOption(Robot::kInstant, Robot::kInstant);
+  m_chooser.AddOption(Robot::kDelay, Robot::kDelay);
   
   // Add Autonomous options to dashboard
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
@@ -110,6 +113,18 @@ void Robot::AutonomousInit() {
 
   if (m_autoSelected == kTerminal) {
     m_autoSequence = &m_terminalSequence;
+  }
+
+  if (m_autoSelected == kNoAuto) {
+    m_autoSequence = &m_noSequence;
+  }
+
+  if (m_autoSelected == kInstant) {
+    m_autoSequence = &m_instantSequence;
+  }
+
+  if (m_autoSelected == kDelay) {
+    m_autoSequence = &m_delaySequence;
   }
 
   // First action
@@ -238,6 +253,34 @@ void Robot::AutonomousPeriodic() {
       m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
       break;
 
+    case kInstantPath:
+      m_autoTimer.Reset();
+      m_autoTimer.Start();
+      m_drive.ArcadeDrive(-0.5, 0);
+      m_autoAction = kIdle; 
+      m_autoState = kInstantOK;       
+
+      break;
+
+      case kDelayPath:
+
+      m_autoTimer.Reset();
+      m_autoTimer.Start();
+      m_autoAction = kIdle;
+      m_autoState = kDriving;
+
+      if (m_autoTimer.Get() > units::time::second_t(7) && m_autoTimer.Get() < units::time::second_t(8.5)) {
+        m_drive.ArcadeDrive(-0.3, 0);
+      } else {
+        m_drive.ArcadeDrive(0, 0);
+      }
+
+      m_autoDrive->ResetEncoders();
+
+      // Reset the drivetrain's odometry to the starting pose of the trajectory
+      m_autoDrive->ResetOdometry(m_trajectory.InitialPose());
+      break;
+
     case kIdle:
     default:
       break;
@@ -256,6 +299,12 @@ void Robot::AutonomousPeriodic() {
       m_autoState = kNothing;
     }
   }
+
+ if (m_autoState == kInstantOK) {
+   if (m_autoTimer.Get() > units::time::second_t(1.5)) {
+     m_drive.ArcadeDrive(0,0); 
+   }
+ }
 
   if (m_autoState == kShooting) {
     if (m_autoTimer.Get() < units::time::second_t(3.5)) {
@@ -287,7 +336,7 @@ void Robot::AutonomousPeriodic() {
  */
 void Robot::TeleopInit() {
   m_alliance = frc::DriverStation::GetAlliance();
-  m_shooter.ReadDashboard();
+  //m_shooter.ReadDashboard();
   m_shooter.InitializePIDControllers();
   //ReadDashboard();
 }
@@ -304,9 +353,18 @@ void Robot::TeleopPeriodic() {
 
   double turnInput = m_stick.GetLeftX();
   // Shooter
+  // each time x is pressed, RPM increased by 10
+  if (m_stick_climb.GetXButtonReleased()) {
+    m_shooter.m_scalar++;
+  }
+  // each time a is pressed, RPM is decreased by 10
+  if (m_stick_climb.GetAButtonReleased()) {
+    m_shooter.m_scalar--; 
+  }
+
   if (m_stick.GetRightBumper()) {
     m_shooter.Fire();
-    //m_shooter.Go();
+  
   } else {
     m_drive.ArcadeDrive(throttle, turnInput);
   }

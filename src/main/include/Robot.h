@@ -84,6 +84,10 @@ class Robot : public frc::TimedRobot {
   const std::string kMiddle      = "Middle";
   const std::string kHanger      = "Hanger";
   const std::string kTerminal    = "Terminal";
+  const std::string kNoAuto      = "No Auto";
+  const std::string kInstant     = "Instant";
+  const std::string kDelay       = "Delay";
+
 
   std::string m_autoSelected;
   
@@ -99,6 +103,8 @@ class Robot : public frc::TimedRobot {
     kTerminalPath2,
     kTerminalPath3,
     kTerminalPath4,
+    kInstantPath,
+    kDelayPath,
     kIdle
   };
 
@@ -107,7 +113,8 @@ class Robot : public frc::TimedRobot {
     kDriving,
     kShooting,
     kDumping,
-    kNothing
+    kNothing,
+    kInstantOK
   };
 
 std::list<autoActions> m_middleSequence{
@@ -136,8 +143,21 @@ std::list<autoActions> m_terminalSequence{
     kIdle
 };
 
+std::list<autoActions> m_instantSequence{
+    kShoot,
+    kInstantPath,
+    kIdle
+};
+
+std::list<autoActions> m_delaySequence{
+    kShoot,
+    kDelayPath,
+    kIdle
+};
+
 std::list<autoActions> m_noSequence{
-    kIdle};
+    kIdle
+};
 
 std::list<autoActions> *m_autoSequence;
 autoActions m_autoAction;
