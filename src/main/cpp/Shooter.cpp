@@ -113,7 +113,7 @@ void Shooter::Fire()
     
     // std::cout << "ty: " << ty << "\n"; // For calibration
 
-    double rpm = CalculateRPM(ty) + m_scalar * 10.0; // RPM should increment by steps of 10
+    double rpm = CalculateRPM(ty) + -50.0 + m_scalar * 10.0; // RPM should increment by steps of 10
 
     // Override for test/calibration?
     if (fabs(m_overrideRPM) > 1.0)
@@ -133,7 +133,7 @@ void Shooter::Fire()
     {
       m_take->Feed(1.0, 0.0);
       m_phaseDelay++;
-      if (m_phaseDelay > 25) {
+      if (m_phaseDelay > 20) {
         m_take->Feed (1.0, 1.0);
       }
     } else {
@@ -208,9 +208,19 @@ void Shooter::ReadDashboard()
 }
 
 void Shooter::Go(){
-  // m_shootingMotorAlpha.Set(ControlMode::Velocity, m_overrideRPM * (2048.0 / 600.0));
-   m_shootingMotorAlpha.Set(ControlMode::PercentOutput, -0.6);
-   m_take->Feed(1.0, 1.0); 
-   std::cout << "RPM: " << m_overrideRPM << std::endl;
-   std::cout << "Actual RPM: " << m_shootingMotorAlpha.GetSelectedSensorVelocity() *(600.0/2048.0) << "\n"; 
- }
+  double manualRPM = 2000.0;
+    m_shootingMotorAlpha.Set(ControlMode::Velocity, -manualRPM * (2048.0 / 600.0));
+
+    // Enable feed if we're at 98% of desired shooter speed
+    if (fabs(m_shootingMotorAlpha.GetSelectedSensorVelocity()* (600.0/2048.0)) > fabs(manualRPM * 0.97))
+    {
+      m_take->Feed(1.0, 0.0);
+      m_phaseDelay++;
+      if (m_phaseDelay > 20) {
+        m_take->Feed (1.0, 1.0);
+      }
+    } else {
+      m_take->Feed(0.0, 0.0); // waiting room, uptake
+    }
+  }
+ 

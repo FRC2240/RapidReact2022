@@ -361,14 +361,15 @@ void Robot::TeleopPeriodic() {
   if (m_stick_climb.GetAButtonReleased()) {
     m_shooter.m_scalar--; 
   }
-
+  if (m_stick.GetAButton()) {
+    m_shooter.Go(); //manual override
+  }
   if (m_stick.GetRightBumper()) {
     m_shooter.Fire();
-  
   } else {
     m_drive.ArcadeDrive(throttle, turnInput);
   }
-  if (m_stick.GetRightBumperReleased()) {
+  if (m_stick.GetRightBumperReleased() || m_stick.GetAButtonReleased()) {
     m_shooter.Reset();
   }
 
