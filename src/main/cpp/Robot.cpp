@@ -307,7 +307,7 @@ void Robot::AutonomousPeriodic() {
  }
 
   if (m_autoState == kShooting) {
-    if (m_autoTimer.Get() < units::time::second_t(3.5)) {
+    if (m_autoTimer.Get() < units::time::second_t(8)) {
       m_shooter.Fire();
     }
     else {
