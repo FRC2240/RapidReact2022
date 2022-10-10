@@ -129,7 +129,7 @@ void Shooter::Fire()
     //}
 
     // Enable feed if we're at 98% of desired shooter speed
-    if (fabs(m_shootingMotorAlpha.GetSelectedSensorVelocity()* (600.0/2048.0)) > fabs(rpm * 0.97))
+    if (fabs(m_shootingMotorAlpha.GetSelectedSensorVelocity()* (600.0/2048.0)) > fabs(rpm * 0.95))
     {
       m_take->Feed(1.0, 0.0);
       m_phaseDelay++;
